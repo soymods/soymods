@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
 
+  <!-- Favicons: ICO + PNG + Apple touch for best cross-browser coverage -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/icon.png">
+
   <title>Pathmind — soymods</title>
   <meta name="description" content="Pathmind — a visual node-based editor for in-game workflows and intelligent behavior sequences." />
 
@@ -69,31 +74,16 @@
     .nav{display:flex; align-items:center; justify-content:space-between; gap:14px;}
 
     .brand{display:inline-flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.03em;}
-    .mark{width:22px; height:22px; border:1px solid #fff; border-radius:7px; position:relative;}
-    .mark::after{
-      content:"";
-      position:absolute; left:5px; top:5px;
-      width:10px; height:10px;
-      border:1px solid #fff;
-      border-radius:4px;
-      opacity:.8;
-      transform: rotate(0deg);
-      animation: tilt 2.4s var(--ease) infinite;
-    }
-    @keyframes tilt{
-      0%,100%{transform:rotate(-6deg) scale(.98); opacity:.65}
-      50%{transform:rotate(6deg) scale(1.02); opacity:1}
-    }
 
-    .links{display:flex; align-items:center; gap:10px; font-size:14px; color:var(--muted)}
-    .chip{
-      padding:9px 12px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      transition:transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
-      background:transparent;
+    /* Top-left icon: use image, keep it crisp (no pixelation) */
+    .logo{
+      width:22px;
+      height:22px;
+      border-radius:7px;
+      display:block;
+      image-rendering:auto;
+      object-fit:cover;
     }
-    .chip:hover{transform:translateY(-1px); border-color:#fff; background:rgba(255,255,255,.05)}
 
     main{padding: 22px 0 64px; background:var(--bg);}
 
@@ -316,9 +306,8 @@
     }
 
     @media (prefers-reduced-motion: reduce){
-      .mark::after{animation:none}
       .word,.lede,.actions,.canvas{transition:none}
-      .btn,.chip,.node{transition:none}
+      .btn,.node{transition:none}
     }
   </style>
 </head>
@@ -329,14 +318,12 @@
   <header>
     <div class="wrap nav">
       <a class="brand" href="/" aria-label="soymods home">
-        <span class="mark" aria-hidden="true"></span>
+        <img class="logo" src="/icon.png" alt="" aria-hidden="true" />
         <span>soymods</span>
       </a>
 
-      <nav class="links" aria-label="primary">
-        <a class="chip" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Releases</a>
-        <a class="chip" href="https://github.com/soymods/pathmind" target="_blank" rel="noreferrer">Source</a>
-      </nav>
+      <!-- removed top-right buttons -->
+      <div aria-hidden="true"></div>
     </div>
   </header>
 
@@ -454,7 +441,6 @@
       if (!container || !svg) return;
 
       const nodes = Array.from(container.querySelectorAll('.node'));
-
       const getRect = () => container.getBoundingClientRect();
 
       const centerOf = (el) => {
@@ -494,15 +480,12 @@
         const bounds = getRect();
         if (!bounds.width) return;
 
-        // Keep DOM order (Start -> Mine -> Craft -> Place)
         const ordered = nodes.slice();
-
         const widths = ordered.map(n => n.offsetWidth);
         const totalW = widths.reduce((a,b) => a + b, 0);
         const padding = 8;
         const usable = Math.max(0, bounds.width - padding * 2);
 
-        // If nodes are wider than the container, fall back to a simple packed layout.
         const gap = (usable > totalW && ordered.length > 1)
           ? (usable - totalW) / (ordered.length - 1)
           : 10;
@@ -555,7 +538,7 @@
       };
 
       let active = null;
-      let userMoved = false; // once true, we stop auto-spacing on resize
+      let userMoved = false;
       let startX = 0, startY = 0;
       let nodeStartLeft = 0, nodeStartTop = 0;
 
@@ -599,13 +582,11 @@
       window.addEventListener('pointerup', onUp);
 
       window.addEventListener('resize', () => {
-        // Keep things nice on first viewports changes, but don't fight the user once they drag.
         if (!userMoved) layoutNodes();
         clampInitialPositions();
         draw();
       });
 
-      // initial auto-layout + clamp + draw after layout
       requestAnimationFrame(() => {
         layoutNodes();
         clampInitialPositions();
