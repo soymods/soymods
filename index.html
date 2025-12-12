@@ -4,9 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
+  <link rel="icon" href="/favicon.ico" sizes="any">
 
   <title>soymods</title>
-  <meta name="description" content="soymods — sleek Minecraft mods. Built by ryduzz." />
+  <meta name="description" content="A tiny home for projects and downloads — intentionally minimal, interaction-first, built in black + white." />
 
   <style>
     :root{
@@ -33,7 +34,6 @@
       letter-spacing:-0.01em;
       overflow-x:hidden;
     }
-
     a{color:inherit;text-decoration:none}
     a:focus-visible,button:focus-visible{
       outline:2px solid #fff;
@@ -41,22 +41,22 @@
       border-radius:12px;
     }
 
-    /* Flat-only background: grid + dots (no gradients) */
+    /* background */
     .bg{
       position:fixed; inset:0;
       pointer-events:none;
       opacity:.9;
       background:
-        repeating-linear-gradient(to right, transparent 0, transparent 47px, var(--line) 48px),
-        repeating-linear-gradient(to bottom, transparent 0, transparent 47px, var(--line) 48px);
+        repeating-linear-gradient(to right, transparent 0, transparent 39px, var(--line) 40px),
+        repeating-linear-gradient(to bottom, transparent 0, transparent 39px, var(--line) 40px);
     }
     .dots{
       position:fixed; inset:0;
       pointer-events:none;
-      opacity:.45;
+      opacity:.40;
       background-image: radial-gradient(circle, var(--line2) 1px, transparent 1px);
-      background-size: 18px 18px;
-      background-position: 9px 10px;
+      background-size: 16px 16px;
+      background-position: 10px 11px;
     }
 
     /* Top bar */
@@ -67,34 +67,15 @@
     }
     .wrap{max-width:var(--max); margin:0 auto; padding:16px 18px;}
     .nav{display:flex; align-items:center; justify-content:space-between; gap:14px;}
-
     .brand{display:inline-flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.03em;}
-    .mark{
-      width:22px; height:22px; border:1px solid #fff; border-radius:7px;
-      position:relative;
-    }
-    .mark::after{
-      content:"";
-      position:absolute; left:5px; top:5px;
-      width:10px; height:10px;
-      border:1px solid #fff;
-      border-radius:4px;
-      animation:pulse 2.2s var(--ease) infinite;
-    }
-    @keyframes pulse{
-      0%,100%{transform:scale(.9); opacity:.55}
-      50%{transform:scale(1.05); opacity:1}
-    }
 
-    .links{display:flex; align-items:center; gap:10px; font-size:14px; color:var(--muted)}
-    .chip{
-      padding:9px 12px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      transition:transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
-      background:transparent;
+    .logo{
+      width:22px;
+      height:22px;
+      border-radius:7px;
+      display:block;
+      image-rendering: pixelated;
     }
-    .chip:hover{transform:translateY(-1px); border-color:#fff; background:rgba(255,255,255,.05)}
 
     main{padding:22px 0 64px; background:var(--bg);}
 
@@ -182,7 +163,7 @@
     }
     .tapeTrack span{color:#fff}
     .tapeTrack em{font-style:normal; color:var(--muted)}
-    
+
     /* orbit labels (flat outlines) */
     .orbits{position:absolute; inset:0; pointer-events:none;}
     .orbit{
@@ -223,7 +204,7 @@
     .tag b{color:#fff; font-weight:750}
     .tag:hover{transform:translateY(-1px); border-color:#fff; color:#fff}
 
-    /* projects: not boxes — “cards” as floating list items with line connectors */
+    /* projects */
     .projects{
       background:#000;
       margin-top:18px;
@@ -235,7 +216,6 @@
       padding: 0 6px;
     }
     .projectsHeader h2{margin:0; font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
-    .projectsHeader p{margin:0; font-size:13px; color:var(--muted2)}
 
     .rail{
       position:absolute;
@@ -248,63 +228,66 @@
     }
 
     .item{
-      display:grid;
-      grid-template-columns: 26px 1fr;
-      gap:14px;
-      padding: 16px 6px 16px 0;
-      margin-left: 6px;
+      position:relative;
+      margin: 14px 0 0;
+      padding-left: 36px;
       transform: translateY(10px);
       opacity:0;
       transition: transform .7s var(--ease), opacity .7s var(--ease);
     }
     .item.reveal{transform:translateY(0); opacity:1}
-
-    .node{
-      width: 12px; height: 12px;
-      border-radius:50%;
-      border:1px solid #fff;
-      margin-top: 6px;
-      background:#000;
-      position:relative;
-      left: 12px;
-    }
-    .node::after{
-      content:"";
+    .item .node{
       position:absolute;
-      left: 12px;
-      top: 5px;
-      width: 14px;
-      height: 1px;
-      background: var(--line);
+      left: 14px;
+      top: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border:1px solid #fff;
+      background:#000;
     }
-
     .item a{
       display:block;
-      padding: 0;
+      border:1px solid var(--line);
+      border-radius: calc(var(--r) + 10px);
+      padding: 16px 16px 14px;
+      transition: transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
+      background: rgba(0,0,0,.55);
     }
-
+    .item a:hover{transform:translateY(-1px); border-color:#fff; background: rgba(255,255,255,.03);}
     .itemTitle{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
+      gap:10px;
     }
-    .itemTitle h3{margin:0; font-size:20px; letter-spacing:-0.03em}
+    .itemTitle h3{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:-0.03em;
+    }
     .pill{
-      font-size:12px;
       padding:6px 10px;
       border:1px solid var(--line);
       border-radius:999px;
       color:var(--muted);
+      font-size:12px;
     }
-    .itemDesc{margin:6px 0 0; color:var(--muted); line-height:1.55; font-size:14px; max-width:72ch}
-    .itemMeta{margin:10px 0 0; display:flex; flex-wrap:wrap; gap:10px; color:var(--muted2); font-size:12px}
-
-    .hoverline{
-      border-bottom:1px solid transparent;
-      transition:border-color .18s var(--ease), color .18s var(--ease);
+    .itemDesc{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+      max-width: 80ch;
     }
-    a:hover .hoverline{border-color:rgba(255,255,255,.35); color:#fff}
+    .itemMeta{
+      margin-top:10px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      color:var(--muted2);
+      font-size:12px;
+    }
 
     footer{
       margin-top: 26px;
@@ -318,24 +301,20 @@
       gap:12px;
       flex-wrap:wrap;
     }
-    footer a{color:var(--muted); border-bottom:1px solid transparent;}
-    footer a:hover{color:#fff; border-color:rgba(255,255,255,.35)}
 
     /* mobile */
     @media (max-width: 860px){
       .stage{min-height: 560px; padding: 22px;}
       .orbit,.orbit.o2{display:none}
       .label{position:relative; right:auto; top:auto; align-items:flex-start; margin-top:14px}
-      .projectsHeader{flex-direction:column; align-items:flex-start}
       .rail{left: 14px}
-      .node{left: 8px}
+      .item{padding-left: 30px}
+      .item .node{left: 8px}
     }
 
     @media (prefers-reduced-motion: reduce){
-      .mark::after{animation:none}
-      .tapeTrack{animation:none}
       .stage,.item{transition:none}
-      .btn,.chip,.tag{transition:none}
+      .btn,.tag{transition:none}
     }
   </style>
 </head>
@@ -346,14 +325,11 @@
   <header>
     <div class="wrap nav">
       <a class="brand" href="/" aria-label="soymods home">
-        <span class="mark" aria-hidden="true"></span>
+        <img class="logo" src="/icon.png" alt="" aria-hidden="true" />
         <span>soymods</span>
       </a>
-
-      <nav class="links" aria-label="primary">
-        <a class="chip" href="https://github.com/soymods" target="_blank" rel="noreferrer">Studio GitHub</a>
-        <a class="chip" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Releases</a>
-      </nav>
+      <!-- intentionally empty: removed top-right buttons -->
+      <div aria-hidden="true"></div>
     </div>
   </header>
 
@@ -383,28 +359,24 @@
         <div class="tape" aria-hidden="true">
           <div class="tapeTrack">
             <div class="tapeInner" id="tapeInner">
-              <span>visual tools</span><em>·</em>
-              <span>automation</span><em>·</em>
-              <span>clean ux</span><em>·</em>
               <span>fabric</span><em>·</em>
-              <span>1.21.x</span><em>·</em>
-              <span>visual tools</span><em>·</em>
-              <span>automation</span><em>·</em>
-              <span>clean ux</span><em>·</em>
+              <span>tools</span><em>·</em>
+              <span>ux</span><em>·</em>
+              <span>soy</span><em>·</em>
               <span>fabric</span><em>·</em>
-              <span>1.21.x</span><em>·</em>
+              <span>tools</span><em>·</em>
+              <span>ux</span><em>·</em>
+              <span>soy</span><em>·</em>
             </div>
             <div class="tapeInner" aria-hidden="true">
-              <span>visual tools</span><em>·</em>
-              <span>automation</span><em>·</em>
-              <span>clean ux</span><em>·</em>
               <span>fabric</span><em>·</em>
-              <span>1.21.x</span><em>·</em>
-              <span>visual tools</span><em>·</em>
-              <span>automation</span><em>·</em>
-              <span>clean ux</span><em>·</em>
+              <span>tools</span><em>·</em>
+              <span>ux</span><em>·</em>
+              <span>soy</span><em>·</em>
               <span>fabric</span><em>·</em>
-              <span>1.21.x</span><em>·</em>
+              <span>tools</span><em>·</em>
+              <span>ux</span><em>·</em>
+              <span>soy</span><em>·</em>
             </div>
           </div>
         </div>
@@ -499,7 +471,6 @@
           requestAnimationFrame(tick);
         };
 
-        // Start after initial layout
         requestAnimationFrame(() => {
           loopWidth = getLoopWidth();
           requestAnimationFrame(tick);
