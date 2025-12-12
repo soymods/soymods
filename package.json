@@ -1,0 +1,13 @@
+{
+  "name": "soymods",
+  "version": "1.0.0",
+  "description": "The official Soymods website.",
+  "type": "module",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": ["minecraft", "mods", "soymods", "pathmind"],
+  "author": "ryduzz",
+  "license": "MIT"
+}
