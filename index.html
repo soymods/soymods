@@ -79,13 +79,13 @@
       height:22px;
       border-radius:7px;
       display:block;
-      image-rendering:auto;     /* was pixelated */
+      image-rendering:auto;
       object-fit:cover;
     }
 
     main{padding:22px 0 64px; background:var(--bg);}
 
-    /* Creative layout: typographic poster + orbiting labels */
+    /* Creative layout */
     .stage{
       position:relative;
       min-height: 520px;
@@ -98,13 +98,11 @@
       transition: transform .7s var(--ease), opacity .7s var(--ease);
       background: transparent;
 
-      /* Make CTA clamp to the bottom */
       display:flex;
       flex-direction:column;
     }
     .stage.reveal{transform:translateY(0); opacity:1}
 
-    /* giant wordmark */
     .title{
       margin:0;
       font-size: clamp(56px, 9vw, 120px);
@@ -120,33 +118,7 @@
       line-height: 1.6;
     }
 
-    /* CTA pushed to bottom of stage */
-    .cta{
-      display:flex; flex-wrap:wrap; gap:10px;
-      margin-top:auto;          /* push down */
-      padding-top:18px;         /* spacing from content above */
-    }
-    .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:11px 14px;
-      border-radius:999px;
-      border:1px solid #fff;
-      background:#fff;
-      color:#000;
-      font-weight:750;
-      font-size:14px;
-      cursor:pointer;
-      transition: transform .18s var(--ease), opacity .18s var(--ease);
-    }
-    .btn.secondary{
-      background:transparent;
-      color:#fff;
-      border-color:var(--line2);
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn.secondary:hover{border-color:#fff}
-
-    /* orbit labels (flat outlines) */
+    /* orbit labels */
     .orbits{position:absolute; inset:0; pointer-events:none;}
     .orbit{
       position:absolute;
@@ -185,6 +157,84 @@
     }
     .tag b{color:#fff; font-weight:750}
     .tag:hover{transform:translateY(-1px); border-color:#fff; color:#fff}
+
+    /* NEW: bottom row (CTA left, video right) */
+    .bottomRow{
+      margin-top:auto;               /* clamps bottom content to bottom of box */
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      padding-top:18px;
+    }
+
+    /* CTA (no longer needs margin-top:auto because bottomRow handles it) */
+    .cta{
+      display:flex; flex-wrap:wrap; gap:10px;
+      margin:0;
+      padding:0;
+      align-self:flex-end;
+    }
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:11px 14px;
+      border-radius:999px;
+      border:1px solid #fff;
+      background:#fff;
+      color:#000;
+      font-weight:750;
+      font-size:14px;
+      cursor:pointer;
+      transition: transform .18s var(--ease), opacity .18s var(--ease);
+    }
+    .btn.secondary{
+      background:transparent;
+      color:#fff;
+      border-color:var(--line2);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary:hover{border-color:#fff}
+
+    /* NEW: video panel bottom-right */
+    .videoCard{
+      width: min(420px, 44%);
+      border:1px solid var(--line);
+      border-radius: calc(var(--r) + 10px);
+      background: rgba(0,0,0,.55);
+      overflow:hidden;
+      align-self:flex-end;
+    }
+    .videoHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background: rgba(0,0,0,.35);
+    }
+    .videoHead b{
+      color:#fff;
+      font-weight:800;
+      letter-spacing:-0.01em;
+      text-transform:none;
+      font-size:13px;
+    }
+    .videoWrap{
+      position:relative;
+      width:100%;
+      aspect-ratio: 16 / 9;
+      background:#000;
+    }
+    .videoWrap iframe{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      border:0;
+    }
 
     /* projects */
     .projects{
@@ -289,6 +339,19 @@
       .stage{min-height: 560px; padding: 22px;}
       .orbit,.orbit.o2{display:none}
       .label{position:relative; right:auto; top:auto; align-items:flex-start; margin-top:14px}
+
+      .bottomRow{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .videoCard{
+        width:100%;
+        order:0;
+      }
+      .cta{
+        order:1;
+      }
+
       .rail{left: 14px}
       .item{padding-left: 30px}
       .item .node{left: 8px}
@@ -332,11 +395,28 @@
           <a class="tag" href="https://github.com/soymods" target="_blank" rel="noreferrer"><b>GitHub</b> soymods</a>
         </div>
 
-        <!-- scrolling tape removed -->
+        <!-- NEW: bottom row fills bottom-right with video, keeps buttons clamped -->
+        <div class="bottomRow">
+          <div class="cta">
+            <a class="btn" href="/pathmind" aria-label="Open Pathmind">Pathmind →</a>
+            <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Latest release ↗</a>
+          </div>
 
-        <div class="cta">
-          <a class="btn" href="/pathmind" aria-label="Open Pathmind">Pathmind →</a>
-          <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Latest release ↗</a>
+          <aside class="videoCard" aria-label="soymods video">
+            <div class="videoHead">
+              <b>soymods</b>
+              <span>video</span>
+            </div>
+            <div class="videoWrap">
+              <iframe
+                src="https://www.youtube.com/embed/9MJRZGiwqbE"
+                title="soymods video"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </aside>
         </div>
       </section>
 
@@ -402,9 +482,6 @@
       document.getElementById('year').textContent = new Date().getFullYear();
       reveal();
 
-      // marquee removed
-
-      // gentle parallax for the orbit circles (flat-only, just motion)
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!prefersReduced) {
         const orbits = document.querySelector('.orbits');
