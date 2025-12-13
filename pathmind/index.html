@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#1a1a1a" />
 
-  <!-- Favicons: ICO + PNG + Apple touch for best cross-browser coverage -->
+  <!-- Favicons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/icon.png">
@@ -207,14 +207,24 @@
       background:transparent;
     }
 
+    /* wires behind nodes */
+    svg.wires{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      pointer-events:none;
+      z-index: 0; /* behind */
+    }
+
     /* === COLORED NODES === */
     .node{
       position:absolute;
+      z-index: 1; /* above wires */
       --accent: #ffffff;
       border:1px solid rgba(255,255,255,.22);
       border-radius: 16px;
       padding: 12px 14px;
-      padding-left: 14px;
       background: var(--bg);
       display:flex;
       align-items:center;
@@ -222,9 +232,7 @@
       cursor:grab;
       user-select:none;
       transition: border-color .18s var(--ease), transform .18s var(--ease);
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.0);
     }
-    /* accent stripe */
     .node::before{
       content:"";
       position:absolute;
@@ -232,6 +240,8 @@
       width: 6px;
       background: var(--accent);
       opacity:.95;
+      border-top-left-radius: 16px;
+      border-bottom-left-radius: 16px;
     }
     .node:active{cursor:grabbing}
     .node:hover{border-color: rgba(255,255,255,.45)}
@@ -242,8 +252,8 @@
       border-radius: 50%;
       border:1px solid rgba(255,255,255,.55);
       background: var(--accent);
-      box-shadow: 0 0 0 3px rgba(0,0,0,.0);
       opacity:1;
+      flex: 0 0 auto;
     }
     .node .name{font-weight:760; letter-spacing:-0.02em}
     .node .hint{color:var(--muted2); font-size:12px; margin-left:6px}
@@ -253,14 +263,6 @@
     .node[data-id="mine"] { --accent: #58A6FF; } /* blue */
     .node[data-id="craft"]{ --accent: #FFB86B; } /* orange */
     .node[data-id="place"]{ --accent: #FF5DA2; } /* pink */
-
-    svg.wires{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      pointer-events:none;
-    }
 
     /* Below fold */
     .info{
@@ -313,7 +315,7 @@
     }
     .row span:last-child{color:#fff; font-weight:700}
 
-    /* === PANEL VIDEO EMBEDS === */
+    /* panel video embeds */
     .panelVideo{
       margin-top: 14px;
       border:1px solid var(--line);
@@ -465,16 +467,16 @@
           <li class="li"><b>Practical automation</b> — craft, place, mine, and more through a unified graph.</li>
         </ul>
 
-        <!-- Video 1 -->
+        <!-- SWAPPED: What it is now uses EBJEVciVAFU -->
         <div class="panelVideo" aria-label="What it is video">
           <div class="panelVideoHead">
-            <b>Demo</b>
+            <b>Overview</b>
             <span>video</span>
           </div>
           <div class="panelVideoFrame">
             <iframe
-              src="https://www.youtube.com/embed/9MJRZGiwqbE"
-              title="Pathmind video"
+              src="https://www.youtube.com/embed/EBJEVciVAFU"
+              title="Pathmind video 2"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen>
@@ -496,16 +498,16 @@
           Please use responsibly and follow server rules. You are responsible for how you use automation.
         </p>
 
-        <!-- Video 2 -->
+        <!-- SWAPPED: Info now uses 9MJRZGiwqbE -->
         <div class="panelVideo" aria-label="Info video">
           <div class="panelVideoHead">
-            <b>Overview</b>
+            <b>Demo</b>
             <span>video</span>
           </div>
           <div class="panelVideoFrame">
             <iframe
-              src="https://www.youtube.com/embed/EBJEVciVAFU"
-              title="Pathmind video 2"
+              src="https://www.youtube.com/embed/9MJRZGiwqbE"
+              title="Pathmind video"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen>
@@ -540,7 +542,7 @@
       });
     };
 
-    // draggable nodes + wires redraw (with initial clamping)
+    // draggable nodes + wires redraw
     const initGraph = () => {
       const container = document.getElementById('nodes');
       const svg = document.getElementById('wires');
@@ -549,11 +551,13 @@
       const nodes = Array.from(container.querySelectorAll('.node'));
       const getRect = () => container.getBoundingClientRect();
 
-      const centerOf = (el) => {
-        const r = el.getBoundingClientRect();
+      // Use the PORT dot as the connection point (fixes wires cutting through nodes)
+      const pointOf = (node) => {
+        const port = node.querySelector('.port') || node;
+        const pr = port.getBoundingClientRect();
         const cr = getRect();
-        const x = (r.left - cr.left) + r.width / 2;
-        const y = (r.top - cr.top) + r.height / 2;
+        const x = (pr.left - cr.left) + pr.width / 2;
+        const y = (pr.top - cr.top) + pr.height / 2;
         return { x, y };
       };
 
@@ -602,6 +606,7 @@
 
       const draw = () => {
         setSvgView();
+
         const pairs = [['start','mine'],['mine','craft'],['craft','place']];
         const byId = Object.fromEntries(nodes.map(n => [n.dataset.id, n]));
 
@@ -611,24 +616,28 @@
           const nb = byId[b];
           if (!na || !nb) return;
 
-          const pa = centerOf(na);
-          const pb = centerOf(nb);
+          const pa = pointOf(na);
+          const pb = pointOf(nb);
 
           const dx = Math.max(40, Math.abs(pb.x - pa.x) * 0.45);
           const c1x = pa.x + dx;
           const c2x = pb.x - dx;
 
+          const d = `M ${pa.x} ${pa.y} C ${c1x} ${pa.y}, ${c2x} ${pb.y}, ${pb.x} ${pb.y}`;
+
           const glow = document.createElementNS('http://www.w3.org/2000/svg','path');
-          glow.setAttribute('d', `M ${pa.x} ${pa.y} C ${c1x} ${pa.y}, ${c2x} ${pb.y}, ${pb.x} ${pb.y}`);
+          glow.setAttribute('d', d);
           glow.setAttribute('fill','none');
           glow.setAttribute('stroke','rgba(255,255,255,.10)');
           glow.setAttribute('stroke-width','6');
+          glow.setAttribute('stroke-linecap','round');
 
           const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-          path.setAttribute('d', glow.getAttribute('d'));
+          path.setAttribute('d', d);
           path.setAttribute('fill','none');
           path.setAttribute('stroke','rgba(255,255,255,.45)');
           path.setAttribute('stroke-width','1.5');
+          path.setAttribute('stroke-linecap','round');
 
           svg.appendChild(glow);
           svg.appendChild(path);
@@ -667,7 +676,7 @@
         top  = Math.max(8, Math.min(top,  bounds.height - h - 8));
 
         active.style.left = left + 'px';
-        active.style.top  = top + 'px';
+        active.style.top  = top  + 'px';
         draw();
       };
 
