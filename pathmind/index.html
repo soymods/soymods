@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#1a1a1a" />
 
-  <!-- Favicons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/icon.png">
@@ -15,7 +14,7 @@
 
   <style>
     :root{
-      --bg: rgb(26,26,26); /* R:26 G:26 B:26 */
+      --bg: rgb(26,26,26);
       --fg:#fff;
       --muted:rgba(255,255,255,.68);
       --muted2:rgba(255,255,255,.45);
@@ -38,7 +37,6 @@
       letter-spacing:-0.01em;
       overflow-x:hidden;
     }
-
     a{color:inherit;text-decoration:none}
     a:focus-visible,button:focus-visible{
       outline:2px solid #fff;
@@ -46,7 +44,6 @@
       border-radius:12px;
     }
 
-    /* Flat-only background overlays */
     .grid{
       position:fixed; inset:0;
       pointer-events:none;
@@ -69,14 +66,11 @@
       background: var(--bg);
       border-bottom:1px solid var(--line);
     }
-
     .wrap{max-width:var(--max); margin:0 auto; padding:16px 18px;}
     .nav{display:flex; align-items:center; justify-content:space-between; gap:14px;}
     .brand{display:inline-flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.03em;}
-
     .logo{
-      width:22px;
-      height:22px;
+      width:22px; height:22px;
       border-radius:7px;
       display:block;
       image-rendering:auto;
@@ -92,7 +86,6 @@
       place-items:center;
       padding: 26px 0 10px;
     }
-
     .heroInner{
       width:min(920px, 100%);
       padding: 0 18px;
@@ -156,7 +149,6 @@
     .btn:hover{transform:translateY(-1px)}
     .btn.secondary:hover{border-color:#fff}
 
-    /* Canvas motif: SOLID background */
     .canvas{
       width: min(980px, 100%);
       margin: 28px auto 0;
@@ -214,18 +206,24 @@
       width:100%;
       height:100%;
       pointer-events:none;
-      z-index: 0; /* behind */
+      z-index: 0;
     }
 
-    /* === COLORED NODES === */
+    /* === COLORED NODES with real in/out ports === */
     .node{
       position:absolute;
-      z-index: 1; /* above wires */
+      z-index: 1;
       --accent: #ffffff;
+
       border:1px solid rgba(255,255,255,.22);
       border-radius: 16px;
-      padding: 12px 14px;
       background: var(--bg);
+
+      /* room for ports */
+      padding: 12px 18px;
+      padding-left: 34px;
+      padding-right: 34px;
+
       display:flex;
       align-items:center;
       gap:10px;
@@ -233,6 +231,8 @@
       user-select:none;
       transition: border-color .18s var(--ease), transform .18s var(--ease);
     }
+
+    /* accent stripe */
     .node::before{
       content:"";
       position:absolute;
@@ -243,28 +243,41 @@
       border-top-left-radius: 16px;
       border-bottom-left-radius: 16px;
     }
-    .node:active{cursor:grabbing}
-    .node:hover{border-color: rgba(255,255,255,.45)}
 
+    .node:hover{border-color: rgba(255,255,255,.45)}
+    .node:active{cursor:grabbing}
+
+    .ports{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
     .port{
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
+      position:absolute;
+      top:50%;
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      transform: translateY(-50%);
       border:1px solid rgba(255,255,255,.55);
       background: var(--accent);
       opacity:1;
-      flex: 0 0 auto;
     }
+    .port.in{ left: 14px; }
+    .port.out{ right: 14px; }
+
+    /* show/hide ports per node type */
+    .node[data-kind="source"] .port.in{ display:none; }
+    .node[data-kind="sink"]   .port.out{ display:none; }
+
     .node .name{font-weight:760; letter-spacing:-0.02em}
     .node .hint{color:var(--muted2); font-size:12px; margin-left:6px}
 
-    /* per-node accent colors */
-    .node[data-id="start"]{ --accent: #7CFFCB; } /* mint */
-    .node[data-id="mine"] { --accent: #58A6FF; } /* blue */
-    .node[data-id="craft"]{ --accent: #FFB86B; } /* orange */
-    .node[data-id="place"]{ --accent: #FF5DA2; } /* pink */
+    .node[data-id="start"]{ --accent: #7CFFCB; }
+    .node[data-id="mine"] { --accent: #58A6FF; }
+    .node[data-id="craft"]{ --accent: #FFB86B; }
+    .node[data-id="place"]{ --accent: #FF5DA2; }
 
-    /* Below fold */
     .info{
       margin: 20px auto 0;
       width: min(980px, 100%);
@@ -281,7 +294,6 @@
       padding: 18px;
       background: var(--bg);
     }
-
     .panel h2{
       margin:0;
       font-size:14px;
@@ -289,7 +301,6 @@
       text-transform:uppercase;
       color:var(--muted);
     }
-
     .panel p{
       margin: 10px 0 0;
       color: var(--muted);
@@ -315,7 +326,6 @@
     }
     .row span:last-child{color:#fff; font-weight:700}
 
-    /* panel video embeds */
     .panelVideo{
       margin-top: 14px;
       border:1px solid var(--line);
@@ -380,7 +390,6 @@
       .info{grid-template-columns: 1fr;}
       .nodes{height: 260px;}
     }
-
     @media (prefers-reduced-motion: reduce){
       .word,.lede,.actions,.canvas{transition:none}
       .btn,.node{transition:none}
@@ -428,23 +437,38 @@
           <div class="nodes" id="nodes">
             <svg class="wires" id="wires" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"></svg>
 
-            <div class="node" data-id="start" style="left: 46px; top: 76px;">
-              <span class="port" aria-hidden="true"></span>
+            <div class="node" data-id="start" data-kind="source" style="left: 46px; top: 76px;">
+              <span class="ports" aria-hidden="true">
+                <span class="port in"></span>
+                <span class="port out"></span>
+              </span>
               <span class="name">Start</span>
               <span class="hint">workflow</span>
             </div>
-            <div class="node" data-id="mine" style="left: 330px; top: 44px;">
-              <span class="port" aria-hidden="true"></span>
+
+            <div class="node" data-id="mine" data-kind="mid" style="left: 330px; top: 44px;">
+              <span class="ports" aria-hidden="true">
+                <span class="port in"></span>
+                <span class="port out"></span>
+              </span>
               <span class="name">Mine</span>
               <span class="hint">inputs</span>
             </div>
-            <div class="node" data-id="craft" style="left: 600px; top: 112px;">
-              <span class="port" aria-hidden="true"></span>
+
+            <div class="node" data-id="craft" data-kind="mid" style="left: 600px; top: 112px;">
+              <span class="ports" aria-hidden="true">
+                <span class="port in"></span>
+                <span class="port out"></span>
+              </span>
               <span class="name">Craft</span>
               <span class="hint">steps</span>
             </div>
-            <div class="node" data-id="place" style="left: 812px; top: 64px;">
-              <span class="port" aria-hidden="true"></span>
+
+            <div class="node" data-id="place" data-kind="sink" style="left: 812px; top: 64px;">
+              <span class="ports" aria-hidden="true">
+                <span class="port in"></span>
+                <span class="port out"></span>
+              </span>
               <span class="name">Place</span>
               <span class="hint">output</span>
             </div>
@@ -467,16 +491,13 @@
           <li class="li"><b>Practical automation</b> — craft, place, mine, and more through a unified graph.</li>
         </ul>
 
-        <!-- SWAPPED: What it is now uses EBJEVciVAFU -->
-        <div class="panelVideo" aria-label="What it is video">
-          <div class="panelVideoHead">
-            <b>Overview</b>
-            <span>video</span>
-          </div>
+        <!-- swapped: What it is -> EBJEVciVAFU -->
+        <div class="panelVideo">
+          <div class="panelVideoHead"><b>Overview</b><span>video</span></div>
           <div class="panelVideoFrame">
             <iframe
               src="https://www.youtube.com/embed/EBJEVciVAFU"
-              title="Pathmind video 2"
+              title="Overview video"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen>
@@ -498,16 +519,13 @@
           Please use responsibly and follow server rules. You are responsible for how you use automation.
         </p>
 
-        <!-- SWAPPED: Info now uses 9MJRZGiwqbE -->
-        <div class="panelVideo" aria-label="Info video">
-          <div class="panelVideoHead">
-            <b>Demo</b>
-            <span>video</span>
-          </div>
+        <!-- swapped: Info -> 9MJRZGiwqbE -->
+        <div class="panelVideo">
+          <div class="panelVideoHead"><b>Demo</b><span>video</span></div>
           <div class="panelVideoFrame">
             <iframe
               src="https://www.youtube.com/embed/9MJRZGiwqbE"
-              title="Pathmind video"
+              title="Demo video"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen>
@@ -528,7 +546,6 @@
   </main>
 
   <script>
-    // reveal
     const reveal = () => {
       const w = document.getElementById('w');
       const l = document.getElementById('l');
@@ -542,7 +559,6 @@
       });
     };
 
-    // draggable nodes + wires redraw
     const initGraph = () => {
       const container = document.getElementById('nodes');
       const svg = document.getElementById('wires');
@@ -551,14 +567,11 @@
       const nodes = Array.from(container.querySelectorAll('.node'));
       const getRect = () => container.getBoundingClientRect();
 
-      // Use the PORT dot as the connection point (fixes wires cutting through nodes)
-      const pointOf = (node) => {
-        const port = node.querySelector('.port') || node;
-        const pr = port.getBoundingClientRect();
+      const portPoint = (node, which) => {
+        const el = node.querySelector(`.port.${which}`) || node;
+        const r = el.getBoundingClientRect();
         const cr = getRect();
-        const x = (pr.left - cr.left) + pr.width / 2;
-        const y = (pr.top - cr.top) + pr.height / 2;
-        return { x, y };
+        return { x: (r.left - cr.left) + r.width / 2, y: (r.top - cr.top) + r.height / 2 };
       };
 
       const setSvgView = () => {
@@ -571,13 +584,10 @@
         nodes.forEach(node => {
           const w = node.offsetWidth;
           const h = node.offsetHeight;
-
           let left = parseFloat(node.style.left || '0');
           let top  = parseFloat(node.style.top  || '0');
-
           left = Math.max(8, Math.min(left, bounds.width  - w - 8));
           top  = Math.max(8, Math.min(top,  bounds.height - h - 8));
-
           node.style.left = left + 'px';
           node.style.top  = top  + 'px';
         });
@@ -616,10 +626,10 @@
           const nb = byId[b];
           if (!na || !nb) return;
 
-          const pa = pointOf(na);
-          const pb = pointOf(nb);
+          const pa = portPoint(na, 'out'); // RIGHT side of source
+          const pb = portPoint(nb, 'in');  // LEFT side of target
 
-          const dx = Math.max(40, Math.abs(pb.x - pa.x) * 0.45);
+          const dx = Math.max(60, (pb.x - pa.x) * 0.5); // always smooth L->R
           const c1x = pa.x + dx;
           const c2x = pb.x - dx;
 
