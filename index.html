@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Favicons: ICO + PNG + Apple touch for best cross-browser coverage -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <title>soymods</title>
+  <meta name="description" content="A tiny home for projects and downloads — intentionally minimal, interaction-first, built in black + white." />
+
+  <style>
+    :root{
+      --bg:#000;
+      --fg:#fff;
+      --muted:rgba(255,255,255,.68);
+      --muted2:rgba(255,255,255,.45);
+      --line:rgba(255,255,255,.14);
+      --line2:rgba(255,255,255,.26);
+      --ease:cubic-bezier(.2,.8,.2,1);
+      --max:1100px;
+      --r:18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%; background:var(--bg);}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      letter-spacing:-0.01em;
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    a:focus-visible,button:focus-visible{
+      outline:2px solid #fff;
+      outline-offset:3px;
+      border-radius:12px;
+    }
+
+    /* background */
+    .bg{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.9;
+      background:
+        repeating-linear-gradient(to right, transparent 0, transparent 39px, var(--line) 40px),
+        repeating-linear-gradient(to bottom, transparent 0, transparent 39px, var(--line) 40px);
+    }
+    .dots{
+      position:fixed; inset:0;
+      pointer-events:none;
+      opacity:.40;
+      background-image: radial-gradient(circle, var(--line2) 1px, transparent 1px);
+      background-size: 16px 16px;
+      background-position: 10px 11px;
+    }
+
+    /* Top bar */
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(0,0,0,.92);
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:var(--max); margin:0 auto; padding:16px 18px;}
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:14px;}
+    .brand{display:inline-flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.03em;}
+
+    /* Top-left icon: crisp (no pixelation) */
+    .logo{
+      width:22px;
+      height:22px;
+      border-radius:7px;
+      display:block;
+      image-rendering:auto;
+      object-fit:cover;
+    }
+
+    main{padding:22px 0 64px; background:var(--bg);}
+
+    /* Main box */
+    .stage{
+      position:relative;
+      min-height: 520px;
+      border:1px solid var(--line);
+      border-radius: calc(var(--r) + 10px);
+      overflow:hidden;
+      padding: 26px;
+      transform: translateY(10px);
+      opacity:0;
+      transition: transform .7s var(--ease), opacity .7s var(--ease);
+      background: transparent;
+
+      display:flex;
+      flex-direction:column;
+    }
+    .stage.reveal{transform:translateY(0); opacity:1}
+
+    /* orbit labels */
+    .orbits{position:absolute; inset:0; pointer-events:none;}
+    .orbit{
+      position:absolute;
+      width: 520px; height: 520px;
+      border:1px solid var(--line);
+      border-radius:50%;
+      right:-220px; top:-140px;
+      opacity:.85;
+    }
+    .orbit.o2{
+      width: 700px; height: 700px;
+      right:-320px; top:-240px;
+      opacity:.55;
+    }
+
+    /* text */
+    .title{
+      margin:0;
+      font-size: clamp(56px, 9vw, 120px);
+      line-height:.9;
+      letter-spacing:-0.06em;
+      text-transform:lowercase;
+    }
+    .subtitle{
+      margin:10px 0 0;
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    /* top-right tags */
+    .label{
+      position:absolute;
+      right: 26px;
+      top: 26px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:flex-end;
+      pointer-events:auto;
+    }
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:rgba(0,0,0,.92);
+      color:var(--muted);
+      font-size:13px;
+      transition: transform .18s var(--ease), border-color .18s var(--ease);
+    }
+    .tag b{color:#fff; font-weight:750}
+    .tag:hover{transform:translateY(-1px); border-color:#fff; color:#fff}
+
+    /* Bottom row: CTA left, video right, both clamped to bottom */
+    .bottomRow{
+      margin-top:auto;
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      padding-top:18px;
+    }
+
+    /* CTA takes less space so video can be bigger */
+    .cta{
+      flex: 0 0 38%;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin:0;
+      align-self:flex-end;
+    }
+
+    .btn{
+      display:inline-flex; align-items:center; gap:10px;
+      padding:11px 14px;
+      border-radius:999px;
+      border:1px solid #fff;
+      background:#fff;
+      color:#000;
+      font-weight:750;
+      font-size:14px;
+      cursor:pointer;
+      transition: transform .18s var(--ease), opacity .18s var(--ease);
+    }
+    .btn.secondary{
+      background:transparent;
+      color:#fff;
+      border-color:var(--line2);
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary:hover{border-color:#fff}
+
+    /* Bigger video card */
+    .videoCard{
+      flex: 1 1 62%;
+      max-width: 620px;
+      border:1px solid var(--line);
+      border-radius: calc(var(--r) + 10px);
+      background: rgba(0,0,0,.55);
+      overflow:hidden;
+      align-self:flex-end;
+    }
+    .videoHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background: rgba(0,0,0,.35);
+    }
+    .videoHead b{
+      color:#fff;
+      font-weight:800;
+      letter-spacing:-0.01em;
+      text-transform:none;
+      font-size:13px;
+    }
+    .videoWrap{
+      position:relative;
+      width:100%;
+      aspect-ratio: 16 / 9;
+      background:#000;
+    }
+    .videoWrap iframe{
+      position:absolute; inset:0;
+      width:100%; height:100%;
+      border:0;
+    }
+
+    /* projects */
+    .projects{
+      background:#000;
+      margin-top:18px;
+      position:relative;
+      padding: 18px 0 0;
+    }
+    .projectsHeader{
+      display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+      padding: 0 6px;
+    }
+    .projectsHeader h2{margin:0; font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+
+    .rail{
+      position:absolute;
+      left: 18px;
+      top: 54px;
+      bottom: 0;
+      width: 1px;
+      background: var(--line);
+      opacity:.9;
+    }
+
+    .item{
+      position:relative;
+      margin: 14px 0 0;
+      padding-left: 36px;
+      transform: translateY(10px);
+      opacity:0;
+      transition: transform .7s var(--ease), opacity .7s var(--ease);
+    }
+    .item.reveal{transform:translateY(0); opacity:1}
+    .item .node{
+      position:absolute;
+      left: 14px;
+      top: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border:1px solid #fff;
+      background:#000;
+    }
+    .item a{
+      display:block;
+      border:1px solid var(--line);
+      border-radius: calc(var(--r) + 10px);
+      padding: 16px 16px 14px;
+      transition: transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
+      background: rgba(0,0,0,.55);
+    }
+    .item a:hover{transform:translateY(-1px); border-color:#fff; background: rgba(255,255,255,.03);}
+    .itemTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .itemTitle h3{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:-0.03em;
+    }
+    .pill{
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .itemDesc{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+      max-width: 80ch;
+    }
+    .itemMeta{
+      margin-top:10px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      color:var(--muted2);
+      font-size:12px;
+    }
+
+    footer{
+      margin-top: 26px;
+      border-top:1px solid var(--line);
+      padding: 18px 6px 0;
+      color:var(--muted2);
+      font-size:13px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+
+    /* mobile */
+    @media (max-width: 860px){
+      .stage{min-height: 560px; padding: 22px;}
+      .orbit,.orbit.o2{display:none}
+      .label{position:relative; right:auto; top:auto; align-items:flex-start; margin-top:14px}
+
+      .bottomRow{
+        flex-direction:column;
+        align-items:stretch;
+      }
+      .videoCard{
+        max-width:none;
+        width:100%;
+        order:0;
+      }
+      .cta{
+        width:100%;
+        flex: 0 0 auto;
+        order:1;
+      }
+
+      .rail{left: 14px}
+      .item{padding-left: 30px}
+      .item .node{left: 8px}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .stage,.item{transition:none}
+      .btn,.tag{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="dots" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="/" aria-label="soymods home">
+        <img class="logo" src="/icon.png" alt="" aria-hidden="true" />
+        <span>soymods</span>
+      </a>
+      <div aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="stage" id="stage">
+        <div class="orbits" aria-hidden="true">
+          <div class="orbit"></div>
+          <div class="orbit o2"></div>
+        </div>
+
+        <h1 class="title">soymods</h1>
+        <p class="subtitle">
+          Made by <strong>ryduzz</strong>.
+        </p>
+
+        <div class="label" aria-label="highlights">
+          <a class="tag" href="mailto:contact@soymods.com"><b>Email</b> contact@soymods.com</a>
+          <a class="tag" href="https://github.com/soymods" target="_blank" rel="noreferrer"><b>GitHub</b> soymods</a>
+        </div>
+
+        <!-- bottom: CTA left + bigger video right -->
+        <div class="bottomRow">
+          <div class="cta">
+            <a class="btn" href="/pathmind" aria-label="Open Pathmind">Pathmind →</a>
+            <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Latest release ↗</a>
+          </div>
+
+          <aside class="videoCard" aria-label="soymods video">
+            <div class="videoHead">
+              <b>soymods</b>
+              <span>video</span>
+            </div>
+            <div class="videoWrap">
+              <iframe
+                src="https://www.youtube.com/embed/9MJRZGiwqbE"
+                title="soymods video"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+              </iframe>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="projects" aria-label="projects">
+        <div class="projectsHeader">
+          <h2>Projects</h2>
+        </div>
+
+        <div class="rail" aria-hidden="true"></div>
+
+        <div class="item" id="i1">
+          <div class="node" aria-hidden="true"></div>
+          <a href="/pathmind" aria-label="Go to Pathmind">
+            <div class="itemTitle">
+              <h3 class="hoverline">Pathmind</h3>
+              <span class="pill">featured</span>
+            </div>
+            <p class="itemDesc">Visual node-based editor for creating in-game workflows and intelligent behavior sequences.</p>
+            <div class="itemMeta">
+              <span>by ryduzz</span>
+              <span>client-side</span>
+              <span>downloads via GitHub Releases</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="item" id="i2">
+          <div class="node" aria-hidden="true"></div>
+          <a href="https://github.com/soymods" target="_blank" rel="noreferrer" aria-label="More projects coming soon">
+            <div class="itemTitle">
+              <h3 class="hoverline">More soon</h3>
+              <span class="pill">wip</span>
+            </div>
+            <p class="itemDesc">Small experiments and utilities will land here as they ship.</p>
+            <div class="itemMeta">
+              <span>updates</span>
+              <span>releases</span>
+              <span>changelogs</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <footer>
+        <div>© <span id="year"></span> soymods — built by ryduzz.</div>
+      </footer>
+    </div>
+  </main>
+
+  <script>
+    const reveal = () => {
+      const stage = document.getElementById('stage');
+      const i1 = document.getElementById('i1');
+      const i2 = document.getElementById('i2');
+      requestAnimationFrame(() => {
+        stage.classList.add('reveal');
+        setTimeout(() => i1.classList.add('reveal'), 120);
+        setTimeout(() => i2.classList.add('reveal'), 210);
+      });
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      reveal();
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReduced) {
+        const orbits = document.querySelector('.orbits');
+        window.addEventListener('mousemove', (e) => {
+          const x = (e.clientX / window.innerWidth - 0.5) * 10;
+          const y = (e.clientY / window.innerHeight - 0.5) * 10;
+          orbits.style.transform = `translate(${x}px, ${y}px)`;
+        }, { passive: true });
+      }
+    });
+  </script>
+</body>
+</html>
