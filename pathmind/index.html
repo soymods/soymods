@@ -46,7 +46,6 @@
       border-radius:12px;
     }
 
-    /* Flat-only overlays */
     .grid{
       position:fixed; inset:0;
       pointer-events:none;
@@ -156,7 +155,6 @@
     .btn:hover{transform:translateY(-1px)}
     .btn.secondary:hover{border-color:#fff}
 
-    /* Canvas */
     .canvas{
       width: min(980px, 100%);
       margin: 28px auto 0;
@@ -203,25 +201,24 @@
       height: 220px;
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 2px);
-      overflow:hidden; /* keep wires inside box */
+      overflow:hidden;
       background:transparent;
     }
 
-    /* wires behind nodes */
     svg.wires{
       position:absolute;
       inset:0;
       width:100%;
       height:100%;
       pointer-events:none;
-      z-index:0;
+      z-index: 0;
     }
 
-    /* colored nodes */
+    /* === COLORED NODES (FIXED CLIPPING) === */
     .node{
       position:absolute;
-      z-index:1;
-      --accent:#fff;
+      z-index: 1;
+      --accent: #ffffff;
       border:1px solid rgba(255,255,255,.22);
       border-radius: 16px;
       padding: 12px 14px;
@@ -232,36 +229,39 @@
       cursor:grab;
       user-select:none;
       transition: border-color .18s var(--ease), transform .18s var(--ease);
+
+      overflow: hidden; /* ✅ IMPORTANT: clips the accent stripe to rounded outline */
     }
+
     .node::before{
       content:"";
       position:absolute;
       left:0; top:0; bottom:0;
-      width:6px;
-      background:var(--accent);
-      border-top-left-radius:16px;
-      border-bottom-left-radius:16px;
+      width: 6px;
+      background: var(--accent);
       opacity:.95;
     }
+
     .node:active{cursor:grabbing}
     .node:hover{border-color: rgba(255,255,255,.45)}
 
     .port{
-      width: 10px; height: 10px;
+      width: 10px;
+      height: 10px;
       border-radius: 50%;
       border:1px solid rgba(255,255,255,.55);
-      background:var(--accent);
+      background: var(--accent);
+      opacity:1;
       flex: 0 0 auto;
     }
     .node .name{font-weight:760; letter-spacing:-0.02em}
     .node .hint{color:var(--muted2); font-size:12px; margin-left:6px}
 
-    .node[data-id="start"]{ --accent:#7CFFCB; }
-    .node[data-id="mine"]{  --accent:#58A6FF; }
-    .node[data-id="craft"]{ --accent:#FFB86B; }
-    .node[data-id="place"]{ --accent:#FF5DA2; }
+    .node[data-id="start"]{ --accent: #7CFFCB; }
+    .node[data-id="mine"] { --accent: #58A6FF; }
+    .node[data-id="craft"]{ --accent: #FFB86B; }
+    .node[data-id="place"]{ --accent: #FF5DA2; }
 
-    /* info panels */
     .info{
       margin: 20px auto 0;
       width: min(980px, 100%);
@@ -271,12 +271,14 @@
       gap: 18px;
       background: var(--bg);
     }
+
     .panel{
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 10px);
       padding: 18px;
       background: var(--bg);
     }
+
     .panel h2{
       margin:0;
       font-size:14px;
@@ -284,12 +286,14 @@
       text-transform:uppercase;
       color:var(--muted);
     }
+
     .panel p{
       margin: 10px 0 0;
       color: var(--muted);
       line-height: 1.65;
       font-size: 14px;
     }
+
     .list{margin: 12px 0 0; padding:0; list-style:none; display:grid; gap:10px;}
     .li{border-top: 1px solid var(--line); padding-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.55;}
     .li b{color:#fff}
@@ -459,7 +463,7 @@
           <li class="li"><b>Practical automation</b> — craft, place, mine, and more through a unified graph.</li>
         </ul>
 
-        <!-- SWAPPED: What it is -> EBJEVciVAFU -->
+        <!-- keep video 1 here, but swap title to Overview -->
         <div class="panelVideo" aria-label="What it is video">
           <div class="panelVideoHead">
             <b>Overview</b>
@@ -467,8 +471,8 @@
           </div>
           <div class="panelVideoFrame">
             <iframe
-              src="https://www.youtube.com/embed/EBJEVciVAFU"
-              title="Overview video"
+              src="https://www.youtube.com/embed/9MJRZGiwqbE"
+              title="Pathmind video"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen>
@@ -490,7 +494,7 @@
           Please use responsibly and follow server rules. You are responsible for how you use automation.
         </p>
 
-        <!-- SWAPPED: Info -> 9MJRZGiwqbE -->
+        <!-- keep video 2 here, but swap title to Demo -->
         <div class="panelVideo" aria-label="Info video">
           <div class="panelVideoHead">
             <b>Demo</b>
@@ -498,8 +502,8 @@
           </div>
           <div class="panelVideoFrame">
             <iframe
-              src="https://www.youtube.com/embed/9MJRZGiwqbE"
-              title="Demo video"
+              src="https://www.youtube.com/embed/EBJEVciVAFU"
+              title="Pathmind video 2"
               loading="lazy"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               allowfullscreen>
@@ -541,83 +545,15 @@
       const nodes = Array.from(container.querySelectorAll('.node'));
       const getRect = () => container.getBoundingClientRect();
 
+      const centerOf = (el) => {
+        const r = el.getBoundingClientRect();
+        const cr = getRect();
+        return { x: (r.left - cr.left) + r.width / 2, y: (r.top - cr.top) + r.height / 2 };
+      };
+
       const setSvgView = () => {
         const r = getRect();
         svg.setAttribute('viewBox', `0 0 ${Math.max(1, r.width)} ${Math.max(1, r.height)}`);
-      };
-
-      // port center in container coords (used for direction)
-      const portCenter = (node) => {
-        const port = node.querySelector('.port') || node;
-        const pr = port.getBoundingClientRect();
-        const cr = getRect();
-        return {
-          x: (pr.left - cr.left) + pr.width / 2,
-          y: (pr.top - cr.top) + pr.height / 2
-        };
-      };
-
-      // Node rect in container coords
-      const nodeRect = (node) => {
-        const r = node.getBoundingClientRect();
-        const cr = getRect();
-        return {
-          left: r.left - cr.left,
-          top: r.top - cr.top,
-          right: (r.left - cr.left) + r.width,
-          bottom: (r.top - cr.top) + r.height
-        };
-      };
-
-      // Intersect segment p0->p1 with node rectangle boundary.
-      // Returns the first hit point entering the rectangle when traveling from p0 to p1.
-      const intersectRectBoundary = (p0, p1, rect) => {
-        const dx = p1.x - p0.x;
-        const dy = p1.y - p0.y;
-
-        // avoid divide-by-zero
-        const eps = 1e-9;
-        const candidates = [];
-
-        // x = left/right
-        if (Math.abs(dx) > eps) {
-          let t = (rect.left - p0.x) / dx;
-          if (t >= 0 && t <= 1) {
-            const y = p0.y + t * dy;
-            if (y >= rect.top && y <= rect.bottom) candidates.push({ t, x: rect.left, y });
-          }
-          t = (rect.right - p0.x) / dx;
-          if (t >= 0 && t <= 1) {
-            const y = p0.y + t * dy;
-            if (y >= rect.top && y <= rect.bottom) candidates.push({ t, x: rect.right, y });
-          }
-        }
-
-        // y = top/bottom
-        if (Math.abs(dy) > eps) {
-          let t = (rect.top - p0.y) / dy;
-          if (t >= 0 && t <= 1) {
-            const x = p0.x + t * dx;
-            if (x >= rect.left && x <= rect.right) candidates.push({ t, x, y: rect.top });
-          }
-          t = (rect.bottom - p0.y) / dy;
-          if (t >= 0 && t <= 1) {
-            const x = p0.x + t * dx;
-            if (x >= rect.left && x <= rect.right) candidates.push({ t, x, y: rect.bottom });
-          }
-        }
-
-        // pick the closest intersection to p0 (smallest positive t)
-        candidates.sort((a,b) => a.t - b.t);
-        return candidates.length ? { x: candidates[0].x, y: candidates[0].y } : { x: p1.x, y: p1.y };
-      };
-
-      // Clip endpoints so wires stop at node outlines, not inside nodes
-      const clipToNode = (fromOutside, toInside, node) => {
-        const rect = nodeRect(node);
-        // move endpoints a tiny bit outward so the stroke doesn't peek inside on some zoom levels
-        const hit = intersectRectBoundary(fromOutside, toInside, rect);
-        return hit;
       };
 
       const clampInitialPositions = () => {
@@ -637,7 +573,6 @@
       const layoutNodes = () => {
         const bounds = getRect();
         if (!bounds.width) return;
-
         const ordered = nodes.slice();
         const widths = ordered.map(n => n.offsetWidth);
         const totalW = widths.reduce((a,b) => a + b, 0);
@@ -646,7 +581,6 @@
         const gap = (usable > totalW && ordered.length > 1)
           ? (usable - totalW) / (ordered.length - 1)
           : 10;
-
         let x = padding;
         ordered.forEach((node, i) => {
           node.style.left = x + 'px';
@@ -656,38 +590,25 @@
 
       const draw = () => {
         setSvgView();
-
         const pairs = [['start','mine'],['mine','craft'],['craft','place']];
         const byId = Object.fromEntries(nodes.map(n => [n.dataset.id, n]));
-
         svg.innerHTML = '';
         pairs.forEach(([a,b]) => {
-          const na = byId[a];
-          const nb = byId[b];
+          const na = byId[a], nb = byId[b];
           if (!na || !nb) return;
-
-          // "raw" points (inside nodes) for direction
-          const paIn = portCenter(na);
-          const pbIn = portCenter(nb);
-
-          // clip endpoints to the node outlines
-          const pa = clipToNode(pbIn, paIn, na); // coming from B -> A
-          const pb = clipToNode(paIn, pbIn, nb); // coming from A -> B
-
+          const pa = centerOf(na), pb = centerOf(nb);
           const dx = Math.max(40, Math.abs(pb.x - pa.x) * 0.45);
-          const c1x = pa.x + dx;
-          const c2x = pb.x - dx;
-          const d = `M ${pa.x} ${pa.y} C ${c1x} ${pa.y}, ${c2x} ${pb.y}, ${pb.x} ${pb.y}`;
+          const c1x = pa.x + dx, c2x = pb.x - dx;
 
           const glow = document.createElementNS('http://www.w3.org/2000/svg','path');
-          glow.setAttribute('d', d);
+          glow.setAttribute('d', `M ${pa.x} ${pa.y} C ${c1x} ${pa.y}, ${c2x} ${pb.y}, ${pb.x} ${pb.y}`);
           glow.setAttribute('fill','none');
           glow.setAttribute('stroke','rgba(255,255,255,.10)');
           glow.setAttribute('stroke-width','6');
           glow.setAttribute('stroke-linecap','round');
 
           const path = document.createElementNS('http://www.w3.org/2000/svg','path');
-          path.setAttribute('d', d);
+          path.setAttribute('d', glow.getAttribute('d'));
           path.setAttribute('fill','none');
           path.setAttribute('stroke','rgba(255,255,255,.45)');
           path.setAttribute('stroke-width','1.5');
@@ -719,18 +640,17 @@
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
         const bounds = getRect();
-
         const w = active.offsetWidth;
         const h = active.offsetHeight;
 
         let left = nodeStartLeft + dx;
-        let top  = nodeStartTop + dy;
+        let top = nodeStartTop + dy;
 
         left = Math.max(8, Math.min(left, bounds.width - w - 8));
         top  = Math.max(8, Math.min(top,  bounds.height - h - 8));
 
         active.style.left = left + 'px';
-        active.style.top  = top  + 'px';
+        active.style.top  = top + 'px';
         draw();
       };
 
