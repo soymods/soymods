@@ -66,7 +66,7 @@
 
     header{
       position:sticky; top:0; z-index:10;
-      background: var(--bg);              /* was rgba(0,0,0,.92) */
+      background: var(--bg);
       border-bottom:1px solid var(--line);
     }
 
@@ -156,13 +156,13 @@
     .btn:hover{transform:translateY(-1px)}
     .btn.secondary:hover{border-color:#fff}
 
-    /* Canvas motif: now SOLID background */
+    /* Canvas motif: SOLID background */
     .canvas{
       width: min(980px, 100%);
       margin: 28px auto 0;
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 10px);
-      background: var(--bg);            /* was rgba(0,0,0,.92) */
+      background: var(--bg);
       padding: 18px;
       position:relative;
       overflow:hidden;
@@ -180,7 +180,7 @@
       border-bottom:1px solid var(--line);
       padding-bottom: 12px;
       margin-bottom: 14px;
-      background: var(--bg);            /* ensure solid */
+      background: var(--bg);
     }
     .canvasTop .meta{
       display:flex;
@@ -195,7 +195,7 @@
       border-radius:999px;
       color:var(--muted);
       font-size:12px;
-      background: var(--bg);            /* was transparent */
+      background: var(--bg);
     }
 
     .nodes{
@@ -207,32 +207,52 @@
       background:transparent;
     }
 
-    /* Node cards: now SOLID background */
+    /* === COLORED NODES === */
     .node{
       position:absolute;
-      border:1px solid var(--line2);
+      --accent: #ffffff;
+      border:1px solid rgba(255,255,255,.22);
       border-radius: 16px;
       padding: 12px 14px;
-      background: var(--bg);            /* was #000 */
+      padding-left: 14px;
+      background: var(--bg);
       display:flex;
       align-items:center;
       gap:10px;
       cursor:grab;
       user-select:none;
       transition: border-color .18s var(--ease), transform .18s var(--ease);
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.0);
+    }
+    /* accent stripe */
+    .node::before{
+      content:"";
+      position:absolute;
+      left:0; top:0; bottom:0;
+      width: 6px;
+      background: var(--accent);
+      opacity:.95;
     }
     .node:active{cursor:grabbing}
-    .node:hover{border-color:#fff}
+    .node:hover{border-color: rgba(255,255,255,.45)}
 
     .port{
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      border:1px solid #fff;
-      opacity:.9;
+      border:1px solid rgba(255,255,255,.55);
+      background: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,0,0,.0);
+      opacity:1;
     }
     .node .name{font-weight:760; letter-spacing:-0.02em}
     .node .hint{color:var(--muted2); font-size:12px; margin-left:6px}
+
+    /* per-node accent colors */
+    .node[data-id="start"]{ --accent: #7CFFCB; } /* mint */
+    .node[data-id="mine"] { --accent: #58A6FF; } /* blue */
+    .node[data-id="craft"]{ --accent: #FFB86B; } /* orange */
+    .node[data-id="place"]{ --accent: #FF5DA2; } /* pink */
 
     svg.wires{
       position:absolute;
@@ -257,7 +277,7 @@
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 10px);
       padding: 18px;
-      background: var(--bg);            /* was transparent */
+      background: var(--bg);
     }
 
     .panel h2{
@@ -289,9 +309,51 @@
       padding: 10px 12px;
       color: var(--muted);
       font-size: 13px;
-      background: var(--bg);            /* ensure solid */
+      background: var(--bg);
     }
     .row span:last-child{color:#fff; font-weight:700}
+
+    /* === PANEL VIDEO EMBEDS === */
+    .panelVideo{
+      margin-top: 14px;
+      border:1px solid var(--line);
+      border-radius: calc(var(--r) + 6px);
+      overflow:hidden;
+      background: var(--bg);
+    }
+    .panelVideoHead{
+      padding:10px 12px;
+      border-bottom:1px solid var(--line);
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      background: var(--bg);
+    }
+    .panelVideoHead b{
+      color:#fff;
+      font-weight:800;
+      text-transform:none;
+      letter-spacing:-0.01em;
+      font-size:13px;
+    }
+    .panelVideoFrame{
+      position:relative;
+      width:100%;
+      aspect-ratio:16/9;
+      background: var(--bg);
+    }
+    .panelVideoFrame iframe{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      border:0;
+    }
 
     footer{
       margin-top: 26px;
@@ -307,7 +369,7 @@
       max-width: var(--max);
       margin-left:auto;
       margin-right:auto;
-      background: var(--bg);            /* ensure solid */
+      background: var(--bg);
     }
     footer a{color:var(--muted); border-bottom:1px solid transparent;}
     footer a:hover{color:#fff; border-color:rgba(255,255,255,.35)}
@@ -333,7 +395,6 @@
         <img class="logo" src="/icon.png" alt="" aria-hidden="true" />
         <span>soymods</span>
       </a>
-
       <div aria-hidden="true"></div>
     </div>
   </header>
@@ -403,6 +464,23 @@
           <li class="li"><b>Fast UI</b> — drag, connect, pan/zoom, iterate.</li>
           <li class="li"><b>Practical automation</b> — craft, place, mine, and more through a unified graph.</li>
         </ul>
+
+        <!-- Video 1 -->
+        <div class="panelVideo" aria-label="What it is video">
+          <div class="panelVideoHead">
+            <b>Demo</b>
+            <span>video</span>
+          </div>
+          <div class="panelVideoFrame">
+            <iframe
+              src="https://www.youtube.com/embed/9MJRZGiwqbE"
+              title="Pathmind video"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
       </div>
 
       <div class="panel">
@@ -417,6 +495,23 @@
         <p style="margin-top:12px; color:var(--muted2);">
           Please use responsibly and follow server rules. You are responsible for how you use automation.
         </p>
+
+        <!-- Video 2 -->
+        <div class="panelVideo" aria-label="Info video">
+          <div class="panelVideoHead">
+            <b>Overview</b>
+            <span>video</span>
+          </div>
+          <div class="panelVideoFrame">
+            <iframe
+              src="https://www.youtube.com/embed/EBJEVciVAFU"
+              title="Pathmind video 2"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -431,6 +526,7 @@
   </main>
 
   <script>
+    // reveal
     const reveal = () => {
       const w = document.getElementById('w');
       const l = document.getElementById('l');
@@ -444,6 +540,7 @@
       });
     };
 
+    // draggable nodes + wires redraw (with initial clamping)
     const initGraph = () => {
       const container = document.getElementById('nodes');
       const svg = document.getElementById('wires');
@@ -455,7 +552,9 @@
       const centerOf = (el) => {
         const r = el.getBoundingClientRect();
         const cr = getRect();
-        return { x: (r.left - cr.left) + r.width / 2, y: (r.top - cr.top) + r.height / 2 };
+        const x = (r.left - cr.left) + r.width / 2;
+        const y = (r.top - cr.top) + r.height / 2;
+        return { x, y };
       };
 
       const setSvgView = () => {
@@ -468,10 +567,13 @@
         nodes.forEach(node => {
           const w = node.offsetWidth;
           const h = node.offsetHeight;
+
           let left = parseFloat(node.style.left || '0');
           let top  = parseFloat(node.style.top  || '0');
+
           left = Math.max(8, Math.min(left, bounds.width  - w - 8));
           top  = Math.max(8, Math.min(top,  bounds.height - h - 8));
+
           node.style.left = left + 'px';
           node.style.top  = top  + 'px';
         });
@@ -480,14 +582,17 @@
       const layoutNodes = () => {
         const bounds = getRect();
         if (!bounds.width) return;
+
         const ordered = nodes.slice();
         const widths = ordered.map(n => n.offsetWidth);
         const totalW = widths.reduce((a,b) => a + b, 0);
         const padding = 8;
         const usable = Math.max(0, bounds.width - padding * 2);
+
         const gap = (usable > totalW && ordered.length > 1)
           ? (usable - totalW) / (ordered.length - 1)
           : 10;
+
         let x = padding;
         ordered.forEach((node, i) => {
           node.style.left = x + 'px';
@@ -499,13 +604,19 @@
         setSvgView();
         const pairs = [['start','mine'],['mine','craft'],['craft','place']];
         const byId = Object.fromEntries(nodes.map(n => [n.dataset.id, n]));
+
         svg.innerHTML = '';
         pairs.forEach(([a,b]) => {
-          const na = byId[a], nb = byId[b];
+          const na = byId[a];
+          const nb = byId[b];
           if (!na || !nb) return;
-          const pa = centerOf(na), pb = centerOf(nb);
+
+          const pa = centerOf(na);
+          const pb = centerOf(nb);
+
           const dx = Math.max(40, Math.abs(pb.x - pa.x) * 0.45);
-          const c1x = pa.x + dx, c2x = pb.x - dx;
+          const c1x = pa.x + dx;
+          const c2x = pb.x - dx;
 
           const glow = document.createElementNS('http://www.w3.org/2000/svg','path');
           glow.setAttribute('d', `M ${pa.x} ${pa.y} C ${c1x} ${pa.y}, ${c2x} ${pb.y}, ${pb.x} ${pb.y}`);
@@ -545,6 +656,7 @@
         const dx = e.clientX - startX;
         const dy = e.clientY - startY;
         const bounds = getRect();
+
         const w = active.offsetWidth;
         const h = active.offsetHeight;
 
