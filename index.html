@@ -5,45 +5,51 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#1a1a1a" />
 
-  <!-- Favicons -->
+  <!-- Favicons: ICO + PNG + Apple touch for best cross-browser coverage -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/icon.png">
 
   <title>soymods</title>
+  <meta name="description" content="A tiny home for projects and downloads — intentionally minimal, interaction-first, built in black + white." />
 
   <style>
     :root{
-      --bg: rgb(26,26,26);
-      --fg: #ffffff;
-      --muted: rgba(255,255,255,.68);
-      --muted2: rgba(255,255,255,.45);
-      --line: rgba(255,255,255,.14);
-      --line2: rgba(255,255,255,.26);
-      --ease: cubic-bezier(.2,.8,.2,1);
-      --max: 1100px;
-      --r: 18px;
+      --bg: rgb(26,26,26); /* R:26 G:26 B:26 */
+      --fg:#fff;
+      --muted:rgba(255,255,255,.68);
+      --muted2:rgba(255,255,255,.45);
+      --line:rgba(255,255,255,.14);
+      --line2:rgba(255,255,255,.26);
+      --ease:cubic-bezier(.2,.8,.2,1);
+      --max:1100px;
+      --r:18px;
     }
 
     *{box-sizing:border-box}
-    html,body{
-      height:100%;
-      background:var(--bg);
-    }
+    html,body{height:100%; background:var(--bg);}
     body{
       margin:0;
+      background:var(--bg);
       color:var(--fg);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
       letter-spacing:-0.01em;
+      overflow-x:hidden;
+    }
+    a{color:inherit;text-decoration:none}
+    a:focus-visible,button:focus-visible{
+      outline:2px solid #fff;
+      outline-offset:3px;
+      border-radius:12px;
     }
 
-    a{color:inherit;text-decoration:none}
-
-    /* background overlays */
+    /* background overlays (not solid fills) */
     .bg{
       position:fixed; inset:0;
       pointer-events:none;
+      opacity:.9;
       background:
         repeating-linear-gradient(to right, transparent 0, transparent 39px, var(--line) 40px),
         repeating-linear-gradient(to bottom, transparent 0, transparent 39px, var(--line) 40px);
@@ -51,276 +57,449 @@
     .dots{
       position:fixed; inset:0;
       pointer-events:none;
-      opacity:.4;
+      opacity:.40;
       background-image: radial-gradient(circle, var(--line2) 1px, transparent 1px);
-      background-size:16px 16px;
-      background-position:10px 11px;
+      background-size: 16px 16px;
+      background-position: 10px 11px;
     }
 
-    /* header */
+    /* Top bar (solid) */
     header{
-      position:sticky;
-      top:0;
-      z-index:10;
+      position:sticky; top:0; z-index:10;
       background:var(--bg);
       border-bottom:1px solid var(--line);
     }
+    .wrap{max-width:var(--max); margin:0 auto; padding:16px 18px;}
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:14px;}
+    .brand{display:inline-flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.03em;}
 
-    .wrap{
-      max-width:var(--max);
-      margin:0 auto;
-      padding:16px 18px;
-    }
-
-    .nav{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:800;
-      letter-spacing:-0.03em;
-    }
-
+    /* Top-left icon: crisp (no pixelation) */
     .logo{
       width:22px;
       height:22px;
       border-radius:7px;
+      display:block;
+      image-rendering:auto;
       object-fit:cover;
     }
 
-    main{
-      background:var(--bg);
-      padding:22px 0 64px;
-    }
+    main{padding:22px 0 64px; background:var(--bg);}
 
-    /* main stage */
+    /* Main box (solid) */
     .stage{
       position:relative;
-      min-height:520px;
+      min-height: 520px;
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 10px);
-      padding:26px;
+      overflow:hidden;
+      padding: 26px;
+      transform: translateY(10px);
+      opacity:0;
+      transition: transform .7s var(--ease), opacity .7s var(--ease);
+      background: var(--bg);
+
       display:flex;
       flex-direction:column;
-      background:var(--bg);
-      transform:translateY(10px);
-      opacity:0;
-      transition:.6s var(--ease);
     }
-    .stage.reveal{
-      transform:none;
-      opacity:1;
+    .stage.reveal{transform:translateY(0); opacity:1}
+
+    /* orbits (no fill, only lines) */
+    .orbits{position:absolute; inset:0; pointer-events:none;}
+    .orbit{
+      position:absolute;
+      width: 520px; height: 520px;
+      border:1px solid var(--line);
+      border-radius:50%;
+      right:-220px; top:-140px;
+      opacity:.85;
+    }
+    .orbit.o2{
+      width: 700px; height: 700px;
+      right:-320px; top:-240px;
+      opacity:.55;
     }
 
     .title{
       margin:0;
-      font-size:clamp(56px,9vw,120px);
-      letter-spacing:-0.06em;
+      font-size: clamp(56px, 9vw, 120px);
       line-height:.9;
+      letter-spacing:-0.06em;
       text-transform:lowercase;
     }
-
     .subtitle{
       margin:10px 0 0;
-      max-width:60ch;
-      color:var(--muted);
+      max-width: 62ch;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.6;
     }
 
-    /* tags */
+    /* top-right tags (solid) */
     .label{
       position:absolute;
-      top:26px;
-      right:26px;
+      right: 26px;
+      top: 26px;
       display:flex;
       flex-direction:column;
       gap:10px;
+      align-items:flex-end;
+      pointer-events:auto;
     }
-
     .tag{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
       padding:10px 12px;
       border:1px solid var(--line);
       border-radius:999px;
-      font-size:13px;
+      background:var(--bg);
       color:var(--muted);
+      font-size:13px;
+      transition: transform .18s var(--ease), border-color .18s var(--ease);
     }
-    .tag b{color:#fff}
+    .tag b{color:#fff; font-weight:750}
+    .tag:hover{transform:translateY(-1px); border-color:#fff; color:#fff}
 
-    /* bottom row */
+    /* Bottom row: CTA left, video right (both clamped to bottom) */
     .bottomRow{
       margin-top:auto;
       display:flex;
-      gap:16px;
       align-items:flex-end;
+      justify-content:space-between;
+      gap:16px;
+      padding-top:18px;
     }
 
     .cta{
-      flex:0 0 38%;
+      flex: 0 0 38%;
       display:flex;
       flex-wrap:wrap;
       gap:10px;
+      margin:0;
+      align-self:flex-end;
     }
 
     .btn{
+      display:inline-flex; align-items:center; gap:10px;
       padding:11px 14px;
       border-radius:999px;
       border:1px solid #fff;
       background:#fff;
       color:#000;
-      font-weight:700;
+      font-weight:750;
+      font-size:14px;
+      cursor:pointer;
+      transition: transform .18s var(--ease), opacity .18s var(--ease);
     }
     .btn.secondary{
       background:transparent;
       color:#fff;
       border-color:var(--line2);
     }
+    .btn:hover{transform:translateY(-1px)}
+    .btn.secondary:hover{border-color:#fff}
 
-    /* video */
+    /* Bigger video card (solid) */
     .videoCard{
-      flex:1;
-      max-width:620px;
+      flex: 1 1 62%;
+      max-width: 620px;
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 10px);
+      background: var(--bg);
       overflow:hidden;
-      background:var(--bg);
+      align-self:flex-end;
     }
-
     .videoHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
       padding:10px 12px;
       border-bottom:1px solid var(--line);
-      font-size:12px;
       color:var(--muted);
-      display:flex;
-      justify-content:space-between;
+      font-size:12px;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      background: var(--bg);
     }
-    .videoHead b{color:#fff}
-
+    .videoHead b{
+      color:#fff;
+      font-weight:800;
+      letter-spacing:-0.01em;
+      text-transform:none;
+      font-size:13px;
+    }
     .videoWrap{
-      aspect-ratio:16/9;
-    }
-    iframe{
+      position:relative;
       width:100%;
-      height:100%;
+      aspect-ratio: 16 / 9;
+      background:var(--bg);
+    }
+    .videoWrap iframe{
+      position:absolute; inset:0;
+      width:100%; height:100%;
       border:0;
     }
 
-    /* projects */
+    /* Projects (kept + solid) */
     .projects{
-      margin-top:18px;
       background:var(--bg);
+      margin-top:18px;
+      position:relative;
+      padding: 18px 0 0;
     }
+    .projectsHeader{
+      display:flex; align-items:baseline; justify-content:space-between; gap:12px;
+      padding: 0 6px;
+    }
+    .projectsHeader h2{margin:0; font-size:14px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
 
-    .projectsHeader h2{
-      font-size:14px;
-      text-transform:uppercase;
-      letter-spacing:.08em;
-      color:var(--muted);
+    .rail{
+      position:absolute;
+      left: 18px;
+      top: 54px;
+      bottom: 0;
+      width: 1px;
+      background: var(--line);
+      opacity:.9;
     }
 
     .item{
-      margin-top:14px;
-      padding-left:36px;
       position:relative;
-      transform:translateY(10px);
+      margin: 14px 0 0;
+      padding-left: 36px;
+      transform: translateY(10px);
       opacity:0;
-      transition:.6s var(--ease);
+      transition: transform .7s var(--ease), opacity .7s var(--ease);
     }
-    .item.reveal{
-      transform:none;
-      opacity:1;
-    }
-
-    .node{
+    .item.reveal{transform:translateY(0); opacity:1}
+    .item .node{
       position:absolute;
-      left:14px;
-      top:18px;
-      width:10px;
-      height:10px;
-      border-radius:50%;
+      left: 14px;
+      top: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
       border:1px solid #fff;
+      background: var(--bg);
     }
-
     .item a{
       display:block;
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 10px);
-      padding:16px;
-      background:var(--bg);
+      padding: 16px 16px 14px;
+      transition: transform .18s var(--ease), border-color .18s var(--ease);
+      background: var(--bg);
+    }
+    .item a:hover{transform:translateY(-1px); border-color:#fff;}
+    .itemTitle{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .itemTitle h3{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:-0.03em;
+    }
+    .pill{
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      color:var(--muted);
+      font-size:12px;
+      background: var(--bg);
+    }
+    .itemDesc{
+      margin:8px 0 0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:14px;
+      max-width: 80ch;
+    }
+    .itemMeta{
+      margin-top:10px;
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      color:var(--muted2);
+      font-size:12px;
     }
 
     footer{
-      margin-top:26px;
+      margin-top: 26px;
       border-top:1px solid var(--line);
-      padding:18px 6px 0;
+      padding: 18px 6px 0;
       color:var(--muted2);
       font-size:13px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      background: var(--bg);
     }
 
-    @media (max-width:860px){
+    @media (max-width: 860px){
+      .stage{min-height: 560px; padding: 22px;}
+      .orbit,.orbit.o2{display:none}
+      .label{position:relative; right:auto; top:auto; align-items:flex-start; margin-top:14px}
+
       .bottomRow{
         flex-direction:column;
+        align-items:stretch;
       }
       .videoCard{
         max-width:none;
+        width:100%;
+        order:0;
       }
       .cta{
-        flex:0 0 auto;
+        width:100%;
+        flex: 0 0 auto;
+        order:1;
       }
+
+      .rail{left: 14px}
+      .item{padding-left: 30px}
+      .item .node{left: 8px}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .stage,.item{transition:none}
+      .btn,.tag{transition:none}
     }
   </style>
 </head>
 
 <body>
-  <div class="bg"></div>
-  <div class="dots"></div>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="dots" aria-hidden="true"></div>
 
   <header>
     <div class="wrap nav">
-      <a class="brand" href="/">
-        <img class="logo" src="/icon.png" alt="">
+      <a class="brand" href="/" aria-label="soymods home">
+        <img class="logo" src="/icon.png" alt="" aria-hidden="true" />
         <span>soymods</span>
       </a>
+      <div aria-hidden="true"></div>
     </div>
   </header>
 
   <main>
     <div class="wrap">
       <section class="stage" id="stage">
-        <h1 class="title">soymods</h1>
-        <p class="subtitle">Made by <strong>ryduzz</strong>.</p>
+        <div class="orbits" aria-hidden="true">
+          <div class="orbit"></div>
+          <div class="orbit o2"></div>
+        </div>
 
-        <div class="label">
+        <h1 class="title">soymods</h1>
+        <p class="subtitle">
+          Made by <strong>ryduzz</strong>.
+        </p>
+
+        <div class="label" aria-label="highlights">
           <a class="tag" href="mailto:contact@soymods.com"><b>Email</b> contact@soymods.com</a>
-          <a class="tag" href="https://github.com/soymods"><b>GitHub</b> soymods</a>
+          <a class="tag" href="https://github.com/soymods" target="_blank" rel="noreferrer"><b>GitHub</b> soymods</a>
         </div>
 
         <div class="bottomRow">
           <div class="cta">
-            <a class="btn" href="/pathmind">Pathmind →</a>
-            <a class="btn secondary" href="https://github.com/soymods/pathmind/releases">Latest release ↗</a>
+            <a class="btn" href="/pathmind" aria-label="Open Pathmind">Pathmind →</a>
+            <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Latest release ↗</a>
           </div>
 
-          <aside class="videoCard">
+          <aside class="videoCard" aria-label="soymods video">
             <div class="videoHead">
               <b>soymods</b>
               <span>video</span>
             </div>
             <div class="videoWrap">
-              <iframe src="https://www.youtube.com/embed/9MJRZGiwqbE" allowfullscreen></iframe>
+              <iframe
+                src="https://www.youtube.com/embed/9MJRZGiwqbE"
+                title="soymods video"
+                loading="lazy"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+              </iframe>
             </div>
           </aside>
         </div>
       </section>
+
+      <section class="projects" aria-label="projects">
+        <div class="projectsHeader">
+          <h2>Projects</h2>
+        </div>
+
+        <div class="rail" aria-hidden="true"></div>
+
+        <div class="item" id="i1">
+          <div class="node" aria-hidden="true"></div>
+          <a href="/pathmind" aria-label="Go to Pathmind">
+            <div class="itemTitle">
+              <h3 class="hoverline">Pathmind</h3>
+              <span class="pill">featured</span>
+            </div>
+            <p class="itemDesc">Visual node-based editor for creating in-game workflows and intelligent behavior sequences.</p>
+            <div class="itemMeta">
+              <span>by ryduzz</span>
+              <span>client-side</span>
+              <span>downloads via GitHub Releases</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="item" id="i2">
+          <div class="node" aria-hidden="true"></div>
+          <a href="https://github.com/soymods" target="_blank" rel="noreferrer" aria-label="More projects coming soon">
+            <div class="itemTitle">
+              <h3 class="hoverline">More soon</h3>
+              <span class="pill">wip</span>
+            </div>
+            <p class="itemDesc">Small experiments and utilities will land here as they ship.</p>
+            <div class="itemMeta">
+              <span>updates</span>
+              <span>releases</span>
+              <span>changelogs</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <footer>
+        <div>© <span id="year"></span> soymods — built by ryduzz.</div>
+      </footer>
     </div>
   </main>
 
   <script>
-    window.addEventListener('DOMContentLoaded',()=>{
-      document.getElementById('stage').classList.add('reveal');
+    const reveal = () => {
+      const stage = document.getElementById('stage');
+      const i1 = document.getElementById('i1');
+      const i2 = document.getElementById('i2');
+      requestAnimationFrame(() => {
+        stage.classList.add('reveal');
+        setTimeout(() => i1.classList.add('reveal'), 120);
+        setTimeout(() => i2.classList.add('reveal'), 210);
+      });
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('year').textContent = new Date().getFullYear();
+      reveal();
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReduced) {
+        const orbits = document.querySelector('.orbits');
+        window.addEventListener('mousemove', (e) => {
+          const x = (e.clientX / window.innerWidth - 0.5) * 10;
+          const y = (e.clientY / window.innerHeight - 0.5) * 10;
+          orbits.style.transform = `translate(${x}px, ${y}px)`;
+        }, { passive: true });
+      }
     });
   </script>
 </body>
