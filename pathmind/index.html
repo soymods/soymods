@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#1a1a1a" />
 
+  <!-- Favicons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/icon.png">
@@ -37,6 +38,7 @@
       letter-spacing:-0.01em;
       overflow-x:hidden;
     }
+
     a{color:inherit;text-decoration:none}
     a:focus-visible,button:focus-visible{
       outline:2px solid #fff;
@@ -44,6 +46,7 @@
       border-radius:12px;
     }
 
+    /* Flat-only overlays */
     .grid{
       position:fixed; inset:0;
       pointer-events:none;
@@ -66,11 +69,14 @@
       background: var(--bg);
       border-bottom:1px solid var(--line);
     }
+
     .wrap{max-width:var(--max); margin:0 auto; padding:16px 18px;}
     .nav{display:flex; align-items:center; justify-content:space-between; gap:14px;}
     .brand{display:inline-flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.03em;}
+
     .logo{
-      width:22px; height:22px;
+      width:22px;
+      height:22px;
       border-radius:7px;
       display:block;
       image-rendering:auto;
@@ -86,6 +92,7 @@
       place-items:center;
       padding: 26px 0 10px;
     }
+
     .heroInner{
       width:min(920px, 100%);
       padding: 0 18px;
@@ -149,6 +156,7 @@
     .btn:hover{transform:translateY(-1px)}
     .btn.secondary:hover{border-color:#fff}
 
+    /* Canvas */
     .canvas{
       width: min(980px, 100%);
       margin: 28px auto 0;
@@ -195,7 +203,7 @@
       height: 220px;
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 2px);
-      overflow:hidden;
+      overflow:hidden; /* keep wires inside box */
       background:transparent;
     }
 
@@ -206,24 +214,18 @@
       width:100%;
       height:100%;
       pointer-events:none;
-      z-index: 0;
+      z-index:0;
     }
 
-    /* === COLORED NODES with real in/out ports === */
+    /* colored nodes */
     .node{
       position:absolute;
-      z-index: 1;
-      --accent: #ffffff;
-
+      z-index:1;
+      --accent:#fff;
       border:1px solid rgba(255,255,255,.22);
       border-radius: 16px;
+      padding: 12px 14px;
       background: var(--bg);
-
-      /* room for ports */
-      padding: 12px 18px;
-      padding-left: 34px;
-      padding-right: 34px;
-
       display:flex;
       align-items:center;
       gap:10px;
@@ -231,53 +233,35 @@
       user-select:none;
       transition: border-color .18s var(--ease), transform .18s var(--ease);
     }
-
-    /* accent stripe */
     .node::before{
       content:"";
       position:absolute;
       left:0; top:0; bottom:0;
-      width: 6px;
-      background: var(--accent);
+      width:6px;
+      background:var(--accent);
+      border-top-left-radius:16px;
+      border-bottom-left-radius:16px;
       opacity:.95;
-      border-top-left-radius: 16px;
-      border-bottom-left-radius: 16px;
     }
-
-    .node:hover{border-color: rgba(255,255,255,.45)}
     .node:active{cursor:grabbing}
+    .node:hover{border-color: rgba(255,255,255,.45)}
 
-    .ports{
-      position:absolute;
-      inset:0;
-      pointer-events:none;
-    }
     .port{
-      position:absolute;
-      top:50%;
-      width:10px;
-      height:10px;
-      border-radius:999px;
-      transform: translateY(-50%);
+      width: 10px; height: 10px;
+      border-radius: 50%;
       border:1px solid rgba(255,255,255,.55);
-      background: var(--accent);
-      opacity:1;
+      background:var(--accent);
+      flex: 0 0 auto;
     }
-    .port.in{ left: 14px; }
-    .port.out{ right: 14px; }
-
-    /* show/hide ports per node type */
-    .node[data-kind="source"] .port.in{ display:none; }
-    .node[data-kind="sink"]   .port.out{ display:none; }
-
     .node .name{font-weight:760; letter-spacing:-0.02em}
     .node .hint{color:var(--muted2); font-size:12px; margin-left:6px}
 
-    .node[data-id="start"]{ --accent: #7CFFCB; }
-    .node[data-id="mine"] { --accent: #58A6FF; }
-    .node[data-id="craft"]{ --accent: #FFB86B; }
-    .node[data-id="place"]{ --accent: #FF5DA2; }
+    .node[data-id="start"]{ --accent:#7CFFCB; }
+    .node[data-id="mine"]{  --accent:#58A6FF; }
+    .node[data-id="craft"]{ --accent:#FFB86B; }
+    .node[data-id="place"]{ --accent:#FF5DA2; }
 
+    /* info panels */
     .info{
       margin: 20px auto 0;
       width: min(980px, 100%);
@@ -287,7 +271,6 @@
       gap: 18px;
       background: var(--bg);
     }
-
     .panel{
       border:1px solid var(--line);
       border-radius: calc(var(--r) + 10px);
@@ -307,7 +290,6 @@
       line-height: 1.65;
       font-size: 14px;
     }
-
     .list{margin: 12px 0 0; padding:0; list-style:none; display:grid; gap:10px;}
     .li{border-top: 1px solid var(--line); padding-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.55;}
     .li b{color:#fff}
@@ -390,6 +372,7 @@
       .info{grid-template-columns: 1fr;}
       .nodes{height: 260px;}
     }
+
     @media (prefers-reduced-motion: reduce){
       .word,.lede,.actions,.canvas{transition:none}
       .btn,.node{transition:none}
@@ -437,38 +420,23 @@
           <div class="nodes" id="nodes">
             <svg class="wires" id="wires" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"></svg>
 
-            <div class="node" data-id="start" data-kind="source" style="left: 46px; top: 76px;">
-              <span class="ports" aria-hidden="true">
-                <span class="port in"></span>
-                <span class="port out"></span>
-              </span>
+            <div class="node" data-id="start" style="left: 46px; top: 76px;">
+              <span class="port" aria-hidden="true"></span>
               <span class="name">Start</span>
               <span class="hint">workflow</span>
             </div>
-
-            <div class="node" data-id="mine" data-kind="mid" style="left: 330px; top: 44px;">
-              <span class="ports" aria-hidden="true">
-                <span class="port in"></span>
-                <span class="port out"></span>
-              </span>
+            <div class="node" data-id="mine" style="left: 330px; top: 44px;">
+              <span class="port" aria-hidden="true"></span>
               <span class="name">Mine</span>
               <span class="hint">inputs</span>
             </div>
-
-            <div class="node" data-id="craft" data-kind="mid" style="left: 600px; top: 112px;">
-              <span class="ports" aria-hidden="true">
-                <span class="port in"></span>
-                <span class="port out"></span>
-              </span>
+            <div class="node" data-id="craft" style="left: 600px; top: 112px;">
+              <span class="port" aria-hidden="true"></span>
               <span class="name">Craft</span>
               <span class="hint">steps</span>
             </div>
-
-            <div class="node" data-id="place" data-kind="sink" style="left: 812px; top: 64px;">
-              <span class="ports" aria-hidden="true">
-                <span class="port in"></span>
-                <span class="port out"></span>
-              </span>
+            <div class="node" data-id="place" style="left: 812px; top: 64px;">
+              <span class="port" aria-hidden="true"></span>
               <span class="name">Place</span>
               <span class="hint">output</span>
             </div>
@@ -491,9 +459,12 @@
           <li class="li"><b>Practical automation</b> — craft, place, mine, and more through a unified graph.</li>
         </ul>
 
-        <!-- swapped: What it is -> EBJEVciVAFU -->
-        <div class="panelVideo">
-          <div class="panelVideoHead"><b>Overview</b><span>video</span></div>
+        <!-- SWAPPED: What it is -> EBJEVciVAFU -->
+        <div class="panelVideo" aria-label="What it is video">
+          <div class="panelVideoHead">
+            <b>Overview</b>
+            <span>video</span>
+          </div>
           <div class="panelVideoFrame">
             <iframe
               src="https://www.youtube.com/embed/EBJEVciVAFU"
@@ -519,9 +490,12 @@
           Please use responsibly and follow server rules. You are responsible for how you use automation.
         </p>
 
-        <!-- swapped: Info -> 9MJRZGiwqbE -->
-        <div class="panelVideo">
-          <div class="panelVideoHead"><b>Demo</b><span>video</span></div>
+        <!-- SWAPPED: Info -> 9MJRZGiwqbE -->
+        <div class="panelVideo" aria-label="Info video">
+          <div class="panelVideoHead">
+            <b>Demo</b>
+            <span>video</span>
+          </div>
           <div class="panelVideoFrame">
             <iframe
               src="https://www.youtube.com/embed/9MJRZGiwqbE"
@@ -567,16 +541,83 @@
       const nodes = Array.from(container.querySelectorAll('.node'));
       const getRect = () => container.getBoundingClientRect();
 
-      const portPoint = (node, which) => {
-        const el = node.querySelector(`.port.${which}`) || node;
-        const r = el.getBoundingClientRect();
-        const cr = getRect();
-        return { x: (r.left - cr.left) + r.width / 2, y: (r.top - cr.top) + r.height / 2 };
-      };
-
       const setSvgView = () => {
         const r = getRect();
         svg.setAttribute('viewBox', `0 0 ${Math.max(1, r.width)} ${Math.max(1, r.height)}`);
+      };
+
+      // port center in container coords (used for direction)
+      const portCenter = (node) => {
+        const port = node.querySelector('.port') || node;
+        const pr = port.getBoundingClientRect();
+        const cr = getRect();
+        return {
+          x: (pr.left - cr.left) + pr.width / 2,
+          y: (pr.top - cr.top) + pr.height / 2
+        };
+      };
+
+      // Node rect in container coords
+      const nodeRect = (node) => {
+        const r = node.getBoundingClientRect();
+        const cr = getRect();
+        return {
+          left: r.left - cr.left,
+          top: r.top - cr.top,
+          right: (r.left - cr.left) + r.width,
+          bottom: (r.top - cr.top) + r.height
+        };
+      };
+
+      // Intersect segment p0->p1 with node rectangle boundary.
+      // Returns the first hit point entering the rectangle when traveling from p0 to p1.
+      const intersectRectBoundary = (p0, p1, rect) => {
+        const dx = p1.x - p0.x;
+        const dy = p1.y - p0.y;
+
+        // avoid divide-by-zero
+        const eps = 1e-9;
+        const candidates = [];
+
+        // x = left/right
+        if (Math.abs(dx) > eps) {
+          let t = (rect.left - p0.x) / dx;
+          if (t >= 0 && t <= 1) {
+            const y = p0.y + t * dy;
+            if (y >= rect.top && y <= rect.bottom) candidates.push({ t, x: rect.left, y });
+          }
+          t = (rect.right - p0.x) / dx;
+          if (t >= 0 && t <= 1) {
+            const y = p0.y + t * dy;
+            if (y >= rect.top && y <= rect.bottom) candidates.push({ t, x: rect.right, y });
+          }
+        }
+
+        // y = top/bottom
+        if (Math.abs(dy) > eps) {
+          let t = (rect.top - p0.y) / dy;
+          if (t >= 0 && t <= 1) {
+            const x = p0.x + t * dx;
+            if (x >= rect.left && x <= rect.right) candidates.push({ t, x, y: rect.top });
+          }
+          t = (rect.bottom - p0.y) / dy;
+          if (t >= 0 && t <= 1) {
+            const x = p0.x + t * dx;
+            if (x >= rect.left && x <= rect.right) candidates.push({ t, x, y: rect.bottom });
+          }
+        }
+
+        // pick the closest intersection to p0 (smallest positive t)
+        candidates.sort((a,b) => a.t - b.t);
+        return candidates.length ? { x: candidates[0].x, y: candidates[0].y } : { x: p1.x, y: p1.y };
+      };
+
+      // Clip endpoints so wires stop at node outlines, not inside nodes
+      const clipToNode = (fromOutside, toInside, node) => {
+        const rect = nodeRect(node);
+        // move endpoints a tiny bit outward so the stroke doesn't peek inside on some zoom levels
+        const hit = intersectRectBoundary(fromOutside, toInside, rect);
+        return hit;
       };
 
       const clampInitialPositions = () => {
@@ -602,7 +643,6 @@
         const totalW = widths.reduce((a,b) => a + b, 0);
         const padding = 8;
         const usable = Math.max(0, bounds.width - padding * 2);
-
         const gap = (usable > totalW && ordered.length > 1)
           ? (usable - totalW) / (ordered.length - 1)
           : 10;
@@ -626,13 +666,17 @@
           const nb = byId[b];
           if (!na || !nb) return;
 
-          const pa = portPoint(na, 'out'); // RIGHT side of source
-          const pb = portPoint(nb, 'in');  // LEFT side of target
+          // "raw" points (inside nodes) for direction
+          const paIn = portCenter(na);
+          const pbIn = portCenter(nb);
 
-          const dx = Math.max(60, (pb.x - pa.x) * 0.5); // always smooth L->R
+          // clip endpoints to the node outlines
+          const pa = clipToNode(pbIn, paIn, na); // coming from B -> A
+          const pb = clipToNode(paIn, pbIn, nb); // coming from A -> B
+
+          const dx = Math.max(40, Math.abs(pb.x - pa.x) * 0.45);
           const c1x = pa.x + dx;
           const c2x = pb.x - dx;
-
           const d = `M ${pa.x} ${pa.y} C ${c1x} ${pa.y}, ${c2x} ${pb.y}, ${pb.x} ${pb.y}`;
 
           const glow = document.createElementNS('http://www.w3.org/2000/svg','path');
@@ -680,7 +724,7 @@
         const h = active.offsetHeight;
 
         let left = nodeStartLeft + dx;
-        let top = nodeStartTop + dy;
+        let top  = nodeStartTop + dy;
 
         left = Math.max(8, Math.min(left, bounds.width - w - 8));
         top  = Math.max(8, Math.min(top,  bounds.height - h - 8));
