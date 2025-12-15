@@ -370,16 +370,24 @@
     }
 
     footer{
-      margin-top: 26px;
-      border-top:var(--bw) solid var(--line);
-      padding: 18px 6px 0;
-      color:var(--muted2);
-      font-size:13px;
+      margin: 14px auto 0;                 /* smaller gap above */
+      max-width: 980px;                    /* or set this to whatever your main width is */
+      border-top: var(--bw) solid var(--line);
+
+      padding: 10px 18px;                  /* <- this is the main fix */
+      background: transparent;
+
+      color: var(--muted2);
+      font-size: 12px;
+      text-transform: uppercase;
+
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
       flex-wrap:wrap;
+
+      line-height: 1.2;                    /* keeps it compact */
     }
 
     @media (max-width: 860px){
