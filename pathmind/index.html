@@ -19,7 +19,7 @@
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#1a1a1a" />
+  <meta name="theme-color" content="#000000" />
 
   <!-- Favicons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
@@ -31,384 +31,419 @@
 
   <style>
     :root{
-      --bg: rgb(26,26,26);
-      --fg:#fff;
+      --bg:#0e0e0e;          /* was #000 */
+      --fg:#ffffff;
       --muted:rgba(255,255,255,.68);
-      --muted2:rgba(255,255,255,.45);
-      --line:rgba(255,255,255,.14);
-      --line2:rgba(255,255,255,.26);
-      --ease:cubic-bezier(.2,.8,.2,1);
-      --max:1100px;
-      --r:18px;
+      --muted2:rgba(255,255,255,.46);
+
+      --line:rgba(255,255,255,.16);  /* slightly softer */
+      --line2:rgba(255,255,255,.24);
+
+      --r:0px;
+      --bw:2px;
     }
 
-    *{box-sizing:border-box}
-    html,body{height:100%; background:var(--bg);}
-    body{
-      margin:0;
-      background:var(--bg);
-      color:var(--fg);
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      letter-spacing:-0.01em;
-      overflow-x:hidden;
-    }
+  /* Fonts (self-host)
+     Regular: Minecraft (https://www.dafont.com/minecraft.font)
+     Titles/bold: Minecrafter (https://www.dafont.com/minecrafter.font)
+     Place at:
+       /fonts/Minecraft.woff2 (or .ttf)
+       /fonts/Minecrafter.woff2 (or .ttf)
+  */
+  @font-face{
+    font-family:"Minecraft";
+    src:
+      url("/fonts/Minecraft.woff2") format("woff2"),
+      url("/fonts/Minecraft.ttf") format("truetype");
+    font-display:swap;
+  }
+  @font-face{
+    font-family:"Minecrafter";
+    src:
+      url("/fonts/Minecrafter.woff2") format("woff2"),
+      url("/fonts/Minecrafter.ttf") format("truetype");
+    font-display:swap;
+  }
 
-    a{color:inherit;text-decoration:none}
-    a:focus-visible,button:focus-visible{
-      outline:2px solid #fff;
-      outline-offset:3px;
-      border-radius:12px;
-    }
+  *{box-sizing:border-box}
+  html,body{height:100%; background:var(--bg);}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.01em;
+    overflow-x:hidden;
+  }
 
-    .grid{
-      position:fixed; inset:0;
-      pointer-events:none;
-      opacity:.9;
-      background:
-        repeating-linear-gradient(to right, transparent 0, transparent 39px, var(--line) 40px),
-        repeating-linear-gradient(to bottom, transparent 0, transparent 39px, var(--line) 40px);
-    }
-    .dots{
-      position:fixed; inset:0;
-      pointer-events:none;
-      opacity:.40;
-      background-image: radial-gradient(circle, var(--line2) 1px, transparent 1px);
-      background-size: 16px 16px;
-      background-position: 10px 11px;
-    }
+  /* Titles + bold */
+  h1,h2,h3,.btn,.badge,.panelVideoHead b,.row span:last-child,
+  strong,b,.brand,.node .name{
+    font-family:"Minecrafter","Minecraft",monospace;
+    letter-spacing: 0.02em;
+  }
 
-    header{
-      position:sticky; top:0; z-index:10;
-      background: var(--bg);
-      border-bottom:1px solid var(--line);
-    }
+  a{color:inherit;text-decoration:none}
 
-    .wrap{max-width:var(--max); margin:0 auto; padding:16px 18px;}
-    .nav{display:flex; align-items:center; justify-content:space-between; gap:14px;}
-    .brand{display:inline-flex; align-items:center; gap:10px; font-weight:800; letter-spacing:-0.03em;}
+  a:focus-visible,button:focus-visible{
+    outline:var(--bw) solid #fff;
+    outline-offset:3px;
+    border-radius:0;
+  }
 
-    .logo{
-      width:22px;
-      height:22px;
-      border-radius:7px;
-      display:block;
-      image-rendering:auto;
-      object-fit:cover;
-    }
+  /* Background grid (bigger + calmer) */
+  .bg{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:.35;
+    background:
+      repeating-linear-gradient(
+        to right,
+        transparent 0,
+        transparent 47px,
+        rgba(255,255,255,.09) 48px
+      ),
+      repeating-linear-gradient(
+        to bottom,
+        transparent 0,
+        transparent 47px,
+        rgba(255,255,255,.09) 48px
+      );
+  }
+  .dots{display:none !important;}
 
-    main{padding: 22px 0 64px; background:var(--bg);}
+  header{
+    position:sticky; top:0; z-index:10;
+    background:rgba(0,0,0,.92);
+    border-bottom:var(--bw) solid var(--line);
+  }
+  .wrap{max-width:var(--max); margin:0 auto; padding:20px 18px;} /* slightly taller top bar */
+  .nav{display:flex; align-items:flex-start; justify-content:space-between; gap:14px;}
 
-    .hero{
-      position:relative;
-      min-height: calc(100vh - 74px);
-      display:grid;
-      place-items:center;
-      padding: 26px 0 10px;
-    }
+  .brand{
+    position:absolute;
+    top:10px; left:10px;
+    font-weight:900;
+    font-size:14px;
+    text-transform:uppercase;
+  }
 
-    .heroInner{
-      width:min(920px, 100%);
-      padding: 0 18px;
-      text-align:center;
-    }
+  main{padding: 22px 0 64px; background:transparent;}
 
-    .word{
-      margin:0;
-      font-size: clamp(56px, 9vw, 120px);
-      line-height: .9;
-      letter-spacing: -0.06em;
-      transform: translateY(10px);
-      opacity:0;
-      transition: transform .7s var(--ease), opacity .7s var(--ease);
-    }
-    .word.reveal{transform: translateY(0); opacity:1}
+  .hero{
+    position:relative;
+    min-height: calc(100vh - 78px);
+    display:grid;
+    place-items:center;
+    padding: 26px 0 10px;
+  }
 
-    .lede{
-      margin: 14px auto 0;
-      max-width: 72ch;
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.65;
-      transform: translateY(10px);
-      opacity:0;
-      transition: transform .7s var(--ease), opacity .7s var(--ease);
-    }
-    .lede.reveal{transform: translateY(0); opacity:1}
+  .heroInner{
+    width:min(920px, 100%);
+    padding: 0 18px;
+    text-align:center;
+  }
 
-    .actions{
-      margin-top: 18px;
-      display:flex;
-      justify-content:center;
-      flex-wrap:wrap;
-      gap:10px;
-      transform: translateY(10px);
-      opacity:0;
-      transition: transform .7s var(--ease), opacity .7s var(--ease);
-    }
-    .actions.reveal{transform: translateY(0); opacity:1}
+  .word{
+    margin:0;
+    font-size: clamp(46px, 8vw, 96px);
+    line-height: .95;
+    text-transform:uppercase;
+    transform: translateY(10px);
+    opacity:0;
+    transition: transform .7s var(--ease), opacity .7s var(--ease);
+  }
+  .word.reveal{transform: translateY(0); opacity:1}
 
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:11px 14px;
-      border-radius:999px;
-      border:1px solid #fff;
-      background:#fff;
-      color:#000;
-      font-weight:750;
-      font-size:14px;
-      cursor:pointer;
-      transition: transform .18s var(--ease), opacity .18s var(--ease);
-    }
-    .btn.secondary{
-      background:transparent;
-      color:#fff;
-      border-color:var(--line2);
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn.secondary:hover{border-color:#fff}
+  .lede{
+    margin: 14px auto 0;
+    max-width: 72ch;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.75;
+    transform: translateY(10px);
+    opacity:0;
+    transition: transform .7s var(--ease), opacity .7s var(--ease);
+  }
+  .lede.reveal{transform: translateY(0); opacity:1}
 
-    .canvas{
-      width: min(980px, 100%);
-      margin: 28px auto 0;
-      border:1px solid var(--line);
-      border-radius: calc(var(--r) + 10px);
-      background: var(--bg);
-      padding: 18px;
-      position:relative;
-      overflow:hidden;
-      transform: translateY(10px);
-      opacity:0;
-      transition: transform .7s var(--ease), opacity .7s var(--ease);
-    }
-    .canvas.reveal{transform: translateY(0); opacity:1}
+  .actions{
+    margin-top: 18px;
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px;
+    transform: translateY(10px);
+    opacity:0;
+    transition: transform .7s var(--ease), opacity .7s var(--ease);
+  }
+  .actions.reveal{transform: translateY(0); opacity:1}
 
-    .canvasTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom:1px solid var(--line);
-      padding-bottom: 12px;
-      margin-bottom: 14px;
-      background: var(--bg);
-    }
-    .canvasTop .meta{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      color:var(--muted2);
-      font-size:12px;
-    }
-    .badge{
-      padding:6px 10px;
-      border:1px solid var(--line);
-      border-radius:999px;
-      color:var(--muted);
-      font-size:12px;
-      background: var(--bg);
-    }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    padding:11px 14px;
+    border-radius:0;
+    border:var(--bw) solid #fff;
+    background:#fff;
+    color:#000;
+    font-weight:900;
+    font-size:13px;
+    cursor:pointer;
+    transition: transform .18s var(--ease), border-color .18s var(--ease);
+    text-transform:uppercase;
+  }
+  .btn.secondary{
+    background:transparent;
+    color:#fff;
+    border-color:var(--line2);
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn.secondary:hover{border-color:#fff}
 
-    .nodes{
-      position:relative;
-      height: 220px;
-      border:1px solid var(--line);
-      border-radius: calc(var(--r) + 2px);
-      overflow:hidden;
-      background:transparent;
-    }
+  .canvas{
+    width: min(980px, 100%);
+    margin: 28px auto 0;
+    border:var(--bw) solid var(--line);
+    border-radius:0;
+    background: rgba(0,0,0,.35);
+    padding: 18px;
+    position:relative;
+    overflow:hidden;
+    transform: translateY(10px);
+    opacity:0;
+    transition: transform .7s var(--ease), opacity .7s var(--ease);
+  }
+  .canvas.reveal{transform: translateY(0); opacity:1}
 
-    svg.wires{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      pointer-events:none;
-      z-index: 0;
-    }
+  .canvasTop{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    border-bottom:var(--bw) solid var(--line);
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    background: transparent;
+  }
+  .canvasTop .meta{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    color:var(--muted2);
+    font-size:12px;
+    text-transform:uppercase;
+  }
+  .badge{
+    padding:6px 10px;
+    border:var(--bw) solid var(--line);
+    border-radius:0;
+    color:var(--muted);
+    font-size:11px;
+    background: rgba(0,0,0,.40);
+    text-transform:uppercase;
+  }
 
-    /* === COLORED NODES (FIXED CLIPPING) === */
-    .node{
-      position:absolute;
-      z-index: 1;
-      --accent: #ffffff;
-      border:1px solid rgba(255,255,255,.22);
-      border-radius: 16px;
-      padding: 12px 14px;
-      background: var(--bg);
-      display:flex;
-      align-items:center;
-      gap:10px;
-      cursor:grab;
-      user-select:none;
-      transition: border-color .18s var(--ease), transform .18s var(--ease);
+  .nodes{
+    position:relative;
+    height: 240px;
+    border:var(--bw) solid var(--line);
+    border-radius:0;
+    overflow:hidden;
+    background: rgba(0,0,0,.22);
+  }
 
-      overflow: hidden; /* ✅ IMPORTANT: clips the accent stripe to rounded outline */
-    }
+  svg.wires{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index: 0;
+  }
 
-    .node::before{
-      content:"";
-      position:absolute;
-      left:0; top:0; bottom:0;
-      width: 6px;
-      background: var(--accent);
-      opacity:.95;
-    }
+  /* Nodes: block UI */
+  .node{
+    position:absolute;
+    z-index: 1;
+    --accent: #ffffff;
+    border:var(--bw) solid rgba(255,255,255,.18);
+    border-radius:0;
+    padding: 12px 14px 12px 16px;
+    background: rgba(0,0,0,.78);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    cursor:grab;
+    user-select:none;
+    transition: border-color .18s var(--ease), transform .18s var(--ease);
+    overflow:hidden;
+    text-transform:uppercase;
+  }
+  .node::before{
+    content:"";
+    position:absolute;
+    left:0; top:0; bottom:0;
+    width: 6px;
+    background: var(--accent);
+    opacity:.95;
+  }
+  .node:active{cursor:grabbing}
+  .node:hover{border-color: rgba(255,255,255,.45); transform: translateY(-1px);}
 
-    .node:active{cursor:grabbing}
-    .node:hover{border-color: rgba(255,255,255,.45)}
+  .port{
+    width: 10px;
+    height: 10px;
+    border-radius: 0; /* square */
+    border:var(--bw) solid rgba(255,255,255,.55);
+    background: var(--accent);
+    opacity:1;
+    flex: 0 0 auto;
+  }
+  .node .name{font-weight:900}
+  .node .hint{color:var(--muted2); font-size:11px; margin-left:6px; text-transform:none; font-family:"Minecraft",monospace;}
 
-    .port{
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      border:1px solid rgba(255,255,255,.55);
-      background: var(--accent);
-      opacity:1;
-      flex: 0 0 auto;
-    }
-    .node .name{font-weight:760; letter-spacing:-0.02em}
-    .node .hint{color:var(--muted2); font-size:12px; margin-left:6px}
+  .node[data-id="start"]{ --accent: #7CFFCB; }
+  .node[data-id="mine"] { --accent: #58A6FF; }
+  .node[data-id="craft"]{ --accent: #FFB86B; }
+  .node[data-id="place"]{ --accent: #FF5DA2; }
 
-    .node[data-id="start"]{ --accent: #7CFFCB; }
-    .node[data-id="mine"] { --accent: #58A6FF; }
-    .node[data-id="craft"]{ --accent: #FFB86B; }
-    .node[data-id="place"]{ --accent: #FF5DA2; }
+  .info{
+    margin: 20px auto 0;
+    width: min(980px, 100%);
+    padding: 0 18px;
+    display:grid;
+    grid-template-columns: 1.15fr .85fr;
+    gap: 18px;
+    background: transparent;
+  }
 
-    .info{
-      margin: 20px auto 0;
-      width: min(980px, 100%);
-      padding: 0 18px;
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 18px;
-      background: var(--bg);
-    }
+  .panel{
+    border:var(--bw) solid var(--line);
+    border-radius:0;
+    padding: 18px;
+    background: rgba(0,0,0,.35);
+  }
 
-    .panel{
-      border:1px solid var(--line);
-      border-radius: calc(var(--r) + 10px);
-      padding: 18px;
-      background: var(--bg);
-    }
+  .panel h2{
+    margin:0;
+    font-size:14px;
+    text-transform:uppercase;
+    color:var(--muted);
+  }
 
-    .panel h2{
-      margin:0;
-      font-size:14px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
+  .panel p{
+    margin: 10px 0 0;
+    color: var(--muted);
+    line-height: 1.75;
+    font-size: 14px;
+  }
 
-    .panel p{
-      margin: 10px 0 0;
-      color: var(--muted);
-      line-height: 1.65;
-      font-size: 14px;
-    }
+  .list{margin: 12px 0 0; padding:0; list-style:none; display:grid; gap:10px;}
+  .li{border-top: var(--bw) solid rgba(255,255,255,.10); padding-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.65;}
+  .li b{color:#fff}
 
-    .list{margin: 12px 0 0; padding:0; list-style:none; display:grid; gap:10px;}
-    .li{border-top: 1px solid var(--line); padding-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.55;}
-    .li b{color:#fff}
+  .kv{margin-top: 12px; display:grid; gap:10px;}
+  .row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    border:var(--bw) solid var(--line);
+    border-radius:0;
+    padding: 10px 12px;
+    color: var(--muted);
+    font-size: 13px;
+    background: rgba(0,0,0,.40);
+    text-transform:uppercase;
+  }
+  .row span:last-child{color:#fff; font-weight:900}
 
-    .kv{margin-top: 12px; display:grid; gap:10px;}
-    .row{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      border:1px solid var(--line);
-      border-radius: 14px;
-      padding: 10px 12px;
-      color: var(--muted);
-      font-size: 13px;
-      background: var(--bg);
-    }
-    .row span:last-child{color:#fff; font-weight:700}
+  .panelVideo{
+    margin-top: 14px;
+    border:var(--bw) solid var(--line);
+    border-radius:0;
+    overflow:hidden;
+    background: rgba(0,0,0,.40);
+  }
+  .panelVideoHead{
+    padding:10px 12px;
+    border-bottom:var(--bw) solid var(--line);
+    color:var(--muted);
+    font-size:12px;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background: rgba(0,0,0,.30);
+  }
+  .panelVideoHead b{
+    color:#fff;
+    font-weight:900;
+    text-transform:uppercase;
+    font-size:13px;
+  }
+  .panelVideoFrame{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    background: #000;
+  }
+  .panelVideoFrame iframe{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    border:0;
+  }
 
-    .panelVideo{
-      margin-top: 14px;
-      border:1px solid var(--line);
-      border-radius: calc(var(--r) + 6px);
-      overflow:hidden;
-      background: var(--bg);
-    }
-    .panelVideoHead{
-      padding:10px 12px;
-      border-bottom:1px solid var(--line);
-      color:var(--muted);
-      font-size:12px;
-      letter-spacing:.08em;
-      text-transform:uppercase;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      background: var(--bg);
-    }
-    .panelVideoHead b{
-      color:#fff;
-      font-weight:800;
-      text-transform:none;
-      letter-spacing:-0.01em;
-      font-size:13px;
-    }
-    .panelVideoFrame{
-      position:relative;
-      width:100%;
-      aspect-ratio:16/9;
-      background: var(--bg);
-    }
-    .panelVideoFrame iframe{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      border:0;
-    }
+  footer{
+    margin: 14px auto 0;                 /* smaller gap above */
+    max-width: 980px;                    /* or set this to whatever your main width is */
+    border-top: var(--bw) solid var(--line);
 
-    footer{
-      margin-top: 26px;
-      border-top:1px solid var(--line);
-      padding: 18px 18px 0;
-      color:var(--muted2);
-      font-size:13px;
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-      max-width: var(--max);
-      margin-left:auto;
-      margin-right:auto;
-      background: var(--bg);
-    }
-    footer a{color:var(--muted); border-bottom:1px solid transparent;}
-    footer a:hover{color:#fff; border-color:rgba(255,255,255,.35)}
+    padding: 10px 18px;                  /* <- this is the main fix */
+    background: transparent;
 
-    @media (max-width: 900px){
-      .info{grid-template-columns: 1fr;}
-      .nodes{height: 260px;}
-    }
+    color: var(--muted2);
+    font-size: 12px;
+    text-transform: uppercase;
 
-    @media (prefers-reduced-motion: reduce){
-      .word,.lede,.actions,.canvas{transition:none}
-      .btn,.node{transition:none}
-    }
-  </style>
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+
+    line-height: 1.2;                    /* keeps it compact */
+  }
+
+  
+  footer a{color:var(--muted); border-bottom:var(--bw) solid transparent;}
+  footer a:hover{color:#fff; border-color:rgba(255,255,255,.35)}
+
+  @media (max-width: 900px){
+    .info{grid-template-columns: 1fr;}
+    .nodes{height: 300px;}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .word,.lede,.actions,.canvas{transition:none}
+    .btn,.node{transition:none}
+  }
+</style>
 </head>
 <body>
-  <div class="grid" aria-hidden="true"></div>
+  <div class="bg" aria-hidden="true"></div>
   <div class="dots" aria-hidden="true"></div>
 
   <header>
     <div class="wrap nav">
-      <a class="brand" href="/" aria-label="soymods home">
-        <img class="logo" src="/icon.png" alt="" aria-hidden="true" />
-        <span>soymods</span>
-      </a>
+      <a class="brand" href="/" aria-label="soymods home">soymods</a>
       <div aria-hidden="true"></div>
     </div>
   </header>
