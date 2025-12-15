@@ -42,7 +42,6 @@
       --r:0px;
       --bw:2px;
 
-      /* you were using var(--ease) elsewhere but it wasn't defined */
       --ease:cubic-bezier(.2,.8,.2,1);
       --max:1100px;
     }
@@ -151,10 +150,26 @@
       text-align:center;
     }
 
+    /* NEW: logo replaces big word */
+    .logo-img{
+      width: min(92%, 560px);
+      height: auto;
+      margin: 0 auto 10px;
+      display:block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      filter: drop-shadow(0 8px 0 #111) drop-shadow(0 16px 0 #070707);
+      transform: translateY(10px);
+      opacity:0;
+      transition: transform .7s var(--ease), opacity .7s var(--ease);
+    }
+    .logo-img.reveal{transform: translateY(0); opacity:1}
+
+    /* Pathmind text smaller under logo */
     .word{
       margin:0;
-      font-size: clamp(46px, 8vw, 96px);
-      line-height: .95;
+      font-size: clamp(20px, 3.2vw, 40px);
+      line-height: 1.05;
       text-transform:uppercase;
       transform: translateY(10px);
       opacity:0;
@@ -186,7 +201,7 @@
     }
     .actions.reveal{transform: translateY(0); opacity:1}
 
-    /* ✅ UPDATED: match homepage button hover animation */
+    /* Buttons: homepage-style hover */
     .btn{
       display:inline-flex;
       align-items:center;
@@ -200,8 +215,6 @@
       font-size:13px;
       cursor:pointer;
       text-transform:uppercase;
-
-      /* homepage-style: transform + opacity */
       transition: transform .18s var(--ease), opacity .18s var(--ease), border-color .18s var(--ease);
       will-change: transform;
     }
@@ -210,17 +223,9 @@
       color:#fff;
       border-color:var(--line2);
     }
-    .btn:hover{
-      transform:translateY(-1px);
-      opacity:1;
-    }
-    .btn.secondary:hover{
-      border-color:#fff;
-    }
-    .btn:active{
-      transform:translateY(0px); /* tiny "press" */
-      opacity:.92;
-    }
+    .btn:hover{transform:translateY(-1px); opacity:1;}
+    .btn.secondary:hover{border-color:#fff}
+    .btn:active{transform:translateY(0px); opacity:.92;}
 
     .canvas{
       width: min(980px, 100%);
@@ -321,13 +326,7 @@
       flex: 0 0 auto;
     }
     .node .name{font-weight:900}
-    .node .hint{
-      color:var(--muted2);
-      font-size:11px;
-      margin-left:6px;
-      text-transform:none;
-      font-family:"Minecraft",monospace;
-    }
+    .node .hint{color:var(--muted2); font-size:11px; margin-left:6px; text-transform:none; font-family:"Minecraft",monospace;}
 
     .node[data-id="start"]{ --accent: #7CFFCB; }
     .node[data-id="mine"] { --accent: #58A6FF; }
@@ -351,19 +350,8 @@
       background: rgba(0,0,0,.35);
     }
 
-    .panel h2{
-      margin:0;
-      font-size:14px;
-      text-transform:uppercase;
-      color:var(--muted);
-    }
-
-    .panel p{
-      margin: 10px 0 0;
-      color: var(--muted);
-      line-height: 1.75;
-      font-size: 14px;
-    }
+    .panel h2{margin:0; font-size:14px; text-transform:uppercase; color:var(--muted);}
+    .panel p{margin: 10px 0 0; color: var(--muted); line-height: 1.75; font-size: 14px;}
 
     .list{margin: 12px 0 0; padding:0; list-style:none; display:grid; gap:10px;}
     .li{border-top: var(--bw) solid rgba(255,255,255,.10); padding-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.65;}
@@ -403,25 +391,9 @@
       gap:12px;
       background: rgba(0,0,0,.30);
     }
-    .panelVideoHead b{
-      color:#fff;
-      font-weight:900;
-      text-transform:uppercase;
-      font-size:13px;
-    }
-    .panelVideoFrame{
-      position:relative;
-      width:100%;
-      aspect-ratio:16/9;
-      background: #000;
-    }
-    .panelVideoFrame iframe{
-      position:absolute;
-      inset:0;
-      width:100%;
-      height:100%;
-      border:0;
-    }
+    .panelVideoHead b{color:#fff; font-weight:900; text-transform:uppercase; font-size:13px;}
+    .panelVideoFrame{position:relative; width:100%; aspect-ratio:16/9; background: #000;}
+    .panelVideoFrame iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
 
     footer{
       margin: 14px auto 0;
@@ -429,30 +401,28 @@
       border-top: var(--bw) solid var(--line);
       padding: 10px 18px;
       background: transparent;
-
       color: var(--muted2);
       font-size: 12px;
       text-transform: uppercase;
-
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:12px;
       flex-wrap:wrap;
-
       line-height: 1.2;
     }
-
     footer a{color:var(--muted); border-bottom:var(--bw) solid transparent;}
     footer a:hover{color:#fff; border-color:rgba(255,255,255,.35)}
 
     @media (max-width: 900px){
       .info{grid-template-columns: 1fr;}
       .nodes{height: 300px;}
+      .logo-img{width:min(92%, 520px);}
+      .word{font-size: clamp(18px, 4.3vw, 34px);}
     }
 
     @media (prefers-reduced-motion: reduce){
-      .word,.lede,.actions,.canvas{transition:none}
+      .logo-img,.word,.lede,.actions,.canvas{transition:none}
       .btn,.node{transition:none}
     }
   </style>
@@ -471,7 +441,9 @@
   <main>
     <section class="hero">
       <div class="heroInner">
+        <img id="logo" class="logo-img" src="/logo.png" alt="Pathmind logo">
         <h1 class="word" id="w">Pathmind</h1>
+
         <p class="lede" id="l">
           A visual node-based editor for creating in-game workflows and intelligent behavior sequences — built to feel fast, readable, and deliberate.
         </p>
@@ -594,15 +566,17 @@
 
   <script>
     const reveal = () => {
+      const logo = document.getElementById('logo');
       const w = document.getElementById('w');
       const l = document.getElementById('l');
       const a = document.getElementById('a');
       const c = document.getElementById('c');
       requestAnimationFrame(() => {
-        w.classList.add('reveal');
-        setTimeout(() => l.classList.add('reveal'), 110);
-        setTimeout(() => a.classList.add('reveal'), 190);
-        setTimeout(() => c.classList.add('reveal'), 270);
+        if (logo) logo.classList.add('reveal');
+        setTimeout(() => w.classList.add('reveal'), 80);
+        setTimeout(() => l.classList.add('reveal'), 150);
+        setTimeout(() => a.classList.add('reveal'), 230);
+        setTimeout(() => c.classList.add('reveal'), 310);
       });
     };
 
@@ -743,7 +717,8 @@
     };
 
     document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('year').textContent = new Date().getFullYear();
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
       reveal();
       initGraph();
     });
