@@ -223,9 +223,39 @@
       color:#fff;
       border-color:var(--line2);
     }
+    .btn[disabled]{
+      cursor:not-allowed;
+      opacity:.65;
+      transform:none;
+    }
     .btn:hover{transform:translateY(-1px); opacity:1;}
     .btn.secondary:hover{border-color:#fff}
     .btn:active{transform:translateY(0px); opacity:.92;}
+
+    .downloadWrap{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      align-items:center;
+    }
+    .select{
+      padding:11px 12px;
+      border-radius:0;
+      border:var(--bw) solid var(--line2);
+      background:#000;
+      color:#fff;
+      font-weight:900;
+      font-size:13px;
+      text-transform:uppercase;
+      cursor:pointer;
+      min-width:142px;
+      appearance:none;
+      letter-spacing:0.02em;
+    }
+    .select:disabled{
+      cursor:not-allowed;
+      opacity:.65;
+    }
 
     .canvas{
       width: min(980px, 100%);
@@ -449,9 +479,14 @@
         </p>
 
         <div class="actions" id="a">
-          <a class="btn" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Download (GitHub Releases) ↗</a>
+          <div class="downloadWrap">
+            <select id="releaseSelect" class="select" aria-label="Select release" disabled></select>
+            <select id="mcSelect" class="select" aria-label="Select Minecraft version" disabled></select>
+            <button id="downloadBtn" class="btn" disabled>Loading...</button>
+          </div>
           <a class="btn secondary" href="https://github.com/soymods/pathmind/issues" target="_blank" rel="noreferrer">Report an issue ↗</a>
           <a class="btn secondary" href="mailto:contact@soymods.com">Email support</a>
+          <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">All releases ↗</a>
         </div>
 
         <div class="canvas" id="c" aria-label="visual motif">
@@ -714,11 +749,139 @@
       });
     };
 
+    const initDownloadUI = () => {
+      const releaseSelect = document.getElementById('releaseSelect');
+      const mcSelect = document.getElementById('mcSelect');
+      const downloadBtn = document.getElementById('downloadBtn');
+      const releasesPage = 'https://github.com/soymods/pathmind/releases';
+      const apiUrl = 'https://api.github.com/repos/soymods/pathmind/releases?per_page=30';
+      if (!releaseSelect || !mcSelect || !downloadBtn) return;
+
+      let releases = [];
+
+      const parseVersionParts = (v) => v.split('.').map(n => parseInt(n, 10) || 0);
+      const sortVersionsDesc = (a, b) => {
+        const pa = parseVersionParts(a);
+        const pb = parseVersionParts(b);
+        const len = Math.max(pa.length, pb.length);
+        for (let i = 0; i < len; i++) {
+          const av = pa[i] ?? 0;
+          const bv = pb[i] ?? 0;
+          if (av !== bv) return bv - av;
+        }
+        return b.localeCompare(a);
+      };
+
+      const setButtonHandler = () => {
+        downloadBtn.onclick = () => {
+          const release = releases.find(r => r.tag === releaseSelect.value);
+          const asset = release?.assetsByMc?.[mcSelect.value];
+          const url = asset?.browser_download_url || releasesPage;
+          window.location.href = url;
+        };
+      };
+
+      const setLoading = (isLoading) => {
+        releaseSelect.disabled = isLoading;
+        mcSelect.disabled = isLoading;
+        downloadBtn.disabled = isLoading;
+        downloadBtn.textContent = isLoading ? 'Loading...' : 'Download';
+      };
+
+      const setFallback = () => {
+        releaseSelect.innerHTML = '';
+        mcSelect.innerHTML = '';
+        releaseSelect.disabled = true;
+        mcSelect.disabled = true;
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = 'Download';
+        downloadBtn.onclick = () => { window.location.href = releasesPage; };
+      };
+
+      const populateMcOptions = (tag) => {
+        const release = releases.find(r => r.tag === tag);
+        mcSelect.innerHTML = '';
+        if (!release) {
+          mcSelect.value = '';
+          mcSelect.disabled = true;
+          return;
+        }
+        release.mcVersions.forEach(mc => {
+          const opt = document.createElement('option');
+          opt.value = mc;
+          opt.textContent = mc;
+          mcSelect.appendChild(opt);
+        });
+        mcSelect.disabled = release.mcVersions.length === 0;
+        if (release.mcVersions.length > 0) mcSelect.value = release.mcVersions[0];
+        else mcSelect.value = '';
+      };
+
+      const populateReleaseOptions = () => {
+        releaseSelect.innerHTML = '';
+        releases.forEach(rel => {
+          const opt = document.createElement('option');
+          opt.value = rel.tag;
+          opt.textContent = rel.tag;
+          releaseSelect.appendChild(opt);
+        });
+        if (releases.length > 0) releaseSelect.value = releases[0].tag;
+      };
+
+      const hydrate = () => {
+        if (!releases.length) {
+          setFallback();
+          return;
+        }
+        populateReleaseOptions();
+        populateMcOptions(releaseSelect.value);
+        setButtonHandler();
+        setLoading(false);
+      };
+
+      releaseSelect.addEventListener('change', () => {
+        populateMcOptions(releaseSelect.value);
+        setButtonHandler();
+      });
+      mcSelect.addEventListener('change', setButtonHandler);
+
+      const fetchReleases = async () => {
+        try {
+          setLoading(true);
+          const res = await fetch(apiUrl);
+          if (!res.ok) throw new Error('API error');
+          const data = await res.json();
+          releases = data
+            .filter(r => !r.draft)
+            .map(rel => {
+              const assetsByMc = {};
+              (rel.assets || []).forEach(asset => {
+                const match = asset.name?.match(/^pathmind-([^+]+)\+mc([0-9][0-9.]*)\.jar$/i);
+                if (!match) return;
+                const mcVersion = match[2];
+                assetsByMc[mcVersion] = asset;
+              });
+              const mcVersions = Object.keys(assetsByMc).sort(sortVersionsDesc);
+              if (!mcVersions.length) return null;
+              return { tag: rel.tag_name, mcVersions, assetsByMc };
+            })
+            .filter(Boolean);
+          hydrate();
+        } catch (err) {
+          console.error('Failed to load releases', err);
+          setFallback();
+        }
+      };
+
+      fetchReleases();
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
       const yearEl = document.getElementById('year');
       if (yearEl) yearEl.textContent = new Date().getFullYear();
       reveal();
       initGraph();
+      initDownloadUI();
     });
   </script>
 </body>
