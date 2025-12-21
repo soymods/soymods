@@ -249,6 +249,11 @@
       font-size:11px;
       letter-spacing:0.04em;
       margin-left:4px;
+      display:inline-block;
+      transition: transform .18s ease-out;
+    }
+    .dropdown.open .caret{
+      transform: rotate(-90deg);
     }
     .menu{
       position:absolute;
@@ -814,6 +819,7 @@
       const closeMenu = () => {
         downloadMenu.hidden = true;
         downloadBtn.setAttribute('aria-expanded', 'false');
+        downloadBtn.closest('.dropdown')?.classList.remove('open');
       };
 
       const toggleMenu = () => {
@@ -824,6 +830,7 @@
         } else {
           downloadMenu.hidden = false;
           downloadBtn.setAttribute('aria-expanded', 'true');
+          downloadBtn.closest('.dropdown')?.classList.add('open');
         }
       };
 
