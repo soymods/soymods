@@ -233,29 +233,54 @@
     .btn:active{transform:translateY(0px); opacity:.92;}
 
     .downloadWrap{
+      position:relative;
       display:flex;
-      flex-wrap:wrap;
-      gap:8px;
       align-items:center;
+      flex-wrap:wrap;
     }
-    .select{
-      padding:11px 12px;
-      border-radius:0;
+    .dropdown{
+      position:relative;
+      display:inline-flex;
+    }
+    .dropdown .caret{
+      font-size:11px;
+      letter-spacing:0.04em;
+      margin-left:4px;
+    }
+    .menu{
+      position:absolute;
+      top:100%;
+      left:0;
+      z-index:5;
+      min-width:220px;
       border:var(--bw) solid var(--line2);
-      background:#000;
+      background:rgba(0,0,0,.95);
+      box-shadow:0 10px 0 #000;
+      padding:4px;
+      display:grid;
+      gap:4px;
+    }
+    .menu[hidden]{display:none;}
+    .menu button{
+      width:100%;
+      text-align:left;
+      padding:10px 12px;
+      border:var(--bw) solid var(--line);
+      background:rgba(255,255,255,.04);
       color:#fff;
       font-weight:900;
-      font-size:13px;
+      font-size:12px;
+      letter-spacing:0.02em;
       text-transform:uppercase;
       cursor:pointer;
-      min-width:142px;
-      appearance:none;
-      letter-spacing:0.02em;
+      border-radius:0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
     }
-    .select:disabled{
-      cursor:not-allowed;
-      opacity:.65;
-    }
+    .menu button:hover{border-color:#fff; background:rgba(255,255,255,.07);}
+    .menu button:active{opacity:.9;}
 
     .canvas{
       width: min(980px, 100%);
@@ -480,9 +505,10 @@
 
         <div class="actions" id="a">
           <div class="downloadWrap">
-            <select id="releaseSelect" class="select" aria-label="Select release" disabled></select>
-            <select id="mcSelect" class="select" aria-label="Select Minecraft version" disabled></select>
-            <button id="downloadBtn" class="btn" disabled>Loading...</button>
+            <div class="dropdown">
+              <button id="downloadBtn" class="btn" disabled aria-expanded="false" aria-haspopup="true">Loading… <span class="caret">▼</span></button>
+              <div id="downloadMenu" class="menu" hidden></div>
+            </div>
           </div>
           <a class="btn secondary" href="https://github.com/soymods/pathmind/issues" target="_blank" rel="noreferrer">Report an issue ↗</a>
           <a class="btn secondary" href="mailto:contact@soymods.com">Email support</a>
@@ -750,14 +776,17 @@
     };
 
     const initDownloadUI = () => {
-      const releaseSelect = document.getElementById('releaseSelect');
-      const mcSelect = document.getElementById('mcSelect');
       const downloadBtn = document.getElementById('downloadBtn');
+      const downloadMenu = document.getElementById('downloadMenu');
       const releasesPage = 'https://github.com/soymods/pathmind/releases';
       const apiUrl = 'https://api.github.com/repos/soymods/pathmind/releases?per_page=30';
-      if (!releaseSelect || !mcSelect || !downloadBtn) return;
+      if (!downloadBtn || !downloadMenu) return;
 
-      let releases = [];
+      let assets = [];
+
+      const setButtonLabel = (label) => {
+        downloadBtn.innerHTML = `${label} <span class="caret">▼</span>`;
+      };
 
       const parseVersionParts = (v) => v.split('.').map(n => parseInt(n, 10) || 0);
       const sortVersionsDesc = (a, b) => {
@@ -772,104 +801,101 @@
         return b.localeCompare(a);
       };
 
-      const setButtonHandler = () => {
-        downloadBtn.onclick = () => {
-          const release = releases.find(r => r.tag === releaseSelect.value);
-          const asset = release?.assetsByMc?.[mcSelect.value];
-          const url = asset?.browser_download_url || releasesPage;
-          window.location.href = url;
-        };
+      const closeMenu = () => {
+        downloadMenu.hidden = true;
+        downloadBtn.setAttribute('aria-expanded', 'false');
+      };
+
+      const toggleMenu = () => {
+        if (assets.length === 0) return;
+        const isOpen = !downloadMenu.hidden;
+        if (isOpen) {
+          closeMenu();
+        } else {
+          downloadMenu.hidden = false;
+          downloadBtn.setAttribute('aria-expanded', 'true');
+        }
       };
 
       const setLoading = (isLoading) => {
-        releaseSelect.disabled = isLoading;
-        mcSelect.disabled = isLoading;
         downloadBtn.disabled = isLoading;
-        downloadBtn.textContent = isLoading ? 'Loading...' : 'Download';
+        setButtonLabel(isLoading ? 'Loading…' : 'Download');
+        closeMenu();
       };
 
       const setFallback = () => {
-        releaseSelect.innerHTML = '';
-        mcSelect.innerHTML = '';
-        releaseSelect.disabled = true;
-        mcSelect.disabled = true;
+        assets = [];
+        closeMenu();
         downloadBtn.disabled = false;
-        downloadBtn.textContent = 'Download';
+        setButtonLabel('Download');
         downloadBtn.onclick = () => { window.location.href = releasesPage; };
+        downloadMenu.innerHTML = '';
       };
 
-      const populateMcOptions = (tag) => {
-        const release = releases.find(r => r.tag === tag);
-        mcSelect.innerHTML = '';
-        if (!release) {
-          mcSelect.value = '';
-          mcSelect.disabled = true;
-          return;
-        }
-        release.mcVersions.forEach(mc => {
-          const opt = document.createElement('option');
-          opt.value = mc;
-          opt.textContent = mc;
-          mcSelect.appendChild(opt);
+      const buildMenu = () => {
+        downloadMenu.innerHTML = '';
+        assets.forEach(item => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const title = document.createElement('span');
+          title.textContent = `Minecraft ${item.mc}`;
+          const file = document.createElement('span');
+          file.style.color = 'var(--muted)';
+          file.style.fontSize = '11px';
+          file.textContent = item.name;
+          btn.appendChild(title);
+          btn.appendChild(file);
+          btn.addEventListener('click', () => {
+            window.location.href = item.url;
+            closeMenu();
+          });
+          downloadMenu.appendChild(btn);
         });
-        mcSelect.disabled = release.mcVersions.length === 0;
-        if (release.mcVersions.length > 0) mcSelect.value = release.mcVersions[0];
-        else mcSelect.value = '';
       };
 
-      const populateReleaseOptions = () => {
-        releaseSelect.innerHTML = '';
-        releases.forEach(rel => {
-          const opt = document.createElement('option');
-          opt.value = rel.tag;
-          opt.textContent = rel.tag;
-          releaseSelect.appendChild(opt);
+      const setSuccessHandlers = () => {
+        downloadBtn.disabled = false;
+        setButtonLabel('Download');
+        downloadBtn.onclick = toggleMenu;
+        document.addEventListener('click', (e) => {
+          if (!downloadMenu.contains(e.target) && !downloadBtn.contains(e.target)) closeMenu();
         });
-        if (releases.length > 0) releaseSelect.value = releases[0].tag;
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
       };
-
-      const hydrate = () => {
-        if (!releases.length) {
-          setFallback();
-          return;
-        }
-        populateReleaseOptions();
-        populateMcOptions(releaseSelect.value);
-        setButtonHandler();
-        setLoading(false);
-      };
-
-      releaseSelect.addEventListener('change', () => {
-        populateMcOptions(releaseSelect.value);
-        setButtonHandler();
-      });
-      mcSelect.addEventListener('change', setButtonHandler);
 
       const fetchReleases = async () => {
+        setLoading(true);
         try {
-          setLoading(true);
           const res = await fetch(apiUrl);
           if (!res.ok) throw new Error('API error');
           const data = await res.json();
-          releases = data
-            .filter(r => !r.draft)
-            .map(rel => {
-              const assetsByMc = {};
-              (rel.assets || []).forEach(asset => {
-                const match = asset.name?.match(/^pathmind-([^+]+)\+mc([0-9][0-9.]*)\.jar$/i);
-                if (!match) return;
-                const mcVersion = match[2];
-                assetsByMc[mcVersion] = asset;
-              });
-              const mcVersions = Object.keys(assetsByMc).sort(sortVersionsDesc);
-              if (!mcVersions.length) return null;
-              return { tag: rel.tag_name, mcVersions, assetsByMc };
-            })
-            .filter(Boolean);
-          hydrate();
+          const latest = (data || []).find(r => !r.draft);
+          if (!latest) throw new Error('No release');
+
+          const assetsByMc = {};
+          (latest.assets || []).forEach(asset => {
+            const match = asset.name?.match(/^pathmind-([^+]+)\+mc([0-9][0-9.]*)\.jar$/i);
+            if (!match) return;
+            const mcVersion = match[2];
+            assetsByMc[mcVersion] = asset;
+          });
+
+          const mcVersions = Object.keys(assetsByMc).sort(sortVersionsDesc);
+          if (!mcVersions.length) throw new Error('No assets');
+
+          assets = mcVersions.map(mc => ({
+            mc,
+            url: assetsByMc[mc]?.browser_download_url || releasesPage,
+            name: assetsByMc[mc]?.name || `pathmind+mc${mc}`
+          }));
+
+          buildMenu();
+          setSuccessHandlers();
         } catch (err) {
           console.error('Failed to load releases', err);
           setFallback();
+        } finally {
+          setLoading(false);
         }
       };
 
