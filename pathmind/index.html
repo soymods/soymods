@@ -205,6 +205,12 @@
       position:relative;
       display:inline-flex;
     }
+    .dropdown .btn::after{
+      content:"▼";
+      font-size:10px;
+      margin-left:6px;
+      transform: translateY(1px);
+    }
     .dropdownMenu{
       position:absolute;
       top:100%;
@@ -840,12 +846,19 @@
       });
       btn.disabled = false;
       setButtonState('Download');
-      btn.addEventListener('click', () => {
+      const handleToggle = () => {
         if (menu.childElementCount === 0) {
           fallbackDownload();
           return;
         }
         toggleMenu();
+      };
+      btn.addEventListener('click', handleToggle);
+      btn.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleToggle();
+        }
       });
       attachGlobalMenuHandlers();
     };
@@ -856,7 +869,7 @@
       data.assets.forEach((asset) => {
         if (!asset || !asset.name || !asset.browser_download_url) return;
         if (!asset.name.endsWith('.jar')) return;
-        const match = asset.name.match(/pathmind-[^+]+\\+mc([\\d\\.]+)\\.jar/i);
+        const match = asset.name.match(/^pathmind-[^+]+\+mc([\d\.]+)\.jar$/i);
         if (!match || !match[1]) return;
         const mcVersion = match[1];
         if (map.has(mcVersion)) return;
