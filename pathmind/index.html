@@ -198,6 +198,8 @@
       transform: translateY(10px);
       opacity:0;
       transition: transform .7s var(--ease), opacity .7s var(--ease);
+      position:relative;
+      z-index:40;
     }
     .actions.reveal{transform: translateY(0); opacity:1}
 
@@ -223,9 +225,65 @@
       color:#fff;
       border-color:var(--line2);
     }
+    .btn[disabled]{
+      cursor:not-allowed;
+      opacity:.65;
+      transform:none;
+    }
     .btn:hover{transform:translateY(-1px); opacity:1;}
     .btn.secondary:hover{border-color:#fff}
     .btn:active{transform:translateY(0px); opacity:.92;}
+
+    .downloadWrap{
+      position:relative;
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .dropdown{
+      position:relative;
+      display:inline-flex;
+      z-index:45;
+    }
+    .dropdown .caret{
+      font-size:11px;
+      letter-spacing:0.04em;
+      margin-left:4px;
+    }
+    .menu{
+      position:absolute;
+      top:100%;
+      left:0;
+      z-index:50;
+      min-width:220px;
+      border:var(--bw) solid var(--line2);
+      background:#000;
+      box-shadow:0 12px 0 #000;
+      padding:4px;
+      display:grid;
+      gap:4px;
+    }
+    .menu[hidden]{display:none;}
+    .menu button{
+      width:100%;
+      text-align:left;
+      padding:10px 12px;
+      border:var(--bw) solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      font-weight:900;
+      font-size:12px;
+      letter-spacing:0.02em;
+      text-transform:uppercase;
+      cursor:pointer;
+      border-radius:0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+    }
+    .menu button:hover{border-color:#fff; background:rgba(255,255,255,.07);}
+    .menu button:active{opacity:.9;}
 
     .canvas{
       width: min(980px, 100%);
@@ -449,9 +507,15 @@
         </p>
 
         <div class="actions" id="a">
-          <a class="btn" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Download (GitHub Releases) ↗</a>
+          <div class="downloadWrap">
+            <div class="dropdown">
+              <button id="downloadBtn" class="btn" disabled aria-expanded="false" aria-haspopup="true">Loading… <span class="caret">▼</span></button>
+              <div id="downloadMenu" class="menu" hidden></div>
+            </div>
+          </div>
           <a class="btn secondary" href="https://github.com/soymods/pathmind/issues" target="_blank" rel="noreferrer">Report an issue ↗</a>
           <a class="btn secondary" href="mailto:contact@soymods.com">Email support</a>
+          <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">All releases ↗</a>
         </div>
 
         <div class="canvas" id="c" aria-label="visual motif">
@@ -714,11 +778,139 @@
       });
     };
 
+    const initDownloadUI = () => {
+      const downloadBtn = document.getElementById('downloadBtn');
+      const downloadMenu = document.getElementById('downloadMenu');
+      const releasesPage = 'https://github.com/soymods/pathmind/releases';
+      const apiUrl = 'https://api.github.com/repos/soymods/pathmind/releases?per_page=30';
+      if (!downloadBtn || !downloadMenu) return;
+
+      let assets = [];
+
+      const setButtonLabel = (label) => {
+        downloadBtn.innerHTML = `${label} <span class="caret">▼</span>`;
+      };
+
+      const parseVersionParts = (v) => v.split('.').map(n => parseInt(n, 10) || 0);
+      const sortVersionsDesc = (a, b) => {
+        const pa = parseVersionParts(a);
+        const pb = parseVersionParts(b);
+        const len = Math.max(pa.length, pb.length);
+        for (let i = 0; i < len; i++) {
+          const av = pa[i] ?? 0;
+          const bv = pb[i] ?? 0;
+          if (av !== bv) return bv - av;
+        }
+        return b.localeCompare(a);
+      };
+
+      const closeMenu = () => {
+        downloadMenu.hidden = true;
+        downloadBtn.setAttribute('aria-expanded', 'false');
+      };
+
+      const toggleMenu = () => {
+        if (assets.length === 0) return;
+        const isOpen = !downloadMenu.hidden;
+        if (isOpen) {
+          closeMenu();
+        } else {
+          downloadMenu.hidden = false;
+          downloadBtn.setAttribute('aria-expanded', 'true');
+        }
+      };
+
+      const setLoading = (isLoading) => {
+        downloadBtn.disabled = isLoading;
+        setButtonLabel(isLoading ? 'Loading…' : 'Download');
+        closeMenu();
+      };
+
+      const setFallback = () => {
+        assets = [];
+        closeMenu();
+        downloadBtn.disabled = false;
+        setButtonLabel('Download');
+        downloadBtn.onclick = () => { window.location.href = releasesPage; };
+        downloadMenu.innerHTML = '';
+      };
+
+      const buildMenu = () => {
+        downloadMenu.innerHTML = '';
+        assets.forEach(item => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const title = document.createElement('span');
+          title.textContent = `Minecraft ${item.mc}`;
+          const file = document.createElement('span');
+          file.style.color = 'var(--muted)';
+          file.style.fontSize = '11px';
+          file.textContent = item.name;
+          btn.appendChild(title);
+          btn.appendChild(file);
+          btn.addEventListener('click', () => {
+            window.location.href = item.url;
+            closeMenu();
+          });
+          downloadMenu.appendChild(btn);
+        });
+      };
+
+      const setSuccessHandlers = () => {
+        downloadBtn.disabled = false;
+        setButtonLabel('Download');
+        downloadBtn.onclick = toggleMenu;
+        document.addEventListener('click', (e) => {
+          if (!downloadMenu.contains(e.target) && !downloadBtn.contains(e.target)) closeMenu();
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+      };
+
+      const fetchReleases = async () => {
+        setLoading(true);
+        try {
+          const res = await fetch(apiUrl);
+          if (!res.ok) throw new Error('API error');
+          const data = await res.json();
+          const latest = (data || []).find(r => !r.draft);
+          if (!latest) throw new Error('No release');
+
+          const assetsByMc = {};
+          (latest.assets || []).forEach(asset => {
+            const match = asset.name?.match(/^pathmind-([^+]+)\+mc([0-9][0-9.]*)\.jar$/i);
+            if (!match) return;
+            const mcVersion = match[2];
+            assetsByMc[mcVersion] = asset;
+          });
+
+          const mcVersions = Object.keys(assetsByMc).sort(sortVersionsDesc);
+          if (!mcVersions.length) throw new Error('No assets');
+
+          assets = mcVersions.map(mc => ({
+            mc,
+            url: assetsByMc[mc]?.browser_download_url || releasesPage,
+            name: assetsByMc[mc]?.name || `pathmind+mc${mc}`
+          }));
+
+          buildMenu();
+          setSuccessHandlers();
+        } catch (err) {
+          console.error('Failed to load releases', err);
+          setFallback();
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchReleases();
+    };
+
     document.addEventListener('DOMContentLoaded', () => {
       const yearEl = document.getElementById('year');
       if (yearEl) yearEl.textContent = new Date().getFullYear();
       reveal();
       initGraph();
+      initDownloadUI();
     });
   </script>
 </body>
