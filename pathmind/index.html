@@ -152,7 +152,7 @@
 
     /* NEW: logo replaces big word */
     .logo-img{
-      width: min(92%, 210px);
+      width: clamp(160px, 28vw, 210px);
       height: auto;
       margin: 0 auto 10px;
       display:block;
@@ -506,7 +506,7 @@
     @media (max-width: 900px){
       .info{grid-template-columns: 1fr;}
       .nodes{height: 300px;}
-      .logo-img{width:min(92%, 520px);}
+      .logo-img{width: clamp(150px, 44vw, 200px);}
       .word{font-size: clamp(18px, 4.3vw, 34px);}
     }
 
