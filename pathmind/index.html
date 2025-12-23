@@ -234,6 +234,25 @@
     .btn.secondary:hover{border-color:#fff}
     .btn:active{transform:translateY(0px); opacity:.92;}
 
+    .downloadNote{
+      margin: 14px 0 0;
+      text-align:center;
+      color:var(--muted);
+      font-size:12px;
+      transform: translateY(10px);
+      opacity:0;
+      transition: transform .7s var(--ease), opacity .7s var(--ease);
+    }
+    .downloadNote.reveal{transform: translateY(0); opacity:1}
+    .downloadNote a{
+      color:inherit;
+      border-bottom:var(--bw) solid transparent;
+    }
+    .downloadNote a:hover{
+      color:#fff;
+      border-color:rgba(255,255,255,.35);
+    }
+
     .downloadWrap{
       position:relative;
       display:flex;
@@ -492,7 +511,7 @@
     }
 
     @media (prefers-reduced-motion: reduce){
-      .logo-img,.word,.lede,.actions,.canvas{transition:none}
+      .logo-img,.word,.lede,.actions,.downloadNote,.canvas{transition:none}
       .btn,.node{transition:none}
     }
   </style>
@@ -525,10 +544,12 @@
               <div id="downloadMenu" class="menu" hidden></div>
             </div>
           </div>
-          <a class="btn secondary" href="https://github.com/soymods/pathmind/issues" target="_blank" rel="noreferrer">Report an issue ↗</a>
-          <a class="btn secondary" href="mailto:contact@soymods.com">Email support</a>
+          <a class="btn secondary" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord ↗</a>
           <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">All releases ↗</a>
         </div>
+        <p class="downloadNote" id="dl-note">
+          <a href="https://github.com/cabaletta/baritone/releases" target="_blank" rel="noreferrer">Download Baritone API</a>
+        </p>
 
         <div class="canvas" id="c" aria-label="visual motif">
           <div class="canvasTop">
@@ -606,7 +627,7 @@
           <div class="row"><span>Minecraft</span><span>1.21.x</span></div>
           <div class="row"><span>Environment</span><span>Client-side</span></div>
           <div class="row"><span>Downloads</span><span>GitHub Releases</span></div>
-          <div class="row"><span>Support</span><span>GitHub Issues / Email</span></div>
+          <div class="row"><span>Support</span><span>Discord</span></div>
         </div>
         <p style="margin-top:12px; color:var(--muted2);">
           Please use responsibly and follow server rules. You are responsible for how you use automation.
@@ -644,12 +665,14 @@
       const w = document.getElementById('w');
       const l = document.getElementById('l');
       const a = document.getElementById('a');
+      const dn = document.getElementById('dl-note');
       const c = document.getElementById('c');
       requestAnimationFrame(() => {
         if (logo) logo.classList.add('reveal');
         setTimeout(() => w.classList.add('reveal'), 80);
         setTimeout(() => l.classList.add('reveal'), 150);
         setTimeout(() => a.classList.add('reveal'), 230);
+        setTimeout(() => dn?.classList.add('reveal'), 270);
         setTimeout(() => c.classList.add('reveal'), 310);
       });
     };
