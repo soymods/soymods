@@ -343,11 +343,26 @@
       border:var(--bw) solid rgba(139,246,255,.35);
       pointer-events:none;
     }
+    /* default secondary should look normal */
     .cap.secondary{
-      border-color: var(--accent2);
-      color:#fff;
+     border-color: var(--line);
+     color: inherit;
     }
 
+    /* when pressed, use accent2 */
+    .cap.secondary.active{
+      border-color: var(--accent2);
+      color:#fff;
+      box-shadow: 0 0 0 2px rgba(157,255,187,.25) inset;
+    }
+    .cap.secondary.active::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border:var(--bw) solid rgba(157,255,187,.35);
+      pointer-events:none;
+    }
+    
     .layoutRow{
       display:grid;
       grid-template-columns: 1fr 1fr;
@@ -500,38 +515,130 @@
   </main>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const yearEl = document.getElementById('year');
-      if (yearEl) yearEl.textContent = new Date().getFullYear();
+  // --- Live preview + download UI (full rewrite) ---
+  (() => {
+    // ---------- Helpers ----------
+    const $ = (sel, root = document) => root.querySelector(sel);
+    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
-      const keycaps = Array.from(document.querySelectorAll('.cap[data-key]'));
-      const activeKeys = ['w','a','s','d','lmb','rmb','space','shift'];
-      const getRandom = (arr, count) => {
-        const copy = arr.slice();
-        const picked = [];
-        while (copy.length && picked.length < count) {
-          const idx = Math.floor(Math.random() * copy.length);
-          picked.push(copy.splice(idx, 1)[0]);
+    // ---------- Live preview ----------
+    function initLivePreview() {
+      const keycaps = $$('.cap[data-key]');
+      const capByKey = new Map(keycaps.map(el => [el.dataset.key, el]));
+      const pressed = new Set();
+
+      const setActive = (dataKey, on) => {
+        const el = capByKey.get(dataKey);
+        if (el) el.classList.toggle('active', !!on);
+      };
+
+      const syncAllCaps = () => {
+        for (const el of keycaps) {
+          const dk = el.dataset.key;
+          el.classList.toggle('active', pressed.has(dk));
         }
-        return picked;
       };
 
-      const renderKeycaps = () => {
-        const chosen = new Set(getRandom(activeKeys, Math.floor(Math.random() * 4) + 2));
-        keycaps.forEach(cap => {
-          const key = cap.dataset.key;
-          if (!key) return;
-          cap.classList.toggle('active', chosen.has(key));
-        });
+      // Map your data-key values to event.key values (normalized)
+      // Note: letters are handled dynamically (lowercase)
+      const KEYMAP = new Map([
+        ['esc', 'escape'],
+        ['tab', 'tab'],
+        ['space', ' '],
+        ['shift', 'shift'],
+        ['ctrl', 'control'],
+        ['r', 'r'],
+        ['1', '1'],
+        ['2', '2'],
+        ['3', '3'],
+        // w/a/s/d handled by letter logic too; keeping them is harmless
+        ['w', 'w'],
+        ['a', 'a'],
+        ['s', 's'],
+        ['d', 'd'],
+      ]);
+
+      const normalizeKey = (k) => {
+        if (!k) return '';
+        // Single characters => lowercase (so "W" becomes "w")
+        if (k.length === 1) return k.toLowerCase();
+        return k.toLowerCase();
       };
 
-      renderKeycaps();
-      setInterval(renderKeycaps, 900);
-    });
+      const applyKeyDown = (e) => {
+        // Prevent scrolling / page actions for "overlay-like" behavior
+        if (e.key === ' ' || e.key === 'Spacebar') e.preventDefault();
 
-    const initDownloadUI = () => {
-      const downloadBtn = document.getElementById('downloadBtn');
-      const downloadMenu = document.getElementById('downloadMenu');
+        const k = normalizeKey(e.key);
+
+        // Add mapped keys
+        for (const [dataKey, eventKey] of KEYMAP.entries()) {
+          if (k === eventKey) pressed.add(dataKey);
+        }
+
+        // Also add letters/digits that exist as caps (handles w/a/s/d, numbers, etc.)
+        if (capByKey.has(k)) pressed.add(k);
+
+        syncAllCaps();
+      };
+
+      const applyKeyUp = (e) => {
+        const k = normalizeKey(e.key);
+
+        for (const [dataKey, eventKey] of KEYMAP.entries()) {
+          if (k === eventKey) pressed.delete(dataKey);
+        }
+
+        if (capByKey.has(k)) pressed.delete(k);
+
+        syncAllCaps();
+      };
+
+      // Robust mouse: use e.buttons bitmask as the source of truth
+      const updateMouseButtons = (buttonsBitmask) => {
+        const l = (buttonsBitmask & 1) !== 0; // left
+        const r = (buttonsBitmask & 2) !== 0; // right
+
+        if (l) pressed.add('lmb'); else pressed.delete('lmb');
+        if (r) pressed.add('rmb'); else pressed.delete('rmb');
+
+        setActive('lmb', l);
+        setActive('rmb', r);
+      };
+
+      // Clear everything (prevents stuck keys/buttons)
+      const clearAll = () => {
+        pressed.clear();
+        for (const el of keycaps) el.classList.remove('active');
+      };
+
+      // Events
+      window.addEventListener('keydown', applyKeyDown, { passive: false });
+      window.addEventListener('keyup', applyKeyUp);
+
+      window.addEventListener('mousedown', (e) => updateMouseButtons(e.buttons));
+      window.addEventListener('mouseup',   (e) => updateMouseButtons(e.buttons));
+      window.addEventListener('mousemove', (e) => updateMouseButtons(e.buttons));
+
+      // Prevent RMB menu so RMB can behave like a “pressed” button
+      window.addEventListener('contextmenu', (e) => e.preventDefault());
+
+      // Safety clears
+      window.addEventListener('blur', clearAll);
+      window.addEventListener('visibilitychange', () => {
+        if (document.hidden) clearAll();
+      });
+      window.addEventListener('pointercancel', clearAll);
+      window.addEventListener('pointerup', () => updateMouseButtons(0));
+
+      // Start clean
+      clearAll();
+    }
+
+    // ---------- Download UI ----------
+    function initDownloadUI() {
+      const downloadBtn = $('#downloadBtn');
+      const downloadMenu = $('#downloadMenu');
       const releasesPage = 'https://github.com/soymods/visual-keystrokes/releases';
       const apiUrl = 'https://api.github.com/repos/soymods/visual-keystrokes/releases?per_page=30';
       if (!downloadBtn || !downloadMenu) return;
@@ -548,22 +655,22 @@
         downloadBtn.closest('.dropdown')?.classList.remove('open');
       };
 
+      const openMenu = () => {
+        if (assets.length === 0) return;
+        downloadMenu.hidden = false;
+        downloadBtn.setAttribute('aria-expanded', 'true');
+        downloadBtn.closest('.dropdown')?.classList.add('open');
+      };
+
       const toggleMenu = () => {
         if (assets.length === 0) return;
-        const isOpen = !downloadMenu.hidden;
-        if (isOpen) {
-          closeMenu();
-        } else {
-          downloadMenu.hidden = false;
-          downloadBtn.setAttribute('aria-expanded', 'true');
-          downloadBtn.closest('.dropdown')?.classList.add('open');
-        }
+        (!downloadMenu.hidden) ? closeMenu() : openMenu();
       };
 
       const setLoading = (isLoading) => {
         downloadBtn.disabled = isLoading;
         setButtonLabel(isLoading ? 'Loading…' : 'Download');
-        closeMenu();
+        if (isLoading) closeMenu();
       };
 
       const setFallback = () => {
@@ -580,16 +687,21 @@
         assets.forEach(item => {
           const btn = document.createElement('button');
           btn.type = 'button';
+
           const title = document.createElement('span');
           title.textContent = item.label;
+
           const file = document.createElement('span');
           file.textContent = item.name;
+
           btn.appendChild(title);
           btn.appendChild(file);
+
           btn.addEventListener('click', () => {
             window.location.href = item.url;
             closeMenu();
           });
+
           downloadMenu.appendChild(btn);
         });
       };
@@ -598,28 +710,33 @@
         downloadBtn.disabled = false;
         setButtonLabel('Download');
         downloadBtn.onclick = toggleMenu;
+
         document.addEventListener('click', (e) => {
           if (!downloadMenu.contains(e.target) && !downloadBtn.contains(e.target)) closeMenu();
         });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') closeMenu();
+        });
       };
 
       const fetchReleases = async () => {
         setLoading(true);
         try {
-          const res = await fetch(apiUrl);
+          const res = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
           if (!res.ok) throw new Error('API error');
           const data = await res.json();
+
           const latest = (data || []).find(r => !r.draft);
           if (!latest) throw new Error('No release');
 
-          const jarAssets = (latest.assets || []).filter(asset => asset.name?.endsWith('.jar'));
+          const jarAssets = (latest.assets || []).filter(a => (a.name || '').toLowerCase().endsWith('.jar'));
           if (!jarAssets.length) throw new Error('No assets');
 
-          assets = jarAssets.map(asset => ({
+          assets = jarAssets.map(a => ({
             label: 'Release',
-            url: asset.browser_download_url || releasesPage,
-            name: asset.name || 'visual-keystrokes.jar'
+            url: a.browser_download_url || releasesPage,
+            name: a.name || 'visual-keystrokes.jar'
           }));
 
           buildMenu();
@@ -633,9 +750,17 @@
       };
 
       fetchReleases();
-    };
+    }
 
-    initDownloadUI();
-  </script>
+    // ---------- Boot ----------
+    document.addEventListener('DOMContentLoaded', () => {
+      const yearEl = $('#year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      initLivePreview();
+      initDownloadUI();
+    });
+  })();
+</script>
 </body>
 </html>
