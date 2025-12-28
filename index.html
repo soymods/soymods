@@ -513,6 +513,22 @@
 
         <div class="item" id="i2">
           <div class="node" aria-hidden="true"></div>
+          <a href="/visual-keystrokes" aria-label="Go to Visual Keystrokes">
+            <div class="itemTitle">
+              <h3 class="hoverline">Visual Keystrokes</h3>
+              <span class="pill">new</span>
+            </div>
+            <p class="itemDesc">Customizable input overlay builder with live key, mouse, and utility visualization.</p>
+            <div class="itemMeta">
+              <span>by ryduzz</span>
+              <span>client-side</span>
+              <span>downloads via GitHub Releases</span>
+            </div>
+          </a>
+        </div>
+
+        <div class="item" id="i3">
+          <div class="node" aria-hidden="true"></div>
           <a href="https://github.com/soymods" target="_blank" rel="noreferrer" aria-label="More projects coming soon">
             <div class="itemTitle">
               <h3 class="hoverline">More soon</h3>
@@ -541,10 +557,12 @@
       const stage = document.getElementById('stage');
       const i1 = document.getElementById('i1');
       const i2 = document.getElementById('i2');
+      const i3 = document.getElementById('i3');
       requestAnimationFrame(() => {
         stage.classList.add('reveal');
         setTimeout(() => i1.classList.add('reveal'), 120);
         setTimeout(() => i2.classList.add('reveal'), 210);
+        setTimeout(() => i3?.classList.add('reveal'), 300);
       });
     };
 

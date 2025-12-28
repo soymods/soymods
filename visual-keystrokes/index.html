@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="soymods">
+  <meta property="og:title" content="Visual Keystrokes — soymods">
+  <meta property="og:description" content="Visual Keystrokes — a customizable input overlay builder for real-time key visualization.">
+  <meta property="og:url" content="https://soymods.com/visual-keystrokes">
+  <meta property="og:image" content="https://soymods.com/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <!-- Twitter / X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Visual Keystrokes — soymods">
+  <meta name="twitter:description" content="Visual Keystrokes — a customizable input overlay builder for real-time key visualization.">
+  <meta name="twitter:image" content="https://soymods.com/og.png">
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+
+  <!-- Favicons -->
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <title>Visual Keystrokes — soymods</title>
+  <meta name="description" content="Visual Keystrokes — a customizable input overlay builder for real-time key visualization." />
+
+  <style>
+    :root{
+      --bg:#0a0a0a;
+      --fg:#ffffff;
+      --muted:rgba(255,255,255,.68);
+      --muted2:rgba(255,255,255,.46);
+
+      --line:rgba(255,255,255,.16);
+      --line2:rgba(255,255,255,.24);
+      --accent:#8bf6ff;
+      --accent2:#9dffbb;
+
+      --r:0px;
+      --bw:2px;
+
+      --ease:cubic-bezier(.2,.8,.2,1);
+      --max:1100px;
+    }
+
+    /* Fonts (self-host)
+       Regular: Minecraft (https://www.dafont.com/minecraft.font)
+       Titles/bold: Minecrafter (https://www.dafont.com/minecrafter.font)
+       Place at:
+         /fonts/Minecraft.woff2 (or .ttf)
+         /fonts/Minecrafter.woff2 (or .ttf)
+    */
+    @font-face{
+      font-family:"Minecraft";
+      src:
+        url("/fonts/Minecraft.woff2") format("woff2"),
+        url("/fonts/Minecraft.ttf") format("truetype");
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Minecrafter";
+      src:
+        url("/fonts/Minecrafter.woff2") format("woff2"),
+        url("/fonts/Minecrafter.ttf") format("truetype");
+      font-display:swap;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%; background:var(--bg);}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--fg);
+      font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      letter-spacing: 0.035em;
+      overflow-x:hidden;
+    }
+
+    h1,h2,h3,.btn,.badge,.caps b,strong,b,.brand{
+      font-family:"Minecrafter","Minecraft",monospace;
+      letter-spacing: 0.02em;
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    a:focus-visible,button:focus-visible{
+      outline:var(--bw) solid #fff;
+      outline-offset:3px;
+      border-radius:0;
+    }
+
+    .bg{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:.35;
+      background:
+        repeating-linear-gradient(
+          to right,
+          transparent 0,
+          transparent 39px,
+          rgba(255,255,255,.10) 40px
+        ),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 39px,
+          rgba(255,255,255,.10) 40px
+        );
+    }
+    .dots{display:none !important;}
+
+    header{
+      position:sticky; top:0; z-index:10;
+      background:rgba(0,0,0,.92);
+      border-bottom:var(--bw) solid var(--line);
+    }
+    .wrap{max-width:var(--max); margin:0 auto; padding:18px 18px;}
+    .nav{display:flex; align-items:flex-start; justify-content:space-between; gap:14px;}
+
+    .brand{
+      position:absolute;
+      top:10px; left:10px;
+      font-weight:900;
+      font-size:14px;
+      text-transform:uppercase;
+    }
+
+    main{padding: 22px 0 64px; background:transparent;}
+
+    .hero{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 26px;
+      align-items:center;
+      padding: 26px 0 0;
+    }
+
+    .heroCard{
+      border:var(--bw) solid var(--line);
+      background: rgba(0,0,0,.45);
+      padding: 22px;
+      position:relative;
+      overflow:visible;
+    }
+
+    .logoRow{
+      display:flex;
+      align-items:center;
+      gap:16px;
+    }
+    .logo-img{
+      width: 96px;
+      height: auto;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      filter: drop-shadow(0 8px 0 #111) drop-shadow(0 16px 0 #070707);
+    }
+
+    .word{
+      margin:0;
+      font-size: clamp(24px, 3.6vw, 44px);
+      text-transform:uppercase;
+      line-height:1.1;
+    }
+
+    .lede{
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.75;
+      max-width: 70ch;
+    }
+
+    .actions{
+      margin-top: 16px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:11px 14px;
+      border-radius:0;
+      border:var(--bw) solid #fff;
+      background:#fff;
+      color:#000;
+      font-weight:900;
+      font-size:13px;
+      cursor:pointer;
+      text-transform:uppercase;
+      transition: transform .18s var(--ease), opacity .18s var(--ease), border-color .18s var(--ease);
+      will-change: transform;
+    }
+    .btn.secondary{
+      background:transparent;
+      color:#fff;
+      border-color:var(--line2);
+    }
+    .btn[disabled]{
+      cursor:not-allowed;
+      opacity:.65;
+      transform:none;
+    }
+    .btn:hover{transform:translateY(-1px); opacity:1;}
+    .btn.secondary:hover{border-color:#fff}
+    .btn:active{transform:translateY(0px); opacity:.92;}
+
+    .downloadWrap{
+      position:relative;
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .dropdown{
+      position:relative;
+      display:inline-flex;
+      z-index:45;
+    }
+    .dropdown .caret{
+      font-size:11px;
+      letter-spacing:0.04em;
+      margin-left:4px;
+      display:inline-block;
+      transition: transform .18s ease-out;
+    }
+    .dropdown.open .caret{
+      transform: rotate(-90deg);
+    }
+    .menu{
+      position:absolute;
+      top:100%;
+      left:0;
+      z-index:50;
+      min-width:220px;
+      border:var(--bw) solid var(--line2);
+      background:#000;
+      box-shadow:0 12px 0 #000;
+      padding:4px;
+      display:grid;
+      gap:4px;
+    }
+    .menu[hidden]{display:none;}
+    .menu button{
+      width:100%;
+      text-align:left;
+      padding:10px 12px;
+      border:var(--bw) solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      font-weight:900;
+      font-size:12px;
+      letter-spacing:0.02em;
+      text-transform:uppercase;
+      cursor:pointer;
+      border-radius:0;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:8px;
+      font-family:"Minecrafter","Minecraft",monospace;
+    }
+    .menu button span:last-child{
+      font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      color:var(--muted);
+      font-size:11px;
+      text-transform:none;
+    }
+    .menu button:hover{border-color:#fff; background:rgba(255,255,255,.07);}
+    .menu button:active{opacity:.9;}
+
+    .badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 12px;
+    }
+    .badge{
+      padding:6px 10px;
+      border:var(--bw) solid var(--line);
+      border-radius:0;
+      color:var(--muted);
+      font-size:11px;
+      background: rgba(0,0,0,.50);
+      text-transform:uppercase;
+    }
+
+    .editor{
+      border:var(--bw) solid var(--line);
+      background: rgba(0,0,0,.35);
+      padding: 16px;
+      display:grid;
+      gap: 14px;
+    }
+
+    .editorHeader{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      border-bottom:var(--bw) solid var(--line);
+      padding-bottom:10px;
+      color:var(--muted2);
+      font-size:12px;
+      text-transform:uppercase;
+    }
+    .editorHeader b{color:#fff}
+
+    .caps{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(46px, 1fr));
+      gap: 8px;
+    }
+
+    .cap{
+      border:var(--bw) solid var(--line);
+      background: rgba(0,0,0,.6);
+      padding: 10px 8px;
+      text-align:center;
+      font-size:12px;
+      text-transform:uppercase;
+      position:relative;
+    }
+    .cap.active{
+      border-color: var(--accent);
+      color:#fff;
+      box-shadow: 0 0 0 2px rgba(139,246,255,.25) inset;
+    }
+    .cap.active::after{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border:var(--bw) solid rgba(139,246,255,.35);
+      pointer-events:none;
+    }
+    .cap.secondary{
+      border-color: var(--accent2);
+      color:#fff;
+    }
+
+    .layoutRow{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .panel{
+      border:var(--bw) solid var(--line);
+      background: rgba(0,0,0,.35);
+      padding: 18px;
+    }
+    .panel h2{margin:0; font-size:14px; text-transform:uppercase; color:var(--muted);}
+    .panel p{margin: 10px 0 0; color: var(--muted); line-height: 1.75; font-size: 14px;}
+
+    .list{margin: 12px 0 0; padding:0; list-style:none; display:grid; gap:10px;}
+    .li{border-top: var(--bw) solid rgba(255,255,255,.10); padding-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.65;}
+    .li b{color:#fff}
+
+    footer{
+      margin: 24px auto 0;
+      max-width: var(--max);
+      border-top: var(--bw) solid var(--line);
+      padding: 10px 18px;
+      background: transparent;
+      color: var(--muted2);
+      font-size: 12px;
+      text-transform: uppercase;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      line-height: 1.2;
+    }
+    footer a{color:var(--muted); border-bottom:var(--bw) solid transparent;}
+    footer a:hover{color:#fff; border-color:rgba(255,255,255,.35)}
+
+    @media (max-width: 980px){
+      .hero{grid-template-columns: 1fr;}
+      .layoutRow{grid-template-columns: 1fr;}
+      .caps{grid-template-columns: repeat(4, minmax(46px, 1fr));}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .btn{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <div class="bg" aria-hidden="true"></div>
+  <div class="dots" aria-hidden="true"></div>
+
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="/" aria-label="soymods home">soymods</a>
+      <div aria-hidden="true"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <section class="hero">
+        <div class="heroCard">
+          <div class="logoRow">
+            <img src="logo.png" alt="Visual Keystrokes logo" class="logo-img">
+            <h1 class="word">Visual Keystrokes</h1>
+          </div>
+          <p class="lede">
+            Visual Keystrokes is a highly customizable input overlay mod that lets you visually build and display exactly
+            which keys are being pressed in real time. Instead of relying on fixed presets, it provides a flexible,
+            editor-driven system where users can add individual elements, resize and reposition them freely, snap
+            layouts together, and control how each input is shown on screen. From simple WASD and mouse buttons to full
+            keyboards and utility keys, every element can be configured to fit your setup and style. Designed with an
+            intuitive interface and deep customization in mind, Visual Keystrokes works equally well for recording,
+            streaming, tutorials, or personal use, giving you complete control over how your inputs are visualized.
+          </p>
+
+          <div class="actions">
+            <div class="downloadWrap">
+              <div class="dropdown">
+                <button id="downloadBtn" class="btn" disabled aria-expanded="false" aria-haspopup="true">Loading… <span class="caret">▼</span></button>
+                <div id="downloadMenu" class="menu" hidden></div>
+              </div>
+            </div>
+            <a class="btn secondary" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord ↗</a>
+            <a class="btn secondary" href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub ↗</a>
+          </div>
+
+          <div class="badges">
+            <span class="badge">Overlay builder</span>
+            <span class="badge">Layout snapping</span>
+            <span class="badge">Recording ready</span>
+          </div>
+        </div>
+
+        <div class="editor" aria-label="editor preview">
+          <div class="editorHeader">
+            <span><b>Editor</b></span>
+            <span>live preview</span>
+          </div>
+          <div class="caps" aria-hidden="true">
+            <div class="cap" data-key="esc">Esc</div>
+            <div class="cap" data-key="1">1</div>
+            <div class="cap" data-key="2">2</div>
+            <div class="cap" data-key="3">3</div>
+            <div class="cap" data-key="tab">Tab</div>
+            <div class="cap" data-key="w">W</div>
+            <div class="cap" data-key="a">A</div>
+            <div class="cap" data-key="s">S</div>
+            <div class="cap" data-key="d">D</div>
+            <div class="cap" data-key="r">R</div>
+            <div class="cap" data-key="shift">Shift</div>
+            <div class="cap secondary" data-key="lmb">LMB</div>
+            <div class="cap secondary" data-key="rmb">RMB</div>
+            <div class="cap" data-key="space">Space</div>
+            <div class="cap" data-key="ctrl">Ctrl</div>
+          </div>
+          <div class="layoutRow">
+            <div class="panel">
+              <h2>Build your overlay</h2>
+              <p>
+                Drag in keys, mouse buttons, and utility inputs. Snap pieces together and align them to a clean grid.
+              </p>
+              <ul class="list">
+                <li class="li"><b>Element editor</b> — resize, rotate, and label each key individually.</li>
+                <li class="li"><b>Layouts</b> — save multiple scenes for different games or tutorial setups.</li>
+                <li class="li"><b>Styles</b> — control color, glow, fonts, and pressed states.</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h2>Signal clarity</h2>
+              <p>
+                Every input has its own visual treatment so your viewers always know what you press and when.
+              </p>
+              <p style="margin-top:12px; color:var(--muted2);">
+                Visual Keystrokes is designed to read clearly even at streaming sizes.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <div>© <span id="year"></span> soymods — Visual Keystrokes by ryduzz.</div>
+      <div style="display:flex; gap:14px; flex-wrap:wrap;">
+        <a href="/">soymods</a>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const yearEl = document.getElementById('year');
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+      const keycaps = Array.from(document.querySelectorAll('.cap[data-key]'));
+      const activeKeys = ['w','a','s','d','lmb','rmb','space','shift'];
+      const getRandom = (arr, count) => {
+        const copy = arr.slice();
+        const picked = [];
+        while (copy.length && picked.length < count) {
+          const idx = Math.floor(Math.random() * copy.length);
+          picked.push(copy.splice(idx, 1)[0]);
+        }
+        return picked;
+      };
+
+      const renderKeycaps = () => {
+        const chosen = new Set(getRandom(activeKeys, Math.floor(Math.random() * 4) + 2));
+        keycaps.forEach(cap => {
+          const key = cap.dataset.key;
+          if (!key) return;
+          cap.classList.toggle('active', chosen.has(key));
+        });
+      };
+
+      renderKeycaps();
+      setInterval(renderKeycaps, 900);
+    });
+
+    const initDownloadUI = () => {
+      const downloadBtn = document.getElementById('downloadBtn');
+      const downloadMenu = document.getElementById('downloadMenu');
+      const releasesPage = 'https://github.com/soymods/visual-keystrokes/releases';
+      const apiUrl = 'https://api.github.com/repos/soymods/visual-keystrokes/releases?per_page=30';
+      if (!downloadBtn || !downloadMenu) return;
+
+      let assets = [];
+
+      const setButtonLabel = (label) => {
+        downloadBtn.innerHTML = `${label} <span class="caret">▼</span>`;
+      };
+
+      const closeMenu = () => {
+        downloadMenu.hidden = true;
+        downloadBtn.setAttribute('aria-expanded', 'false');
+        downloadBtn.closest('.dropdown')?.classList.remove('open');
+      };
+
+      const toggleMenu = () => {
+        if (assets.length === 0) return;
+        const isOpen = !downloadMenu.hidden;
+        if (isOpen) {
+          closeMenu();
+        } else {
+          downloadMenu.hidden = false;
+          downloadBtn.setAttribute('aria-expanded', 'true');
+          downloadBtn.closest('.dropdown')?.classList.add('open');
+        }
+      };
+
+      const setLoading = (isLoading) => {
+        downloadBtn.disabled = isLoading;
+        setButtonLabel(isLoading ? 'Loading…' : 'Download');
+        closeMenu();
+      };
+
+      const setFallback = () => {
+        assets = [];
+        closeMenu();
+        downloadBtn.disabled = false;
+        setButtonLabel('Download');
+        downloadBtn.onclick = () => { window.location.href = releasesPage; };
+        downloadMenu.innerHTML = '';
+      };
+
+      const buildMenu = () => {
+        downloadMenu.innerHTML = '';
+        assets.forEach(item => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          const title = document.createElement('span');
+          title.textContent = item.label;
+          const file = document.createElement('span');
+          file.textContent = item.name;
+          btn.appendChild(title);
+          btn.appendChild(file);
+          btn.addEventListener('click', () => {
+            window.location.href = item.url;
+            closeMenu();
+          });
+          downloadMenu.appendChild(btn);
+        });
+      };
+
+      const setSuccessHandlers = () => {
+        downloadBtn.disabled = false;
+        setButtonLabel('Download');
+        downloadBtn.onclick = toggleMenu;
+        document.addEventListener('click', (e) => {
+          if (!downloadMenu.contains(e.target) && !downloadBtn.contains(e.target)) closeMenu();
+        });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+      };
+
+      const fetchReleases = async () => {
+        setLoading(true);
+        try {
+          const res = await fetch(apiUrl);
+          if (!res.ok) throw new Error('API error');
+          const data = await res.json();
+          const latest = (data || []).find(r => !r.draft);
+          if (!latest) throw new Error('No release');
+
+          const jarAssets = (latest.assets || []).filter(asset => asset.name?.endsWith('.jar'));
+          if (!jarAssets.length) throw new Error('No assets');
+
+          assets = jarAssets.map(asset => ({
+            label: 'Release',
+            url: asset.browser_download_url || releasesPage,
+            name: asset.name || 'visual-keystrokes.jar'
+          }));
+
+          buildMenu();
+          setSuccessHandlers();
+        } catch (err) {
+          console.error('Failed to load releases', err);
+          setFallback();
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchReleases();
+    };
+
+    initDownloadUI();
+  </script>
+</body>
+</html>
