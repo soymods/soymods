@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://soymods.com/sitemap.xml
