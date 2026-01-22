@@ -81,7 +81,7 @@
       font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       -webkit-font-smoothing: antialiased;
       -moz-osx-font-smoothing: grayscale;
-      letter-spacing: 0.035em;
+      letter-spacing: 0.06em;
       overflow-x:hidden;
     }
 
@@ -237,25 +237,6 @@
     .btn:hover{transform:translateY(-1px); opacity:1;}
     .btn.secondary:hover{border-color:#fff}
     .btn:active{transform:translateY(0px); opacity:.92;}
-
-    .downloadNote{
-      margin: 14px 0 0;
-      text-align:center;
-      color:var(--muted);
-      font-size:12px;
-      transform: translateY(10px);
-      opacity:0;
-      transition: transform .7s var(--ease), opacity .7s var(--ease);
-    }
-    .downloadNote.reveal{transform: translateY(0); opacity:1}
-    .downloadNote a{
-      color:inherit;
-      border-bottom:var(--bw) solid transparent;
-    }
-    .downloadNote a:hover{
-      color:#fff;
-      border-color:rgba(255,255,255,.35);
-    }
 
     .downloadWrap{
       position:relative;
@@ -551,10 +532,6 @@
           <a class="btn secondary" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord ↗</a>
           <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">All releases ↗</a>
         </div>
-        <p class="downloadNote" id="dl-note">
-          <a href="https://github.com/cabaletta/baritone/releases" target="_blank" rel="noreferrer">Download Baritone API</a>
-        </p>
-
         <div class="canvas" id="c" aria-label="visual motif">
           <div class="canvasTop">
             <div class="meta">
@@ -637,21 +614,6 @@
           Please use responsibly and follow server rules. You are responsible for how you use automation.
         </p>
 
-        <div class="panelVideo" aria-label="Info video">
-          <div class="panelVideoHead">
-            <b>Demo</b>
-            <span>video</span>
-          </div>
-          <div class="panelVideoFrame">
-            <iframe
-              src="https://www.youtube.com/embed/EBJEVciVAFU"
-              title="Pathmind video 2"
-              loading="lazy"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowfullscreen>
-            </iframe>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -669,14 +631,12 @@
       const w = document.getElementById('w');
       const l = document.getElementById('l');
       const a = document.getElementById('a');
-      const dn = document.getElementById('dl-note');
       const c = document.getElementById('c');
       requestAnimationFrame(() => {
         if (logo) logo.classList.add('reveal');
         setTimeout(() => w.classList.add('reveal'), 80);
         setTimeout(() => l.classList.add('reveal'), 150);
         setTimeout(() => a.classList.add('reveal'), 230);
-        setTimeout(() => dn?.classList.add('reveal'), 270);
         setTimeout(() => c.classList.add('reveal'), 310);
       });
     };
