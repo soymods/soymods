@@ -169,17 +169,19 @@
     }
     .logo-img.reveal{transform: translateY(0); opacity:1}
 
-    /* Pathmind text smaller under logo */
-    .word{
-      margin:0;
-      font-size: clamp(20px, 3.2vw, 40px);
-      line-height: 1.05;
-      text-transform:uppercase;
+    /* Pathmind title image under logo */
+    .title-img{
+      width: clamp(180px, 30vw, 320px);
+      height: auto;
+      margin: 0 auto;
+      display:block;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
       transform: translateY(10px);
       opacity:0;
       transition: transform .7s var(--ease), opacity .7s var(--ease);
     }
-    .word.reveal{transform: translateY(0); opacity:1}
+    .title-img.reveal{transform: translateY(0); opacity:1}
 
     .lede{
       margin: 14px auto 0;
@@ -492,7 +494,7 @@
       .info{grid-template-columns: 1fr;}
       .nodes{height: 300px;}
       .logo-img{width: clamp(150px, 44vw, 200px);}
-      .word{font-size: clamp(18px, 4.3vw, 34px);}
+      .title-img{width: clamp(160px, 46vw, 280px);}
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -516,7 +518,7 @@
     <section class="hero">
       <div class="heroInner">
         <img id="logo" src="logo.png" alt="Pathmind logo" class="logo-img">
-        <h1 class="word" id="w">Pathmind</h1>
+        <img src="pathmind_title.png" alt="Pathmind" class="title-img" id="w">
 
         <p class="lede" id="l">
           Pathmind provides a modular, node-driven system for scripting in-game actions and crafting automation sequences.
