@@ -255,67 +255,156 @@
     .btn.secondary:hover{border-color:#fff}
     .btn:active{transform:translateY(0px); opacity:.92;}
 
-    .downloadWrap{
-      position:relative;
-      display:flex;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-    .dropdown{
-      position:relative;
-      display:inline-flex;
-      z-index:45;
-    }
-    .dropdown .caret{
-      font-size:11px;
-      letter-spacing:0.04em;
-      margin-left:4px;
-      display:inline-block;
-      transition: transform .18s ease-out;
-    }
-    .dropdown.open .caret{
-      transform: rotate(-90deg);
-    }
-    .menu{
-      position:absolute;
-      top:100%;
-      left:0;
-      z-index:50;
-      min-width:220px;
-      border:var(--bw) solid var(--line2);
-      background:#000;
-      box-shadow:0 12px 0 #000;
-      padding:4px;
-      display:grid;
-      gap:4px;
-    }
-    .menu[hidden]{display:none;}
-    .menu button{
-      width:100%;
-      text-align:left;
-      padding:10px 12px;
-      border:var(--bw) solid var(--line);
-      background:rgba(255,255,255,.04);
-      color:#fff;
-      font-weight:900;
-      font-size:12px;
-      letter-spacing:0.02em;
-      text-transform:uppercase;
-      cursor:pointer;
-      border-radius:0;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:8px;
-    }
-    .menu button:hover{border-color:#fff; background:rgba(255,255,255,.07);}
-    .menu button:active{opacity:.9;}
-  
-    .menu button{
-      font-family:"Minecrafter","Minecraft",monospace;
-    }
-    .menu button span:last-child{
+    /* Compatibility Button */
+    .compatBtn{
+      margin-top: 12px;
+      background: transparent;
+      border: none;
+      color: var(--muted);
       font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      text-transform: lowercase;
+      cursor: pointer;
+      padding: 8px 12px;
+      transition: color .18s var(--ease);
+      letter-spacing: 0.06em;
+    }
+    .compatBtn:hover{
+      color: #fff;
+    }
+
+    /* Modal */
+    .modal{
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      transition: opacity .3s var(--ease);
+      pointer-events: none;
+    }
+    .modal.show{
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .modal[hidden]{
+      display: none;
+    }
+    .modalOverlay{
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0);
+      transition: background .3s var(--ease);
+    }
+    .modal.show .modalOverlay{
+      background: rgba(0,0,0,.85);
+    }
+    .modalContent{
+      position: relative;
+      z-index: 101;
+      width: min(420px, 100%);
+      max-height: 80vh;
+      background: #000;
+      border: var(--bw) solid var(--line2);
+      box-shadow: 0 24px 0 rgba(0,0,0,.6);
+      display: flex;
+      flex-direction: column;
+      transform: translateY(10px);
+      transition: transform .3s var(--ease);
+    }
+    .modal.show .modalContent{
+      transform: translateY(0);
+    }
+    .modalHeader{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: var(--bw) solid var(--line);
+      background: rgba(255,255,255,.02);
+    }
+    .modalHeader h2{
+      margin: 0;
+      font-family: "Minecrafter","Minecraft",monospace;
+      font-size: 14px;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .modalCloseBtn{
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px 8px;
+      transition: color .18s var(--ease);
+    }
+    .modalCloseBtn:hover{
+      color: #fff;
+    }
+    .modalBody{
+      padding: 18px;
+      overflow-y: auto;
+      display: grid;
+      gap: 12px;
+    }
+
+    /* Compatibility Cards */
+    .compatCard{
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px;
+      border: var(--bw) solid var(--line);
+      background: rgba(255,255,255,.03);
+      transition: border-color .18s var(--ease), background .18s var(--ease), transform .18s var(--ease);
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .compatCard:hover{
+      border-color: rgba(255,255,255,.45);
+      background: rgba(255,255,255,.06);
+      transform: translateY(-1px);
+    }
+    .compatCard:active{
+      transform: translateY(0);
+    }
+    .compatIcon{
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: rgba(255,255,255,.06);
+      border: var(--bw) solid var(--line);
+      overflow: hidden;
+    }
+    .compatIcon img{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .compatInfo{
+      flex: 1;
+    }
+    .compatName{
+      font-family: "Minecrafter","Minecraft",monospace;
+      font-size: 13px;
+      text-transform: uppercase;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+    .compatDesc{
+      font-family: "Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
     }
 
     .canvas{
@@ -540,15 +629,13 @@
         </p>
 
         <div class="actions" id="a">
-          <div class="downloadWrap">
-            <div class="dropdown">
-              <button id="downloadBtn" class="btn" disabled aria-expanded="false" aria-haspopup="true">Loading… <span class="caret">▼</span></button>
-              <div id="downloadMenu" class="menu" hidden></div>
-            </div>
-          </div>
+          <a class="btn" href="https://modrinth.com/mod/pathmind" target="_blank" rel="noreferrer">Download</a>
           <a class="btn secondary" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord ↗</a>
           <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">All releases ↗</a>
         </div>
+
+        <button id="compatBtn" class="compatBtn">compatibility</button>
+
         <div class="canvas" id="c" aria-label="visual motif">
           <div class="canvasTop">
             <div class="meta">
@@ -641,6 +728,37 @@
       </div>
     </footer>
   </main>
+
+  <!-- Compatibility Modal -->
+  <div id="compatModal" class="modal" hidden>
+    <div class="modalOverlay"></div>
+    <div class="modalContent">
+      <div class="modalHeader">
+        <h2>Mod Compatibility</h2>
+        <button id="modalClose" class="modalCloseBtn" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modalBody">
+        <a href="https://github.com/cabaletta/baritone/releases" target="_blank" rel="noreferrer" class="compatCard">
+          <div class="compatIcon">
+            <img src="https://avatars.githubusercontent.com/u/41924544?s=200&v=4" alt="Baritone">
+          </div>
+          <div class="compatInfo">
+            <div class="compatName">Baritone</div>
+            <div class="compatDesc">Pathfinding and automation</div>
+          </div>
+        </a>
+        <a href="https://www.curseforge.com/minecraft/mc-mods/uiutils" target="_blank" rel="noreferrer" class="compatCard">
+          <div class="compatIcon">
+            <img src="https://ui-utils.com/content/ui-utils.png" alt="UI Utils">
+          </div>
+          <div class="compatInfo">
+            <div class="compatName">UI Utils</div>
+            <div class="compatDesc">UI library and utilities</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
 
   <script>
     const reveal = () => {
@@ -794,133 +912,38 @@
       });
     };
 
-    const initDownloadUI = () => {
-      const downloadBtn = document.getElementById('downloadBtn');
-      const downloadMenu = document.getElementById('downloadMenu');
-      const releasesPage = 'https://github.com/soymods/pathmind/releases';
-      const apiUrl = 'https://api.github.com/repos/soymods/pathmind/releases?per_page=30';
-      if (!downloadBtn || !downloadMenu) return;
 
-      let assets = [];
+    const initCompatModal = () => {
+      const modal = document.getElementById('compatModal');
+      const openBtn = document.getElementById('compatBtn');
+      const closeBtn = document.getElementById('modalClose');
+      const overlay = modal?.querySelector('.modalOverlay');
 
-      const setButtonLabel = (label) => {
-        downloadBtn.innerHTML = `${label} <span class="caret">▼</span>`;
-      };
+      if (!modal || !openBtn) return;
 
-      const parseVersionParts = (v) => v.split('.').map(n => parseInt(n, 10) || 0);
-      const sortVersionsDesc = (a, b) => {
-        const pa = parseVersionParts(a);
-        const pb = parseVersionParts(b);
-        const len = Math.max(pa.length, pb.length);
-        for (let i = 0; i < len; i++) {
-          const av = pa[i] ?? 0;
-          const bv = pb[i] ?? 0;
-          if (av !== bv) return bv - av;
-        }
-        return b.localeCompare(a);
-      };
-
-      const closeMenu = () => {
-        downloadMenu.hidden = true;
-        downloadBtn.setAttribute('aria-expanded', 'false');
-        downloadBtn.closest('.dropdown')?.classList.remove('open');
-      };
-
-      const toggleMenu = () => {
-        if (assets.length === 0) return;
-        const isOpen = !downloadMenu.hidden;
-        if (isOpen) {
-          closeMenu();
-        } else {
-          downloadMenu.hidden = false;
-          downloadBtn.setAttribute('aria-expanded', 'true');
-          downloadBtn.closest('.dropdown')?.classList.add('open');
-        }
-      };
-
-      const setLoading = (isLoading) => {
-        downloadBtn.disabled = isLoading;
-        setButtonLabel(isLoading ? 'Loading…' : 'Download');
-        closeMenu();
-      };
-
-      const setFallback = () => {
-        assets = [];
-        closeMenu();
-        downloadBtn.disabled = false;
-        setButtonLabel('Download');
-        downloadBtn.onclick = () => { window.location.href = releasesPage; };
-        downloadMenu.innerHTML = '';
-      };
-
-      const buildMenu = () => {
-        downloadMenu.innerHTML = '';
-        assets.forEach(item => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          const title = document.createElement('span');
-          title.textContent = `${item.mc}`;
-          const file = document.createElement('span');
-          file.style.color = 'var(--muted)';
-          file.style.fontSize = '11px';
-          file.textContent = item.name;
-          btn.appendChild(title);
-          btn.appendChild(file);
-          btn.addEventListener('click', () => {
-            window.location.href = item.url;
-            closeMenu();
-          });
-          downloadMenu.appendChild(btn);
+      const openModal = () => {
+        modal.hidden = false;
+        document.body.style.overflow = 'hidden';
+        requestAnimationFrame(() => {
+          modal.classList.add('show');
         });
       };
 
-      const setSuccessHandlers = () => {
-        downloadBtn.disabled = false;
-        setButtonLabel('Download');
-        downloadBtn.onclick = toggleMenu;
-        document.addEventListener('click', (e) => {
-          if (!downloadMenu.contains(e.target) && !downloadBtn.contains(e.target)) closeMenu();
-        });
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+      const closeModal = () => {
+        modal.classList.remove('show');
+        setTimeout(() => {
+          modal.hidden = true;
+          document.body.style.overflow = '';
+        }, 300);
       };
 
-      const fetchReleases = async () => {
-        setLoading(true);
-        try {
-          const res = await fetch(apiUrl);
-          if (!res.ok) throw new Error('API error');
-          const data = await res.json();
-          const latest = (data || []).find(r => !r.draft);
-          if (!latest) throw new Error('No release');
+      openBtn.addEventListener('click', openModal);
+      closeBtn?.addEventListener('click', closeModal);
+      overlay?.addEventListener('click', closeModal);
 
-          const assetsByMc = {};
-          (latest.assets || []).forEach(asset => {
-            const match = asset.name?.match(/^pathmind-([^+]+)\+mc([0-9][0-9.]*)\.jar$/i);
-            if (!match) return;
-            const mcVersion = match[2];
-            assetsByMc[mcVersion] = asset;
-          });
-
-          const mcVersions = Object.keys(assetsByMc).sort(sortVersionsDesc);
-          if (!mcVersions.length) throw new Error('No assets');
-
-          assets = mcVersions.map(mc => ({
-            mc,
-            url: assetsByMc[mc]?.browser_download_url || releasesPage,
-            name: assetsByMc[mc]?.name || `pathmind+mc${mc}`
-          }));
-
-          buildMenu();
-          setSuccessHandlers();
-        } catch (err) {
-          console.error('Failed to load releases', err);
-          setFallback();
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchReleases();
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+      });
     };
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -928,7 +951,7 @@
       if (yearEl) yearEl.textContent = new Date().getFullYear();
       reveal();
       initGraph();
-      initDownloadUI();
+      initCompatModal();
     });
   </script>
 </body>
