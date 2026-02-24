@@ -1,0 +1,25 @@
+{
+  "redirects": [
+    {
+      "source": "/pathmind",
+      "destination": "/pathmind/",
+      "permanent": true
+    },
+    {
+      "source": "/visual-keystrokes",
+      "destination": "/visual-keystrokes/",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.soymods.com"
+        }
+      ],
+      "destination": "https://soymods.com/$1",
+      "permanent": true
+    }
+  ]
+}

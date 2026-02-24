@@ -226,62 +226,6 @@
       align-items:center;
       flex-wrap:wrap;
     }
-    .dropdown{
-      position:relative;
-      display:inline-flex;
-      z-index:45;
-    }
-    .dropdown .caret{
-      font-size:11px;
-      letter-spacing:0.04em;
-      margin-left:4px;
-      display:inline-block;
-      transition: transform .18s ease-out;
-    }
-    .dropdown.open .caret{
-      transform: rotate(-90deg);
-    }
-    .menu{
-      position:absolute;
-      top:100%;
-      left:0;
-      z-index:50;
-      min-width:220px;
-      border:var(--bw) solid var(--line2);
-      background:#000;
-      box-shadow:0 12px 0 #000;
-      padding:4px;
-      display:grid;
-      gap:4px;
-    }
-    .menu[hidden]{display:none;}
-    .menu button{
-      width:100%;
-      text-align:left;
-      padding:10px 12px;
-      border:var(--bw) solid var(--line);
-      background:rgba(255,255,255,.04);
-      color:#fff;
-      font-weight:900;
-      font-size:12px;
-      letter-spacing:0.02em;
-      text-transform:uppercase;
-      cursor:pointer;
-      border-radius:0;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:8px;
-      font-family:"Minecrafter","Minecraft",monospace;
-    }
-    .menu button span:last-child{
-      font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      color:var(--muted);
-      font-size:11px;
-      text-transform:none;
-    }
-    .menu button:hover{border-color:#fff; background:rgba(255,255,255,.07);}
-    .menu button:active{opacity:.9;}
 
     .badges{
       display:flex;
@@ -446,10 +390,7 @@
 
           <div class="actions">
             <div class="downloadWrap">
-              <div class="dropdown">
-                <button id="downloadBtn" class="btn" disabled aria-expanded="false" aria-haspopup="true">Loading… <span class="caret">▼</span></button>
-                <div id="downloadMenu" class="menu" hidden></div>
-              </div>
+              <a class="btn" href="https://modrinth.com/mod/visual-keystrokes" target="_blank" rel="noreferrer">Download</a>
             </div>
             <a class="btn secondary" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord ↗</a>
             <a class="btn secondary" href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub ↗</a>
@@ -639,130 +580,12 @@
       clearAll();
     }
 
-    // ---------- Download UI ----------
-    function initDownloadUI() {
-      const downloadBtn = $('#downloadBtn');
-      const downloadMenu = $('#downloadMenu');
-      const releasesPage = 'https://github.com/soymods/visual-keystrokes/releases';
-      const apiUrl = 'https://api.github.com/repos/soymods/visual-keystrokes/releases?per_page=30';
-      if (!downloadBtn || !downloadMenu) return;
-
-      let assets = [];
-
-      const setButtonLabel = (label) => {
-        downloadBtn.innerHTML = `${label} <span class="caret">▼</span>`;
-      };
-
-      const closeMenu = () => {
-        downloadMenu.hidden = true;
-        downloadBtn.setAttribute('aria-expanded', 'false');
-        downloadBtn.closest('.dropdown')?.classList.remove('open');
-      };
-
-      const openMenu = () => {
-        if (assets.length === 0) return;
-        downloadMenu.hidden = false;
-        downloadBtn.setAttribute('aria-expanded', 'true');
-        downloadBtn.closest('.dropdown')?.classList.add('open');
-      };
-
-      const toggleMenu = () => {
-        if (assets.length === 0) return;
-        (!downloadMenu.hidden) ? closeMenu() : openMenu();
-      };
-
-      const setLoading = (isLoading) => {
-        downloadBtn.disabled = isLoading;
-        setButtonLabel(isLoading ? 'Loading…' : 'Download');
-        if (isLoading) closeMenu();
-      };
-
-      const setFallback = () => {
-        assets = [];
-        closeMenu();
-        downloadBtn.disabled = false;
-        setButtonLabel('Download');
-        downloadBtn.onclick = () => { window.location.href = releasesPage; };
-        downloadMenu.innerHTML = '';
-      };
-
-      const buildMenu = () => {
-        downloadMenu.innerHTML = '';
-        assets.forEach(item => {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-
-          const title = document.createElement('span');
-          title.textContent = item.label;
-
-          const file = document.createElement('span');
-          file.textContent = item.name;
-
-          btn.appendChild(title);
-          btn.appendChild(file);
-
-          btn.addEventListener('click', () => {
-            window.location.href = item.url;
-            closeMenu();
-          });
-
-          downloadMenu.appendChild(btn);
-        });
-      };
-
-      const setSuccessHandlers = () => {
-        downloadBtn.disabled = false;
-        setButtonLabel('Download');
-        downloadBtn.onclick = toggleMenu;
-
-        document.addEventListener('click', (e) => {
-          if (!downloadMenu.contains(e.target) && !downloadBtn.contains(e.target)) closeMenu();
-        });
-
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape') closeMenu();
-        });
-      };
-
-      const fetchReleases = async () => {
-        setLoading(true);
-        try {
-          const res = await fetch(apiUrl, { headers: { 'Accept': 'application/vnd.github+json' } });
-          if (!res.ok) throw new Error('API error');
-          const data = await res.json();
-
-          const latest = (data || []).find(r => !r.draft);
-          if (!latest) throw new Error('No release');
-
-          const jarAssets = (latest.assets || []).filter(a => (a.name || '').toLowerCase().endsWith('.jar'));
-          if (!jarAssets.length) throw new Error('No assets');
-
-          assets = jarAssets.map(a => ({
-            label: 'Release',
-            url: a.browser_download_url || releasesPage,
-            name: a.name || 'visual-keystrokes.jar'
-          }));
-
-          buildMenu();
-          setSuccessHandlers();
-        } catch (err) {
-          console.error('Failed to load releases', err);
-          setFallback();
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      fetchReleases();
-    }
-
     // ---------- Boot ----------
     document.addEventListener('DOMContentLoaded', () => {
       const yearEl = $('#year');
       if (yearEl) yearEl.textContent = new Date().getFullYear();
 
       initLivePreview();
-      initDownloadUI();
     });
   })();
 </script>
