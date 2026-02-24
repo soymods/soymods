@@ -1,0 +1,8 @@
+# Force a single crawlable origin and avoid protocol/host redirect loops.
+http://soymods.com/* https://soymods.com/:splat 301!
+https://www.soymods.com/* https://soymods.com/:splat 301!
+http://www.soymods.com/* https://soymods.com/:splat 301!
+
+# Normalize section URLs so bots always end up on the canonical trailing-slash pages.
+/pathmind /pathmind/ 301
+/visual-keystrokes /visual-keystrokes/ 301
