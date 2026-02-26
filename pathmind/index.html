@@ -266,11 +266,15 @@
       text-transform: lowercase;
       cursor: pointer;
       padding: 8px 12px;
-      transition: color .18s var(--ease);
       letter-spacing: 0.06em;
+      transform: translateY(10px);
+      opacity:0;
+      transition: color .18s var(--ease), transform .7s var(--ease), opacity .7s var(--ease);
     }
+    .compatBtn.reveal{transform: translateY(0); opacity:1}
     .compatBtn:hover{
       color: #fff;
+      transform: translateY(-1px);
     }
 
     /* Modal */
@@ -602,7 +606,7 @@
     }
 
     @media (prefers-reduced-motion: reduce){
-      .logo-img,.word,.lede,.actions,.downloadNote,.canvas{transition:none}
+      .logo-img,.word,.lede,.actions,.downloadNote,.canvas,.compatBtn{transition:none}
       .btn,.node{transition:none}
     }
   </style>
@@ -767,11 +771,13 @@
       const l = document.getElementById('l');
       const a = document.getElementById('a');
       const c = document.getElementById('c');
+      const compatBtn = document.getElementById('compatBtn');
       requestAnimationFrame(() => {
         if (logo) logo.classList.add('reveal');
         setTimeout(() => w.classList.add('reveal'), 80);
         setTimeout(() => l.classList.add('reveal'), 150);
         setTimeout(() => a.classList.add('reveal'), 230);
+        setTimeout(() => compatBtn?.classList.add('reveal'), 280);
         setTimeout(() => c.classList.add('reveal'), 310);
       });
     };
