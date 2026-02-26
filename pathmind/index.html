@@ -257,6 +257,7 @@
 
     /* Compatibility Button */
     .compatBtn{
+      position: relative;
       margin-top: 12px;
       background: transparent;
       border: none;
@@ -266,11 +267,39 @@
       text-transform: lowercase;
       cursor: pointer;
       padding: 8px 12px;
-      transition: color .18s var(--ease);
+      transition: color .18s var(--ease), transform .18s var(--ease);
       letter-spacing: 0.06em;
+      animation: compatPulse 1.8s var(--ease) infinite;
+    }
+    .compatBtn::after{
+      content:"";
+      position:absolute;
+      left:12px;
+      right:12px;
+      bottom:5px;
+      height:1px;
+      background:rgba(255,255,255,.46);
+      transform-origin:left center;
+      animation: compatUnderline 1.8s var(--ease) infinite;
     }
     .compatBtn:hover{
       color: #fff;
+      animation-play-state: paused;
+      transform: translateY(-1px);
+    }
+    .compatBtn:hover::after{
+      animation-play-state: paused;
+      transform: scaleX(1);
+      background:#fff;
+    }
+
+    @keyframes compatPulse{
+      0%,100%{opacity:.8}
+      50%{opacity:1}
+    }
+    @keyframes compatUnderline{
+      0%,100%{transform:scaleX(.2); opacity:.5}
+      50%{transform:scaleX(1); opacity:1}
     }
 
     /* Modal */
@@ -604,6 +633,8 @@
     @media (prefers-reduced-motion: reduce){
       .logo-img,.word,.lede,.actions,.downloadNote,.canvas{transition:none}
       .btn,.node{transition:none}
+      .compatBtn,
+      .compatBtn::after{animation:none}
     }
   </style>
 </head>
