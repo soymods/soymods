@@ -257,7 +257,6 @@
 
     /* Compatibility Button */
     .compatBtn{
-      position: relative;
       margin-top: 12px;
       background: transparent;
       border: none;
@@ -267,39 +266,15 @@
       text-transform: lowercase;
       cursor: pointer;
       padding: 8px 12px;
-      transition: color .18s var(--ease), transform .18s var(--ease);
       letter-spacing: 0.06em;
-      animation: compatPulse 1.8s var(--ease) infinite;
+      transform: translateY(10px);
+      opacity:0;
+      transition: color .18s var(--ease), transform .7s var(--ease), opacity .7s var(--ease);
     }
-    .compatBtn::after{
-      content:"";
-      position:absolute;
-      left:12px;
-      right:12px;
-      bottom:5px;
-      height:1px;
-      background:rgba(255,255,255,.46);
-      transform-origin:left center;
-      animation: compatUnderline 1.8s var(--ease) infinite;
-    }
+    .compatBtn.reveal{transform: translateY(0); opacity:1}
     .compatBtn:hover{
       color: #fff;
-      animation-play-state: paused;
       transform: translateY(-1px);
-    }
-    .compatBtn:hover::after{
-      animation-play-state: paused;
-      transform: scaleX(1);
-      background:#fff;
-    }
-
-    @keyframes compatPulse{
-      0%,100%{opacity:.8}
-      50%{opacity:1}
-    }
-    @keyframes compatUnderline{
-      0%,100%{transform:scaleX(.2); opacity:.5}
-      50%{transform:scaleX(1); opacity:1}
     }
 
     /* Modal */
@@ -631,10 +606,8 @@
     }
 
     @media (prefers-reduced-motion: reduce){
-      .logo-img,.word,.lede,.actions,.downloadNote,.canvas{transition:none}
+      .logo-img,.word,.lede,.actions,.downloadNote,.canvas,.compatBtn{transition:none}
       .btn,.node{transition:none}
-      .compatBtn,
-      .compatBtn::after{animation:none}
     }
   </style>
 </head>
@@ -798,11 +771,13 @@
       const l = document.getElementById('l');
       const a = document.getElementById('a');
       const c = document.getElementById('c');
+      const compatBtn = document.getElementById('compatBtn');
       requestAnimationFrame(() => {
         if (logo) logo.classList.add('reveal');
         setTimeout(() => w.classList.add('reveal'), 80);
         setTimeout(() => l.classList.add('reveal'), 150);
         setTimeout(() => a.classList.add('reveal'), 230);
+        setTimeout(() => compatBtn?.classList.add('reveal'), 280);
         setTimeout(() => c.classList.add('reveal'), 310);
       });
     };
