@@ -715,7 +715,7 @@
           <div class="row"><span>Platform</span><span>Fabric</span></div>
           <div class="row"><span>Minecraft</span><span>1.21.x</span></div>
           <div class="row"><span>Environment</span><span>Client-side</span></div>
-          <div class="row"><span>Downloads</span><span>GitHub Releases</span></div>
+          <div class="row"><span>Downloads</span><span id="modrinth_downloads">Error :(</span></div>
           <div class="row"><span>Support</span><span>Discord</span></div>
         </div>
         <p style="margin-top:12px; color:var(--muted2);">
@@ -959,6 +959,20 @@
       initGraph();
       initCompatModal();
     });
+
+    const apiUrl = 'https://api.modrinth.com/v2/project/pathmind';
+
+    fetch(apiUrl)
+            .then(res => {
+              if (!res.ok) throw new Error("could't fetch data from modrinth api");
+              return res.json();
+            })
+            .then(data => {
+              const downloads = data.downloads;
+              document.getElementById('modrinth_downloads').innerHTML = downloads;
+            })
+            .catch(err => {console.error(err)}
+    );
   </script>
 </body>
 </html>
