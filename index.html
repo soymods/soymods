@@ -278,22 +278,28 @@
       z-index:-1;
       pointer-events:none;
       opacity:.75;
+      overflow:hidden;
     }
     .skyBlocks span{
       position:absolute;
-      width:96px;
-      height:32px;
-      background:rgba(160,35,33,.62);
-      box-shadow:
-        32px -16px 0 rgba(130,28,27,.55),
-        64px 0 0 rgba(130,28,27,.52),
-        128px 18px 0 rgba(255,255,255,.12);
+      left:0;
+      width:180px;
+      height:46px;
+      background:rgba(255,170,174,.45);
       image-rendering:pixelated;
+      filter:drop-shadow(18px 18px 0 rgba(26,31,39,.30));
+      animation:cloudPan 34s linear infinite;
+      will-change:transform;
     }
-    .skyBlocks span:nth-child(1){left:8%; top:18%}
-    .skyBlocks span:nth-child(2){left:58%; top:14%; transform:scale(.8)}
-    .skyBlocks span:nth-child(3){right:8%; top:35%; transform:scale(1.1)}
-    .skyBlocks span:nth-child(4){left:32%; top:46%; transform:scale(.65)}
+    .skyBlocks span:nth-child(1){--cloud-scale:1; top:18%; width:178px; animation-duration:42s; animation-delay:-32s}
+    .skyBlocks span:nth-child(2){--cloud-scale:.85; top:14%; width:220px; animation-duration:42s; animation-delay:-11s}
+    .skyBlocks span:nth-child(3){--cloud-scale:1.05; top:35%; width:156px; animation-duration:42s; animation-delay:-22s}
+    .skyBlocks span:nth-child(4){--cloud-scale:.7; top:46%; width:190px; animation-duration:42s; animation-delay:0s}
+
+    @keyframes cloudPan{
+      from{transform:translateX(-360px) scale(var(--cloud-scale, 1))}
+      to{transform:translateX(calc(100vw + 360px)) scale(var(--cloud-scale, 1))}
+    }
 
     .heroGrid{
       min-height:690px;
@@ -810,6 +816,7 @@
     @media (prefers-reduced-motion: reduce){
       html{scroll-behavior:auto}
       .btn,.tile,.contactCard{transition:none}
+      .skyBlocks span{animation:none}
     }
   </style>
 </head>

@@ -1,593 +1,685 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <!-- Open Graph -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#171b22" />
+
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="soymods">
-  <meta property="og:title" content="Visual Keystrokes — soymods">
-  <meta property="og:description" content="Visual Keystrokes — a customizable input overlay builder for real-time key visualization.">
+  <meta property="og:title" content="Visual Keystrokes - soymods">
+  <meta property="og:description" content="A customizable Minecraft input overlay builder for keystrokes, mouse buttons, and recording layouts.">
   <meta property="og:url" content="https://soymods.com/visual-keystrokes/">
   <meta property="og:image" content="https://soymods.com/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
-  <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Visual Keystrokes — soymods">
-  <meta name="twitter:description" content="Visual Keystrokes — a customizable input overlay builder for real-time key visualization.">
+  <meta name="twitter:title" content="Visual Keystrokes - soymods">
+  <meta name="twitter:description" content="A customizable Minecraft input overlay builder for keystrokes, mouse buttons, and recording layouts.">
   <meta name="twitter:image" content="https://soymods.com/og.png">
-
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
 
   <link rel="canonical" href="https://soymods.com/visual-keystrokes/">
   <meta name="robots" content="index,follow">
 
-  <!-- Favicons -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/icon.png">
 
-  <title>Visual Keystrokes — soymods</title>
-  <meta name="description" content="Visual Keystrokes — a customizable input overlay builder for real-time key visualization." />
+  <title>Visual Keystrokes - soymods</title>
+  <meta name="description" content="Visual Keystrokes - a customizable Minecraft input overlay builder for real-time key visualization." />
 
   <style>
     :root{
-      --bg:#0a0a0a;
-      --fg:#ffffff;
-      --muted:rgba(255,255,255,.68);
-      --muted2:rgba(255,255,255,.46);
-
-      --line:rgba(255,255,255,.16);
-      --line2:rgba(255,255,255,.24);
-      --accent:#8bf6ff;
-      --accent2:#9dffbb;
-
-      --r:0px;
-      --bw:2px;
-
+      --bg:#171b22;
+      --bg2:#222833;
+      --ink:#08090c;
+      --panel:#11151b;
+      --panel2:#202631;
+      --panel3:#343424;
+      --line:#343b48;
+      --line2:#566171;
+      --text:#f7f7f3;
+      --muted:#c6cbc9;
+      --soft:#8f979b;
+      --gold:#f4cd4f;
+      --gold2:#ffe071;
+      --green:#7ec95d;
+      --blue:#6f93d8;
+      --red:#e76052;
+      --max:1380px;
       --ease:cubic-bezier(.2,.8,.2,1);
-      --max:1100px;
     }
 
-    /* Fonts (self-host)
-       Regular: Minecraft (https://www.dafont.com/minecraft.font)
-       Titles/bold: Minecrafter (https://www.dafont.com/minecrafter.font)
-       Place at:
-         /fonts/Minecraft.woff2 (or .ttf)
-         /fonts/Minecrafter.woff2 (or .ttf)
-    */
     @font-face{
       font-family:"Minecraft";
-      src:
-        url("/fonts/Minecraft.woff2") format("woff2"),
-        url("/fonts/Minecraft.ttf") format("truetype");
+      src:url("/fonts/Minecraft.woff2") format("woff2"), url("/fonts/Minecraft.ttf") format("truetype");
       font-display:swap;
     }
     @font-face{
       font-family:"Minecrafter";
-      src:
-        url("/fonts/Minecrafter.woff2") format("woff2"),
-        url("/fonts/Minecrafter.ttf") format("truetype");
+      src:url("/fonts/Minecrafter.woff2") format("woff2"), url("/fonts/Minecrafter.Reg.ttf") format("truetype");
       font-display:swap;
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%; background:var(--bg);}
+    html{background:#0a0b0d; scroll-behavior:smooth}
     body{
       margin:0;
-      background:var(--bg);
-      color:var(--fg);
-      font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      letter-spacing: 0.06em;
+      color:var(--text);
+      font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing:0;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.04), transparent 140px),
+        radial-gradient(circle at 12% 0%, rgba(111,147,216,.28), transparent 34%),
+        linear-gradient(180deg, var(--bg), #101216 62%, #1f211c);
       overflow-x:hidden;
     }
-
-    h1,h2,h3,.btn,.badge,.caps b,strong,b,.brand{
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%}
+    h1,h2,h3,.brandText,.navLinks,.homeLink,.btn,.badge,.key,.feature h2,.label,.miniTitle{
       font-family:"Minecrafter","Minecraft",monospace;
-      letter-spacing: 0.06em;
+      letter-spacing:0;
     }
-
-    a{color:inherit;text-decoration:none}
-
-    a:focus-visible,button:focus-visible{
-      outline:var(--bw) solid #fff;
-      outline-offset:3px;
-      border-radius:0;
-    }
-
-    .bg{
-      position:fixed;
-      inset:0;
-      pointer-events:none;
-      opacity:.35;
-      background:
-        repeating-linear-gradient(
-          to right,
-          transparent 0,
-          transparent 39px,
-          rgba(255,255,255,.10) 40px
-        ),
-        repeating-linear-gradient(
-          to bottom,
-          transparent 0,
-          transparent 39px,
-          rgba(255,255,255,.10) 40px
-        );
-    }
-    .dots{display:none !important;}
-
-    header{
-      position:sticky; top:0; z-index:10;
-      background:rgba(0,0,0,.92);
-      border-bottom:var(--bw) solid var(--line);
-    }
-    .wrap{max-width:var(--max); margin:0 auto; padding:18px 18px;}
-    .nav{display:flex; align-items:flex-start; justify-content:space-between; gap:14px;}
-
-    .brand{
+    .srOnly{
       position:absolute;
-      top:10px; left:10px;
-      font-weight:900;
-      font-size:14px;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+    .wrap{
+      width:min(var(--max), calc(100% - 56px));
+      margin:0 auto;
+    }
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:#111316;
+      border-bottom:4px solid #08090a;
+      box-shadow:0 2px 0 rgba(255,255,255,.08) inset;
+    }
+    .nav{
+      min-height:76px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:24px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:max-content;
+    }
+    .brand img{
+      width:42px;
+      height:42px;
+      image-rendering:pixelated;
+      filter:drop-shadow(3px 3px 0 #000);
+    }
+    .brandText{
+      font-size:22px;
+      text-transform:uppercase;
+      text-shadow:3px 3px 0 #000;
+    }
+    .navLinks{
+      display:flex;
+      align-items:center;
+      gap:28px;
+      color:#cdd2d8;
+      text-transform:uppercase;
+      font-size:16px;
+    }
+    .navLinks a{
+      position:relative;
+      padding:9px 0;
+      transition:color .16s ease;
+    }
+    .navLinks a::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      right:50%;
+      bottom:0;
+      height:3px;
+      background:#fff;
+      opacity:0;
+      transition:left .18s var(--ease), right .18s var(--ease), opacity .12s ease;
+    }
+    .navLinks a:hover{color:#fff}
+    .navLinks a:hover::after{
+      left:0;
+      right:0;
+      opacity:1;
+    }
+    .homeLink{
+      padding:11px 14px 10px;
+      color:#fff;
+      background:#181b22;
+      border:3px solid var(--line2);
+      box-shadow:4px 4px 0 #000;
       text-transform:uppercase;
     }
 
-    main{padding: 22px 0 64px; background:transparent;}
-
     .hero{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap: 26px;
-      align-items:center;
-      padding: 26px 0 0;
-    }
-
-    .heroCard{
-      border:var(--bw) solid var(--line);
-      background: rgba(0,0,0,.45);
-      padding: 22px;
       position:relative;
-      overflow:visible;
+      overflow:hidden;
+      border-bottom:5px solid #090a0b;
+      background:
+        linear-gradient(180deg, rgba(84,103,124,.55), rgba(84,103,124,.22) 38%, transparent 39%),
+        linear-gradient(180deg, #293849 0%, #5b7181 42%, #667d56 43%, #50643a 100%);
     }
-
-    .logoRow{
-      display:flex;
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.24;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 39px, rgba(255,255,255,.16) 40px),
+        repeating-linear-gradient(0deg, transparent 0 39px, rgba(255,255,255,.12) 40px);
+      pointer-events:none;
+    }
+    .clouds{
+      position:absolute;
+      inset:0 0 auto;
+      height:52%;
+      opacity:.42;
+      pointer-events:none;
+      background:
+        linear-gradient(#e1e6e8,#e1e6e8) 4% 16% / 154px 28px no-repeat,
+        linear-gradient(#e1e6e8,#e1e6e8) 10% 12% / 82px 22px no-repeat,
+        linear-gradient(#d0d7db,#d0d7db) 29% 26% / 120px 20px no-repeat,
+        linear-gradient(#e1e6e8,#e1e6e8) 53% 14% / 142px 26px no-repeat,
+        linear-gradient(#d0d7db,#d0d7db) 69% 31% / 104px 18px no-repeat,
+        linear-gradient(#e1e6e8,#e1e6e8) 83% 18% / 160px 26px no-repeat;
+      filter:drop-shadow(18px 18px 0 rgba(26,31,39,.30));
+      animation:cloudDrift 38s linear infinite;
+    }
+    @keyframes cloudDrift{
+      from{background-position:4% 16%, 10% 12%, 29% 26%, 53% 14%, 69% 31%, 83% 18%}
+      to{background-position:24% 16%, 30% 12%, 49% 26%, 73% 14%, 89% 31%, 103% 18%}
+    }
+    .heroInner{
+      position:relative;
+      z-index:2;
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) minmax(360px, 520px);
+      gap:56px;
       align-items:center;
-      gap:16px;
+      min-height:720px;
+      padding:70px 0 92px;
     }
-    .logo-img{
-      width: 96px;
-      height: auto;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      filter: drop-shadow(0 8px 0 #111) drop-shadow(0 16px 0 #070707);
+    .copy{
+      max-width:760px;
     }
-
-    .title-img{
-      width: clamp(200px, 32vw, 360px);
-      height: auto;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
+    .badge{
+      display:inline-block;
+      margin-bottom:20px;
+      padding:8px 13px 7px;
+      color:#111;
+      background:var(--gold);
+      border:4px solid #111;
+      box-shadow:5px 5px 0 #000;
+      text-transform:uppercase;
+      font-size:14px;
     }
-
+    .titleLogo{
+      width:min(620px, 100%);
+      image-rendering:pixelated;
+      filter:drop-shadow(5px 5px 0 #000);
+    }
     .lede{
-      margin: 12px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.75;
-      max-width: 70ch;
+      margin:24px 0 0;
+      max-width:710px;
+      color:#f3f3ed;
+      font-size:22px;
+      line-height:1.45;
+      text-shadow:2px 2px 0 rgba(0,0,0,.82);
     }
-
     .actions{
-      margin-top: 16px;
       display:flex;
       flex-wrap:wrap;
-      gap:10px;
+      gap:16px;
+      margin-top:30px;
     }
-
     .btn{
       display:inline-flex;
       align-items:center;
+      justify-content:center;
+      min-height:60px;
+      padding:15px 24px 13px;
+      color:#15120a;
+      background:var(--gold);
+      border:4px solid #111;
+      box-shadow:5px 5px 0 #000;
+      text-transform:uppercase;
+      font-size:18px;
+      transition:transform .14s var(--ease), filter .14s ease;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      filter:brightness(1.08);
+    }
+    .btn:active{
+      transform:translate(3px,3px);
+      box-shadow:2px 2px 0 #000;
+    }
+    .btn.green{
+      background:var(--green);
+      color:#111811;
+    }
+    .btn.dark{
+      color:#fff;
+      background:#181c24;
+      border-color:#596576;
+    }
+
+    .showcase{
+      position:relative;
+      min-height:520px;
+      padding:28px;
+      background:#2c323c;
+      border:5px solid #202630;
+      box-shadow:0 0 0 5px rgba(0,0,0,.28), 14px 14px 0 #000;
+      overflow:hidden;
+    }
+    .showcase::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity:.20;
+      background:
+        repeating-linear-gradient(90deg, transparent 0 31px, rgba(255,255,255,.10) 32px),
+        repeating-linear-gradient(0deg, transparent 0 31px, rgba(255,255,255,.10) 32px);
+      pointer-events:none;
+    }
+    .showcase::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:31%;
+      background:linear-gradient(180deg, rgba(120,143,85,.85), rgba(69,91,45,.9));
+      border-top:4px solid rgba(0,0,0,.25);
+      pointer-events:none;
+    }
+    .mockWindow{
+      position:relative;
+      z-index:2;
+      min-height:430px;
+      border:4px solid #12161c;
+      background:rgba(11,13,17,.42);
+      box-shadow:8px 8px 0 rgba(0,0,0,.55);
+    }
+    .mockTitle{
+      position:absolute;
+      top:22px;
+      left:50%;
+      transform:translateX(-50%);
+      padding:10px 18px 8px;
+      color:#fff;
+      background:#171b22;
+      border:3px solid #303946;
+      box-shadow:4px 4px 0 #000;
+      font-size:22px;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .keyGrid{
+      position:absolute;
+      left:16px;
+      top:98px;
+      display:grid;
+      grid-template-columns:repeat(3, 66px);
       gap:10px;
-      padding:11px 14px;
-      border-radius:0;
-      border:var(--bw) solid #fff;
-      background:#fff;
-      color:#000;
-      font-weight:900;
-      font-size:13px;
-      cursor:pointer;
-      text-transform:uppercase;
-      transition: transform .18s var(--ease), opacity .18s var(--ease), border-color .18s var(--ease);
-      will-change: transform;
     }
-    .btn.secondary{
-      background:transparent;
-      color:#fff;
-      border-color:var(--line2);
+    .mouseKeys{
+      position:absolute;
+      left:242px;
+      top:98px;
+      display:grid;
+      grid-template-columns:repeat(2, 86px);
+      gap:10px;
     }
-    .btn[disabled]{
-      cursor:not-allowed;
-      opacity:.65;
-      transform:none;
-    }
-    .btn:hover{transform:translateY(-1px); opacity:1;}
-    .btn.secondary:hover{border-color:#fff}
-    .btn:active{transform:translateY(0px); opacity:.92;}
-
-    .downloadWrap{
-      position:relative;
-      display:flex;
-      align-items:center;
-      flex-wrap:wrap;
-    }
-
-    .badges{
+    .wideKeys{
+      position:absolute;
+      left:16px;
+      top:250px;
       display:flex;
       flex-wrap:wrap;
-      gap:8px;
-      margin-top: 12px;
+      gap:10px;
+      width:390px;
     }
-    .badge{
-      padding:6px 10px;
-      border:var(--bw) solid var(--line);
-      border-radius:0;
-      color:var(--muted);
-      font-size:11px;
-      background: rgba(0,0,0,.50);
-      text-transform:uppercase;
-    }
-
-    .editor{
-      border:var(--bw) solid var(--line);
-      background: rgba(0,0,0,.35);
-      padding: 16px;
+    .key{
+      min-width:66px;
+      min-height:66px;
       display:grid;
-      gap: 14px;
-    }
-
-    .editorHeader{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      border-bottom:var(--bw) solid var(--line);
-      padding-bottom:10px;
-      color:var(--muted2);
-      font-size:12px;
-      text-transform:uppercase;
-    }
-    .editorHeader b{color:#fff}
-
-    .caps{
-      display:grid;
-      grid-template-columns: repeat(5, minmax(46px, 1fr));
-      gap: 8px;
-    }
-
-    .cap{
-      border:var(--bw) solid var(--line);
-      background: rgba(0,0,0,.6);
-      padding: 10px 8px;
-      text-align:center;
-      font-size:12px;
-      text-transform:uppercase;
-      position:relative;
-    }
-    .cap.active{
-      border-color: var(--accent);
+      place-items:center;
+      padding:12px 14px 10px;
       color:#fff;
-      box-shadow: 0 0 0 2px rgba(139,246,255,.25) inset;
+      background:#080a0d;
+      border:4px solid #111820;
+      box-shadow:5px 5px 0 rgba(0,0,0,.72), inset 0 3px 0 rgba(255,255,255,.05);
+      text-transform:uppercase;
+      font-size:20px;
+      text-shadow:3px 3px 0 #000;
+      transition:background .1s ease, transform .1s ease, border-color .1s ease, color .1s ease;
     }
-    .cap.active::after{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      border:var(--bw) solid rgba(139,246,255,.35);
-      pointer-events:none;
+    .key[data-key="w"]{grid-column:2; grid-row:1}
+    .key[data-key="a"]{grid-column:1; grid-row:2}
+    .key[data-key="s"]{grid-column:2; grid-row:2}
+    .key[data-key="d"]{grid-column:3; grid-row:2}
+    .key.med{min-width:86px}
+    .key.wide{min-width:210px}
+    .key.active{
+      color:#111;
+      background:var(--gold2);
+      border-color:#fff1a1;
+      transform:translate(3px,3px);
+      box-shadow:2px 2px 0 rgba(0,0,0,.8), inset 0 -5px 0 rgba(0,0,0,.12);
+      text-shadow:none;
     }
-    /* default secondary should look normal */
-    .cap.secondary{
-     border-color: var(--line);
-     color: inherit;
+    .features{
+      padding:74px 0;
+      background:#24221f;
+      border-top:5px solid #111;
     }
-
-    /* when pressed, use accent2 */
-    .cap.secondary.active{
-      border-color: var(--accent2);
-      color:#fff;
-      box-shadow: 0 0 0 2px rgba(157,255,187,.25) inset;
-    }
-    .cap.secondary.active::after{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      border:var(--bw) solid rgba(157,255,187,.35);
-      pointer-events:none;
-    }
-    
-    .layoutRow{
+    .featureHead{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      grid-template-columns:minmax(0, .9fr) minmax(0, 1.1fr);
+      gap:34px;
+      align-items:end;
+      margin-bottom:28px;
     }
-
-    .panel{
-      border:var(--bw) solid var(--line);
-      background: rgba(0,0,0,.35);
-      padding: 18px;
+    .featureHead h2{
+      margin:0;
+      color:var(--gold2);
+      font-size:clamp(42px, 6vw, 82px);
+      line-height:.95;
+      text-transform:uppercase;
+      text-shadow:5px 5px 0 #000;
     }
-    .panel h2{margin:0; font-size:14px; text-transform:uppercase; color:var(--muted);}
-    .panel p{margin: 10px 0 0; color: var(--muted); line-height: 1.75; font-size: 14px;}
-
-    .list{margin: 12px 0 0; padding:0; list-style:none; display:grid; gap:10px;}
-    .li{border-top: var(--bw) solid rgba(255,255,255,.10); padding-top: 10px; color: var(--muted); font-size: 14px; line-height: 1.65;}
-    .li b{color:#fff}
+    .featureHead p{
+      margin:0;
+      color:#d8d5cc;
+      font-size:21px;
+      line-height:1.45;
+    }
+    .featureGrid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:18px;
+    }
+    .feature{
+      min-height:220px;
+      padding:22px;
+      background:#34302b;
+      border:4px solid #141312;
+      box-shadow:7px 7px 0 #000;
+    }
+    .feature h3{
+      margin:0;
+      color:#fff;
+      font-size:30px;
+      text-transform:uppercase;
+      text-shadow:3px 3px 0 #000;
+    }
+    .feature p{
+      margin:14px 0 0;
+      color:#d5d0c7;
+      font-size:18px;
+      line-height:1.45;
+    }
+    .feature:nth-child(2){box-shadow:inset 0 7px 0 var(--gold), 7px 7px 0 #000}
+    .feature:nth-child(3){box-shadow:inset 0 7px 0 var(--green), 7px 7px 0 #000}
+    .feature:nth-child(4){box-shadow:inset 0 7px 0 var(--blue), 7px 7px 0 #000}
 
     footer{
-      margin: 24px auto 0;
-      max-width: var(--max);
-      border-top: var(--bw) solid var(--line);
-      padding: 10px 18px;
-      background: transparent;
-      color: var(--muted2);
-      font-size: 12px;
-      text-transform: uppercase;
+      background:#111316;
+      border-top:4px solid #070809;
+      color:#aeb5ba;
+      font-size:15px;
+      text-transform:uppercase;
+    }
+    .footerInner{
+      min-height:70px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
+      gap:18px;
       flex-wrap:wrap;
-      line-height: 1.2;
     }
-    footer a{color:var(--muted); border-bottom:var(--bw) solid transparent;}
-    footer a:hover{color:#fff; border-color:rgba(255,255,255,.35)}
-
-    @media (max-width: 980px){
-      .hero{grid-template-columns: 1fr;}
-      .layoutRow{grid-template-columns: 1fr;}
-      .caps{grid-template-columns: repeat(4, minmax(46px, 1fr));}
+    .footerInner a{
+      color:#fff;
+      border-bottom:2px solid rgba(255,255,255,.35);
     }
 
-    @media (prefers-reduced-motion: reduce){
-      .btn{transition:none}
+    @media (max-width:1120px){
+      .heroInner{grid-template-columns:1fr}
+      .showcase{min-height:500px}
+      .featureHead{grid-template-columns:1fr}
+      .featureGrid{grid-template-columns:repeat(2, minmax(0, 1fr))}
+    }
+    @media (max-width:720px){
+      .wrap{width:min(100% - 28px, var(--max))}
+      .nav{min-height:auto; padding:12px 0; align-items:flex-start}
+      .brandText{font-size:18px}
+      .navLinks{display:none}
+      .homeLink{font-size:13px}
+      .heroInner{min-height:auto; padding:44px 0 54px}
+      .lede{font-size:19px}
+      .showcase{padding:14px; min-height:470px}
+      .mockWindow{min-height:420px}
+      .mockTitle{font-size:17px}
+      .keyGrid{left:18px; top:78px; grid-template-columns:repeat(3, 52px)}
+      .mouseKeys{left:198px; top:78px; grid-template-columns:repeat(2, 68px)}
+      .wideKeys{left:18px; top:204px; width:290px}
+      .key{min-width:52px; min-height:52px; font-size:17px}
+      .key.med{min-width:68px}
+      .key.wide{min-width:166px}
+      .featureGrid{grid-template-columns:1fr}
+    }
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      .clouds{animation:none}
+      .btn,.key,.navLinks a,.navLinks a::after{transition:none}
     }
   </style>
 </head>
 <body>
-  <div class="bg" aria-hidden="true"></div>
-  <div class="dots" aria-hidden="true"></div>
-
-  <header>
+  <header class="topbar">
     <div class="wrap nav">
-      <a class="brand" href="/" aria-label="soymods home">soymods</a>
-      <div aria-hidden="true"></div>
+      <a class="brand" href="/" aria-label="soymods home">
+        <img src="logo.png" alt="">
+        <span class="brandText">Visual Keystrokes</span>
+      </a>
+      <nav class="navLinks" aria-label="Visual Keystrokes navigation">
+        <a href="#features">Features</a>
+        <a href="https://modrinth.com/mod/visual-keystrokes" target="_blank" rel="noreferrer">Modrinth</a>
+        <a href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub</a>
+      </nav>
+      <a class="homeLink" href="/">Soymods</a>
     </div>
   </header>
 
   <main>
-    <div class="wrap">
-      <section class="hero">
-        <div class="heroCard">
-          <div class="logoRow">
-            <img src="logo.png" alt="Visual Keystrokes logo" class="logo-img">
-            <img src="visual-keystrokes_title.png" alt="Visual Keystrokes" class="title-img">
-          </div>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="clouds" aria-hidden="true"></div>
+      <div class="wrap heroInner">
+        <div class="copy">
+          <span class="badge">Minecraft input overlay</span>
+          <h1 class="srOnly" id="page-title">Visual Keystrokes</h1>
+          <img class="titleLogo" src="visual-keystrokes_title.png" alt="Visual Keystrokes">
           <p class="lede">
-            Visual Keystrokes is a highly customizable input overlay mod that lets you visually build and display exactly
-            which keys are being pressed in real time. Instead of relying on fixed presets, it provides a flexible,
-            editor-driven system where users can add individual elements, resize and reposition them freely, snap
-            layouts together, and control how each input is shown on screen. From simple WASD and mouse buttons to full
-            keyboards and utility keys, every element can be configured to fit your setup and style. Designed with an
-            intuitive interface and deep customization in mind, Visual Keystrokes works equally well for recording,
-            streaming, tutorials, or personal use, giving you complete control over how your inputs are visualized.
+            Build clean, readable key and mouse overlays for Minecraft videos, streams,
+            tutorials, and screenshots. Move the pieces, style the states, and keep every
+            input visible without fighting fixed presets.
           </p>
-
           <div class="actions">
-            <div class="downloadWrap">
-              <a class="btn" href="https://modrinth.com/mod/visual-keystrokes" target="_blank" rel="noreferrer">Download</a>
-            </div>
-            <a class="btn secondary" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord ↗</a>
-            <a class="btn secondary" href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub ↗</a>
-          </div>
-
-          <div class="badges">
-            <span class="badge">Overlay builder</span>
-            <span class="badge">Layout snapping</span>
-            <span class="badge">Recording ready</span>
+            <a class="btn green" href="https://modrinth.com/mod/visual-keystrokes" target="_blank" rel="noreferrer">Download</a>
+            <a class="btn" href="#features">View features</a>
+            <a class="btn dark" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord</a>
           </div>
         </div>
 
-        <div class="editor" aria-label="editor preview">
-          <div class="editorHeader">
-            <span><b>Editor</b></span>
-            <span>live preview</span>
-          </div>
-          <div class="caps" aria-hidden="true">
-            <div class="cap" data-key="esc">Esc</div>
-            <div class="cap" data-key="1">1</div>
-            <div class="cap" data-key="2">2</div>
-            <div class="cap" data-key="3">3</div>
-            <div class="cap" data-key="tab">Tab</div>
-            <div class="cap" data-key="w">W</div>
-            <div class="cap" data-key="a">A</div>
-            <div class="cap" data-key="s">S</div>
-            <div class="cap" data-key="d">D</div>
-            <div class="cap" data-key="r">R</div>
-            <div class="cap" data-key="shift">Shift</div>
-            <div class="cap secondary" data-key="lmb">LMB</div>
-            <div class="cap secondary" data-key="rmb">RMB</div>
-            <div class="cap" data-key="space">Space</div>
-            <div class="cap" data-key="ctrl">Ctrl</div>
-          </div>
-          <div class="layoutRow">
-            <div class="panel">
-              <h2>Build your overlay</h2>
-              <p>
-                Drag in keys, mouse buttons, and utility inputs. Snap pieces together and align them to a clean grid.
-              </p>
-              <ul class="list">
-                <li class="li"><b>Element editor</b> — resize, rotate, and label each key individually.</li>
-                <li class="li"><b>Layouts</b> — save multiple scenes for different games or tutorial setups.</li>
-                <li class="li"><b>Styles</b> — control color, glow, fonts, and pressed states.</li>
-              </ul>
+        <div class="showcase" aria-label="Visual Keystrokes preview">
+          <div class="mockWindow">
+            <div class="mockTitle">Live overlay</div>
+            <div class="keyGrid" aria-hidden="true">
+              <div class="key" data-key="w">W</div>
+              <div class="key" data-key="a">A</div>
+              <div class="key" data-key="s">S</div>
+              <div class="key" data-key="d">D</div>
             </div>
-            <div class="panel">
-              <h2>Signal clarity</h2>
-              <p>
-                Every input has its own visual treatment so your viewers always know what you press and when.
-              </p>
-              <p style="margin-top:12px; color:var(--muted2);">
-                Visual Keystrokes is designed to read clearly even at streaming sizes.
-              </p>
+            <div class="mouseKeys" aria-hidden="true">
+              <div class="key med" data-key="lmb">LMB</div>
+              <div class="key med" data-key="rmb">RMB</div>
+            </div>
+            <div class="wideKeys" aria-hidden="true">
+              <div class="key wide" data-key="space">Space</div>
+              <div class="key med" data-key="shift">Shift</div>
+              <div class="key med" data-key="ctrl">Ctrl</div>
+              <div class="key med" data-key="cps">CPS</div>
             </div>
           </div>
         </div>
-      </section>
-    </div>
-
-    <footer>
-      <div>© <span id="year"></span> soymods — Visual Keystrokes by ryduzz.</div>
-      <div style="display:flex; gap:14px; flex-wrap:wrap;">
-        <a href="/">soymods</a>
       </div>
-    </footer>
+    </section>
+
+    <section class="features" id="features" aria-labelledby="features-title">
+      <div class="wrap">
+        <div class="featureHead">
+          <h2 id="features-title">Made for readable inputs</h2>
+          <p>
+            The page now treats Visual Keystrokes as its own tool, while borrowing the
+            in-mod colors: dark panels, blue-gray atmosphere, yellow selection accents,
+            and chunky pixel controls.
+          </p>
+        </div>
+        <div class="featureGrid">
+          <article class="feature">
+            <h3>Build</h3>
+            <p>Place WASD, mouse buttons, CPS, utility keys, or larger keyboard groups wherever your layout needs them.</p>
+          </article>
+          <article class="feature">
+            <h3>Style</h3>
+            <p>Match your video setup with high-contrast labels, pressed states, spacing, and blocky panels.</p>
+          </article>
+          <article class="feature">
+            <h3>Record</h3>
+            <p>Keep inputs visible at stream and short-form sizes without covering the important part of the game.</p>
+          </article>
+          <article class="feature">
+            <h3>Reuse</h3>
+            <p>Keep overlay presets for PvP, tutorials, cinematic shots, or any other repeated workflow.</p>
+          </article>
+        </div>
+      </div>
+    </section>
   </main>
 
+  <footer>
+    <div class="wrap footerInner">
+      <div>© <span id="year"></span> soymods - Visual Keystrokes by ryduzz.</div>
+      <div><a href="/">soymods hub</a></div>
+    </div>
+  </footer>
+
   <script>
-  // --- Live preview + download UI (full rewrite) ---
-  (() => {
-    // ---------- Helpers ----------
-    const $ = (sel, root = document) => root.querySelector(sel);
-    const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-
-    // ---------- Live preview ----------
-    function initLivePreview() {
-      const keycaps = $$('.cap[data-key]');
-      const capByKey = new Map(keycaps.map(el => [el.dataset.key, el]));
+    (() => {
+      const $ = (selector, root = document) => root.querySelector(selector);
+      const $$ = (selector, root = document) => Array.from(root.querySelectorAll(selector));
+      const keyEls = $$('[data-key]');
+      const cpsEl = $('[data-key="cps"]');
       const pressed = new Set();
+      let clickTimes = [];
 
-      const setActive = (dataKey, on) => {
-        const el = capByKey.get(dataKey);
-        if (el) el.classList.toggle('active', !!on);
+      const normalizeKey = (key) => {
+        if (!key) return '';
+        if (key === ' ') return 'space';
+        const value = key.toLowerCase();
+        if (value === 'control') return 'ctrl';
+        return value;
       };
 
-      const syncAllCaps = () => {
-        for (const el of keycaps) {
-          const dk = el.dataset.key;
-          el.classList.toggle('active', pressed.has(dk));
+      const setPressed = (key, on) => {
+        if (!key) return;
+        if (on) pressed.add(key);
+        else pressed.delete(key);
+      };
+
+      const sync = () => {
+        for (const el of keyEls) {
+          el.classList.toggle('active', pressed.has(el.dataset.key));
         }
       };
 
-      // Map your data-key values to event.key values (normalized)
-      // Note: letters are handled dynamically (lowercase)
-      const KEYMAP = new Map([
-        ['esc', 'escape'],
-        ['tab', 'tab'],
-        ['space', ' '],
-        ['shift', 'shift'],
-        ['ctrl', 'control'],
-        ['r', 'r'],
-        ['1', '1'],
-        ['2', '2'],
-        ['3', '3'],
-        // w/a/s/d handled by letter logic too; keeping them is harmless
-        ['w', 'w'],
-        ['a', 'a'],
-        ['s', 's'],
-        ['d', 'd'],
-      ]);
-
-      const normalizeKey = (k) => {
-        if (!k) return '';
-        // Single characters => lowercase (so "W" becomes "w")
-        if (k.length === 1) return k.toLowerCase();
-        return k.toLowerCase();
+      const updateCps = () => {
+        const now = performance.now();
+        clickTimes = clickTimes.filter(time => now - time <= 1000);
+        const cps = clickTimes.length;
+        if (cpsEl) cpsEl.textContent = cps > 0 ? `${cps} CPS` : 'CPS';
+        setPressed('cps', cps > 0);
+        sync();
       };
 
-      const applyKeyDown = (e) => {
-        // Prevent scrolling / page actions for "overlay-like" behavior
-        if (e.key === ' ' || e.key === 'Spacebar') e.preventDefault();
+      window.addEventListener('keydown', (event) => {
+        const key = normalizeKey(event.key);
+        if (key === 'space') event.preventDefault();
+        setPressed(key, true);
+        sync();
+      }, { passive:false });
 
-        const k = normalizeKey(e.key);
-
-        // Add mapped keys
-        for (const [dataKey, eventKey] of KEYMAP.entries()) {
-          if (k === eventKey) pressed.add(dataKey);
-        }
-
-        // Also add letters/digits that exist as caps (handles w/a/s/d, numbers, etc.)
-        if (capByKey.has(k)) pressed.add(k);
-
-        syncAllCaps();
-      };
-
-      const applyKeyUp = (e) => {
-        const k = normalizeKey(e.key);
-
-        for (const [dataKey, eventKey] of KEYMAP.entries()) {
-          if (k === eventKey) pressed.delete(dataKey);
-        }
-
-        if (capByKey.has(k)) pressed.delete(k);
-
-        syncAllCaps();
-      };
-
-      // Robust mouse: use e.buttons bitmask as the source of truth
-      const updateMouseButtons = (buttonsBitmask) => {
-        const l = (buttonsBitmask & 1) !== 0; // left
-        const r = (buttonsBitmask & 2) !== 0; // right
-
-        if (l) pressed.add('lmb'); else pressed.delete('lmb');
-        if (r) pressed.add('rmb'); else pressed.delete('rmb');
-
-        setActive('lmb', l);
-        setActive('rmb', r);
-      };
-
-      // Clear everything (prevents stuck keys/buttons)
-      const clearAll = () => {
-        pressed.clear();
-        for (const el of keycaps) el.classList.remove('active');
-      };
-
-      // Events
-      window.addEventListener('keydown', applyKeyDown, { passive: false });
-      window.addEventListener('keyup', applyKeyUp);
-
-      window.addEventListener('mousedown', (e) => updateMouseButtons(e.buttons));
-      window.addEventListener('mouseup',   (e) => updateMouseButtons(e.buttons));
-      window.addEventListener('mousemove', (e) => updateMouseButtons(e.buttons));
-
-      // Prevent RMB menu so RMB can behave like a “pressed” button
-      window.addEventListener('contextmenu', (e) => e.preventDefault());
-
-      // Safety clears
-      window.addEventListener('blur', clearAll);
-      window.addEventListener('visibilitychange', () => {
-        if (document.hidden) clearAll();
+      window.addEventListener('keyup', (event) => {
+        setPressed(normalizeKey(event.key), false);
+        sync();
       });
-      window.addEventListener('pointercancel', clearAll);
-      window.addEventListener('pointerup', () => updateMouseButtons(0));
 
-      // Start clean
-      clearAll();
-    }
+      const updateMouse = (buttons) => {
+        setPressed('lmb', (buttons & 1) !== 0);
+        setPressed('rmb', (buttons & 2) !== 0);
+        sync();
+      };
 
-    // ---------- Boot ----------
-    document.addEventListener('DOMContentLoaded', () => {
-      const yearEl = $('#year');
-      if (yearEl) yearEl.textContent = new Date().getFullYear();
+      window.addEventListener('mousedown', event => {
+        if (event.button === 0 || event.button === 2) {
+          clickTimes.push(performance.now());
+          updateCps();
+        }
+        updateMouse(event.buttons);
+      });
+      window.addEventListener('mouseup', event => updateMouse(event.buttons));
+      window.addEventListener('mousemove', event => updateMouse(event.buttons));
+      window.addEventListener('pointerup', () => updateMouse(0));
+      window.setInterval(updateCps, 100);
+      window.addEventListener('contextmenu', event => event.preventDefault());
+      window.addEventListener('blur', () => {
+        pressed.clear();
+        clickTimes = [];
+        if (cpsEl) cpsEl.textContent = 'CPS';
+        sync();
+      });
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          pressed.clear();
+          clickTimes = [];
+          if (cpsEl) cpsEl.textContent = 'CPS';
+          sync();
+        }
+      });
 
-      initLivePreview();
-    });
-  })();
-</script>
+      const year = $('#year');
+      if (year) year.textContent = new Date().getFullYear();
+    })();
+  </script>
 </body>
 </html>
