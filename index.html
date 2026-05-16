@@ -1,25 +1,23 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="soymods">
   <meta property="og:title" content="soymods">
-  <meta property="og:description" content="A home for soymods projects and downloads.">
+  <meta property="og:description" content="Minecraft mods, tools, releases, and experiments by ryduzz.">
   <meta property="og:url" content="https://soymods.com/">
   <meta property="og:image" content="https://soymods.com/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
-  <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="soymods">
-  <meta name="twitter:description" content="A home for Soymods projects and downloads.">
+  <meta name="twitter:description" content="Minecraft mods, tools, releases, and experiments by ryduzz.">
   <meta name="twitter:image" content="https://soymods.com/og.png">
 
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#000000" />
+  <meta name="theme-color" content="#111111" />
 
   <link rel="canonical" href="https://soymods.com/">
   <meta name="robots" content="index,follow">
@@ -30,560 +28,1030 @@
   <link rel="apple-touch-icon" href="/icon.png">
 
   <title>soymods</title>
-  <meta name="description" content="A home for Soymods projects and downloads." />
+  <meta name="description" content="Minecraft mods, tools, releases, and experiments by ryduzz." />
 
-  <!--
-    Fonts (self-host these from dafont downloads):
-      Regular text: https://www.dafont.com/minecraft.font  -> put at /fonts/Minecraft.woff2 (and/or .ttf)
-      Titles + bold: https://www.dafont.com/minecrafter.font -> put at /fonts/Minecrafter.woff2 (and/or .ttf)
-
-    If you only have .ttf, remove the woff2 src lines or keep both.
-  -->
   <style>
-
     :root{
-      --bg:#000;
-      --fg:#fff;
-      --muted:rgba(255,255,255,.70);
-      --muted2:rgba(255,255,255,.48);
-      --line:rgba(255,255,255,.14);
-      --line2:rgba(255,255,255,.22);
+      --void:#090b0d;
+      --void2:#0f1215;
+      --panel:#191c1f;
+      --panel2:#25292d;
+      --stone:#3a4046;
+      --ink:#050505;
+      --fg:#f7f7f0;
+      --muted:#c7cbd0;
+      --muted2:#858d95;
+      --line:#384047;
+      --line2:#59636d;
+      --green:#4edb5d;
+      --green2:#7cff87;
+      --blue:#2f8cff;
+      --blue2:#73b5ff;
+      --red:#ff4040;
+      --red2:#ff7272;
+      --shadow:#050505;
+      --max:1380px;
+      --bw:3px;
       --ease:cubic-bezier(.2,.8,.2,1);
-      --max:1100px;
-      --r:0px;      /* NO rounding anywhere */
-      --bw:2px;     /* slightly thicker borders */
     }
 
-    /* ===== Fonts (self-host from dafont) =====
-       Regular text: Minecraft
-       Titles/Bold:  Minecrafter
-       Put files at:
-       /fonts/Minecraft.woff2 (or .ttf)
-       /fonts/Minecrafter.woff2 (or .ttf)
-    */
     @font-face{
       font-family:"Minecraft";
-      src:
-        url("/fonts/Minecraft.woff2") format("woff2"),
-        url("/fonts/Minecraft.ttf") format("truetype");
+      src:url("/fonts/Minecraft.ttf") format("truetype");
       font-display:swap;
     }
     @font-face{
       font-family:"Minecrafter";
-      src:
-        url("/fonts/Minecrafter.woff2") format("woff2"),
-        url("/fonts/Minecrafter.ttf") format("truetype");
+      src:url("/fonts/Minecrafter.Reg.ttf") format("truetype");
       font-display:swap;
     }
 
     *{box-sizing:border-box}
-    html,body{height:100%; background:var(--bg);}
+    html{scroll-behavior:smooth; background:var(--void)}
     body{
       margin:0;
-      background:var(--bg);
+      min-height:100%;
       color:var(--fg);
-      font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      letter-spacing: 0.06em;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55)),
+        var(--void);
+      font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing:0;
       overflow-x:hidden;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
     }
 
-    /* Titles + bold use Minecrafter */
-    h1,h2,h3,.btn,.pill,.videoHead b,.projectsHeader h2,
-    strong,b,.tag b,.brand{
-      font-family:"Minecrafter","Minecraft",monospace;
-      letter-spacing: 0.06em;
-    }
-
-    a{color:inherit;text-decoration:none}
-
-    /* Pixel-style focus without rounding */
-    a:focus-visible,button:focus-visible{
-      outline:var(--bw) solid #fff;
-      outline-offset:3px;
-      border-radius:0;
-    }
-
-    /* ===== Background grid (actual page background) ===== */
-    .bg{
+    body::before{
+      content:"";
       position:fixed;
       inset:0;
-      pointer-events:none;
-      opacity:.80; /* make lines visible */
+      z-index:-3;
       background:
-        repeating-linear-gradient(
-          to right,
-          transparent 0,
-          transparent 31px,
-          var(--line) 32px
-        ),
-        repeating-linear-gradient(
-          to bottom,
-          transparent 0,
-          transparent 31px,
-          var(--line) 32px
-        );
-    }
-    /* Disable dots overlay to avoid "dot pattern on box" */
-    .dots{display:none !important;}
-
-    header{
-      position:sticky; top:0; z-index:10;
-      background:rgba(0,0,0,.92);
-      border-bottom:var(--bw) solid var(--line);
-    }
-    .wrap{max-width:var(--max); margin:0 auto; padding:18px 18px;}
-    .nav{display:flex; align-items:flex-start; justify-content:space-between; gap:14px;}
-
-    /* top-left brand pinned */
-    .brand{
-      position:absolute;
-      top:10px; left:10px;
-      font-weight:800;
-      font-size:14px;
-      text-transform:uppercase;
+        linear-gradient(90deg, rgba(47,140,255,.045) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(78,219,93,.035) 1px, transparent 1px);
+      background-size:36px 36px;
+      mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.92) 45%, transparent 100%);
     }
 
-    main{padding:26px 0 64px; background:transparent;}
-
-    /* Main box */
-    .stage{
-      position:relative;
-      border:var(--bw) solid var(--line);
-      border-radius:0;
-      overflow:hidden;
-      padding: 22px;
-      transform: translateY(10px);
-      opacity:0;
-      transition: transform .7s var(--ease), opacity .7s var(--ease);
-      background: rgba(0,0,0,.35);
-      display:flex;
-      flex-direction:column;
-      min-height: 440px; /* keeps layout stable but not overly tall */
-    }
-    .stage.reveal{transform:translateY(0); opacity:1}
-
-    /* Hero title image */
-    .title-img{
-      width: min(92%, 520px);
-      height: auto;
-      margin: 0 0 16px;
-      image-rendering: pixelated;
-      image-rendering: crisp-edges;
-      filter: drop-shadow(0 8px 0 #111) drop-shadow(0 16px 0 #070707);
-    }
-
-    .subtitle{
-      margin: 8px 0 0;
-      max-width: 70ch;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.7;
-    }
-    .subtitle strong{color:#fff}
-
-    /* Top-right tags — NO container box */
-    .label{
-      position:absolute;
-      right: 22px;
-      top: 22px;
-      display:flex;
-      flex-direction:column;
-      gap:6px;                 /* tighter between email/github */
-      align-items:flex-end;
-      pointer-events:auto;
-
-      /* hard-kill any accidental container styling */
-      border:0 !important;
-      outline:0 !important;
-      box-shadow:none !important;
-      background:transparent !important;
-      padding:0 !important;
-      margin:0 !important;
-    }
-    .tag{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:10px 12px;
-      border:var(--bw) solid var(--line);
-      border-radius:0;
-      background:rgba(0,0,0,.92);
-      color:var(--muted);
-      font-size:12px;
-      transition: transform .18s var(--ease), border-color .18s var(--ease);
-      box-shadow:none;
-    }
-    .tag b{color:#fff; font-weight:900; text-transform:uppercase}
-    .tag:hover{transform:translateY(-1px); border-color:#fff; color:#fff}
-    /* padding UNDER github (space between tags and video) */
-    .label .tag:last-child{ margin-bottom: 12px; }
-
-    /* Bottom row: bring it closer (no margin-top:auto) */
-    .bottomRow{
-      margin-top: 22px;
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap:16px;
-      padding-top:12px;
-    }
-
-    .cta{
-      flex: 0 0 38%;
-      display:flex;
-      flex-wrap:wrap;
-      gap:10px;
-      margin:0;
-      align-self:flex-start;
-
-      /* ensure NO outline/container box */
-      border:0 !important;
-      outline:0 !important;
-      box-shadow:none !important;
-      background:transparent !important;
-      padding:0 !important;
-      min-height:0 !important;
-    }
-
-    .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:11px 14px;
-      border-radius:0;
-      border:var(--bw) solid #fff;
-      background:#fff;
-      color:#000;
-      font-weight:900;
-      font-size:13px;
-      cursor:pointer;
-      transition: transform .18s var(--ease), opacity .18s var(--ease);
-      text-transform:uppercase;
-    }
-    .btn.secondary{
-      background:transparent;
-      color:#fff;
-      border-color:var(--line2);
-    }
-    .btn:hover{transform:translateY(-1px)}
-    .btn.secondary:hover{border-color:#fff}
-
-    .videoCard{
-      flex: 1 1 62%;
-      max-width: 620px;
-      border:var(--bw) solid var(--line);
-      border-radius:0;
-      background: rgba(0,0,0,.55);
-      overflow:hidden;
-      align-self:flex-start;
-    }
-    .videoHead{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      padding:10px 12px;
-      border-bottom:var(--bw) solid var(--line);
-      color:var(--muted);
-      font-size:12px;
-      text-transform:uppercase;
-      background: rgba(0,0,0,.35);
-    }
-    .videoHead b{
-      color:#fff;
-      font-weight:900;
-      text-transform:uppercase;
-      font-size:13px;
-    }
-    .videoWrap{
-      position:relative;
-      width:100%;
-      aspect-ratio: 16 / 9;
-      background:#000;
-    }
-    .videoWrap iframe{position:absolute; inset:0; width:100%; height:100%; border:0;}
-
-    /* Projects section (kept close to your original structure) */
-    .projects{
-      background:transparent;
-      margin-top:18px;
-      position:relative;
-      padding: 18px 0 0;
-    }
-    .projectsHeader{
-      display:flex; align-items:baseline; justify-content:space-between; gap:12px;
-      padding: 0 6px;
-    }
-    .projectsHeader h2{margin:0; font-size:14px; text-transform:uppercase; color:var(--muted)}
-
-    .rail{
-      position:absolute;
-      left: 18px;
-      top: 54px;
-      bottom: 0;
-      width: var(--bw);
-      background: var(--line);
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 16% 14%, rgba(78,219,93,.2), transparent 23%),
+        radial-gradient(circle at 86% 8%, rgba(47,140,255,.2), transparent 24%),
+        radial-gradient(circle at 74% 76%, rgba(255,64,64,.14), transparent 22%);
       opacity:.9;
     }
 
-    .item{
-      position:relative;
-      margin: 14px 0 0;
-      padding-left: 36px;
-      transform: translateY(10px);
-      opacity:0;
-      transition: transform .7s var(--ease), opacity .7s var(--ease);
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    h1,h2,h3,.brand,.btn,.eyebrow,.navLink,.tileMeta,.stat strong,.sectionKicker{
+      font-family:"Minecrafter","Minecraft",monospace;
+      letter-spacing:0;
     }
-    .item.reveal{transform:translateY(0); opacity:1}
-    .item .node{
+
+    a:focus-visible,button:focus-visible{
+      outline:3px solid #fff;
+      outline-offset:4px;
+    }
+
+    .wrap{
+      width:min(var(--max), calc(100% - 28px));
+      margin:0 auto;
+    }
+
+    .srOnly{
       position:absolute;
-      left: 14px;
-      top: 18px;
-      width: 10px;
-      height: 10px;
-      border-radius: 0;
-      border:var(--bw) solid #fff;
-      background:#000;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
     }
-    .item a{
-      display:block;
-      border:var(--bw) solid var(--line);
-      border-radius:0;
-      padding: 16px 16px 14px;
-      transition: transform .18s var(--ease), border-color .18s var(--ease), background .18s var(--ease);
-      background: rgba(0,0,0,.55);
+
+    .siteHeader{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:rgba(11,13,15,.96);
+      border-bottom:4px solid #090909;
+      box-shadow:0 4px 0 rgba(255,255,255,.08);
     }
-    .item a:hover{transform:translateY(-1px); border-color:#fff; background: rgba(255,255,255,.03);}
-    .itemTitle{
+
+    .nav{
+      min-height:64px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:10px;
+      gap:22px;
     }
-    .itemTitle h3{
-      margin:0;
-      font-size: 20px;
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:22px;
+      text-transform:uppercase;
+      color:#fff;
+      text-shadow:3px 3px 0 #000;
+    }
+
+    .brandMark{
+      width:38px;
+      height:38px;
+      image-rendering:pixelated;
+      filter:drop-shadow(3px 3px 0 #000);
+    }
+
+    .navLinks{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      color:#d8dde2;
+      font-size:13px;
       text-transform:uppercase;
     }
-    .pill{
-      padding:6px 10px;
-      border:var(--bw) solid var(--line);
-      border-radius:0;
+
+    .navLink{
+      padding:10px 0;
+      border-bottom:3px solid transparent;
+    }
+    .navLink:hover{color:#fff; border-color:var(--green2)}
+
+    .headerActions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .contactLink{
+      color:#d8dde2;
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:13px;
+      text-transform:uppercase;
+      padding:10px 0;
+      border-bottom:3px solid transparent;
+    }
+    .contactLink:hover{color:#fff; border-color:var(--blue)}
+
+    .hero{
+      position:relative;
+      isolation:isolate;
+      min-height:690px;
+      border-bottom:5px solid #111;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(47,140,255,.16), transparent 28%),
+        radial-gradient(circle at 82% 30%, rgba(78,219,93,.12), transparent 26%),
+        linear-gradient(180deg, #11171b 0%, #090b0d 78%, #050607 100%);
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:-2;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 0 12%, rgba(47,140,255,.09) 12% calc(12% + 4px), transparent calc(12% + 4px) 52%, rgba(78,219,93,.08) 52% calc(52% + 4px), transparent calc(52% + 4px) 86%, rgba(255,64,64,.07) 86% calc(86% + 4px), transparent calc(86% + 4px));
+      background-size:44px 44px, 44px 44px, auto;
+      opacity:.85;
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:132px;
+      z-index:-1;
+      background:
+        linear-gradient(180deg, rgba(17,23,27,0) 0%, rgba(9,11,13,.78) 34%, #050607 100%),
+        linear-gradient(90deg, transparent 0 88px, rgba(47,140,255,.18) 88px 90px, transparent 90px 230px, rgba(78,219,93,.18) 230px 232px, transparent 232px 372px, rgba(255,64,64,.14) 372px 374px, transparent 374px 460px);
+      background-size:auto, 460px 100%;
+      box-shadow:0 -5px 0 rgba(0,0,0,.7) inset;
+    }
+
+    .skyBlocks{
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      pointer-events:none;
+      opacity:.75;
+    }
+    .skyBlocks span{
+      position:absolute;
+      width:96px;
+      height:32px;
+      background:#20313a;
+      box-shadow:
+        32px -16px 0 #14242b,
+        64px 0 0 #1a2a31,
+        128px 18px 0 rgba(47,140,255,.2);
+      image-rendering:pixelated;
+    }
+    .skyBlocks span:nth-child(1){left:8%; top:18%}
+    .skyBlocks span:nth-child(2){left:58%; top:14%; transform:scale(.8)}
+    .skyBlocks span:nth-child(3){right:8%; top:35%; transform:scale(1.1)}
+    .skyBlocks span:nth-child(4){left:32%; top:46%; transform:scale(.65)}
+
+    .heroGrid{
+      min-height:690px;
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) minmax(390px, 460px);
+      gap:64px;
+      align-items:center;
+      padding:64px 0 120px;
+    }
+
+    .eyebrow{
+      width:max-content;
+      max-width:100%;
+      margin:0 0 18px;
+      padding:8px 12px 7px;
+      color:#111;
+      background:var(--green2);
+      border:3px solid #111;
+      box-shadow:5px 5px 0 #000;
+      text-transform:uppercase;
+      font-size:13px;
+    }
+
+    .titleImg{
+      width:min(700px, 100%);
+      image-rendering:pixelated;
+      filter:drop-shadow(0 8px 0 #111) drop-shadow(0 15px 0 rgba(0,0,0,.55));
+    }
+
+    .heroCopy{
+      margin:28px 0 0;
+      max-width:740px;
+      color:#e4e8ea;
+      font-size:20px;
+      line-height:1.45;
+      text-shadow:2px 2px 0 rgba(0,0,0,.8);
+    }
+
+    .heroActions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      margin-top:30px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-height:48px;
+      padding:13px 20px 11px;
+      border:3px solid #111;
+      background:#f7f7f0;
+      color:#111;
+      box-shadow:0 5px 0 #000;
+      text-transform:uppercase;
+      font-size:14px;
+      line-height:1;
+      transition:transform .16s var(--ease), box-shadow .16s var(--ease), background .16s var(--ease);
+    }
+    .btn:hover{transform:translateY(-2px); box-shadow:0 7px 0 #000}
+    .btn.primary{background:var(--green); color:#071006}
+    .btn.blue{background:var(--blue); color:#fff}
+    .btn.dark{background:#15191c; color:#fff; border-color:#52606a}
+
+    .heroPanel{
+      position:relative;
+      background:#22272b;
+      border:4px solid #111;
+      box-shadow:12px 12px 0 #050505, 0 0 0 3px rgba(255,255,255,.08) inset;
+      padding:18px;
+      transform:rotate(1deg);
+    }
+
+    .heroPanel::before{
+      content:"featured";
+      position:absolute;
+      left:18px;
+      top:-17px;
+      padding:6px 10px 5px;
+      background:var(--red);
+      border:3px solid #111;
+      color:#fff;
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:12px;
+      text-transform:uppercase;
+      box-shadow:4px 4px 0 #000;
+    }
+
+    .videoFrame{
+      border:3px solid #151515;
+      background:#000;
+      aspect-ratio:16 / 9;
+      overflow:hidden;
+      box-shadow:0 0 0 3px rgba(255,255,255,.06);
+    }
+    .videoFrame iframe{width:100%; height:100%; border:0}
+
+    .panelTitle{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      margin-top:14px;
+    }
+    .panelTitle h2{
+      margin:0;
+      color:#fff;
+      text-transform:uppercase;
+      font-size:23px;
+      text-shadow:3px 3px 0 #111;
+    }
+    .badge{
+      padding:7px 9px 6px;
+      background:#101315;
+      border:2px solid #111;
+      color:var(--green2);
+      font-size:12px;
+      text-transform:uppercase;
+    }
+    .panelText{
+      margin:9px 0 0;
+      color:#cbd2d8;
+      line-height:1.5;
+      font-size:15px;
+    }
+
+    .quickStats{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:12px;
+      margin-top:-54px;
+      position:relative;
+      z-index:2;
+    }
+    .stat{
+      min-height:108px;
+      padding:18px;
+      background:#171b1e;
+      border:3px solid #111;
+      box-shadow:6px 6px 0 #050505;
+    }
+    .stat strong{
+      display:block;
+      color:var(--green2);
+      text-transform:uppercase;
+      font-size:18px;
+      line-height:1.1;
+    }
+    .stat span{
+      display:block;
+      margin-top:8px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    .section{
+      padding:72px 0 0;
+    }
+
+    .sectionHead{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:24px;
+      margin-bottom:24px;
+      border-bottom:4px solid var(--line);
+      padding-bottom:12px;
+    }
+    .sectionKicker{
+      margin:0 0 8px;
+      color:var(--green2);
+      text-transform:uppercase;
+      font-size:14px;
+    }
+    .sectionHead h2{
+      margin:0;
+      text-transform:uppercase;
+      font-size:clamp(34px, 6vw, 68px);
+      line-height:1.06;
+      letter-spacing:.025em;
+      word-spacing:.04em;
+      color:var(--green2);
+      text-shadow:5px 5px 0 #111;
+    }
+    .sectionHead p{
+      max-width:430px;
+      margin:0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.5;
+    }
+
+    .tiles{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:22px;
+    }
+
+    .tile{
+      --accent:var(--green2);
+      min-height:360px;
+      display:flex;
+      flex-direction:column;
+      position:relative;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.05), transparent 38%),
+        #171b1e;
+      border:4px solid #111;
+      box-shadow:8px 8px 0 #050505;
+      overflow:hidden;
+      transition:transform .16s var(--ease), box-shadow .16s var(--ease), border-color .16s var(--ease);
+    }
+    .tile:hover{
+      transform:translateY(-4px);
+      box-shadow:8px 12px 0 #050505;
+      border-color:var(--accent);
+    }
+    .tile.pathmind{--accent:var(--green2)}
+    .tile.keys{--accent:var(--blue)}
+    .tile.more{--accent:var(--red)}
+
+    .tileBand{
+      height:132px;
+      display:grid;
+      place-items:center;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.08), transparent 50%),
+        #243020;
+      border-bottom:4px solid #111;
+    }
+    .tile.pathmind .tileBand{
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.09), transparent 50%),
+        #20351f;
+    }
+    .tile.keys .tileBand{
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.09), transparent 50%),
+        #102642;
+    }
+    .tile.more .tileBand{
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.09), transparent 50%),
+        #3a1114;
+    }
+    .tileIcon{
+      width:84px;
+      height:84px;
+      object-fit:contain;
+      image-rendering:pixelated;
+      filter:drop-shadow(0 7px 0 rgba(0,0,0,.5));
+    }
+    .tileTitleImg{
+      width:220px;
+      max-height:70px;
+      object-fit:contain;
+      image-rendering:pixelated;
+      filter:drop-shadow(0 5px 0 rgba(0,0,0,.5));
+    }
+    .comingIcon{
+      width:86px;
+      height:86px;
+      display:grid;
+      place-items:center;
+      border:4px solid #111;
+      background:#f8f8f8;
+      color:#111;
+      box-shadow:6px 6px 0 #000;
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:42px;
+    }
+
+    .tileBody{
+      flex:1;
+      display:flex;
+      flex-direction:column;
+      padding:20px;
+    }
+    .tileMeta{
+      width:max-content;
+      max-width:100%;
+      padding:6px 8px 5px;
+      background:#101315;
+      border-left:5px solid var(--accent);
       color:var(--muted);
       font-size:11px;
       text-transform:uppercase;
     }
-    .itemDesc{
-      margin:8px 0 0;
-      color:var(--muted);
-      line-height:1.6;
-      font-size:14px;
-      max-width: 80ch;
+    .tile h3{
+      margin:18px 0 0;
+      font-size:26px;
+      line-height:1;
+      text-transform:uppercase;
+      color:#fff;
+      text-shadow:3px 3px 0 #000;
     }
-    .itemMeta{
-      margin-top:10px;
+    .tile p{
+      margin:12px 0 0;
+      color:var(--muted);
+      line-height:1.5;
+      font-size:15px;
+    }
+    .tileActions{
       display:flex;
-      gap:12px;
       flex-wrap:wrap;
+      gap:10px;
+      margin-top:auto;
+      padding-top:22px;
+    }
+    .tileActions .btn{
+      min-height:42px;
+      padding:11px 13px 9px;
+      font-size:12px;
+      box-shadow:0 4px 0 #000;
+    }
+
+    .aboutBand{
+      margin-top:72px;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(135deg, rgba(47,140,255,.1), transparent 28%),
+        linear-gradient(315deg, rgba(78,219,93,.1), transparent 32%),
+        #0d1012;
+      border-top:5px solid #111;
+      border-bottom:5px solid #111;
+      box-shadow:0 5px 0 rgba(255,255,255,.06) inset, 0 -5px 0 rgba(0,0,0,.45) inset;
+    }
+    .aboutBand::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 0 18%, rgba(47,140,255,.16) 18% calc(18% + 4px), transparent calc(18% + 4px) 62%, rgba(78,219,93,.14) 62% calc(62% + 4px), transparent calc(62% + 4px) 82%, rgba(255,64,64,.14) 82% calc(82% + 4px), transparent calc(82% + 4px));
+      background-size:38px 38px, 38px 38px, auto;
+      opacity:.8;
+    }
+    .aboutGrid{
+      position:relative;
+      display:grid;
+      grid-template-columns:.9fr 1.1fr;
+      gap:42px;
+      align-items:center;
+      padding:64px 0;
+    }
+    .aboutArt{
+      position:relative;
+      min-height:330px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.07), transparent 46%),
+        linear-gradient(90deg, rgba(47,140,255,.055) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(78,219,93,.05) 1px, transparent 1px),
+        #090b0d;
+      background-size:auto, 28px 28px, 28px 28px, auto;
+      border:4px solid #111;
+      box-shadow:10px 10px 0 #050505;
+      overflow:hidden;
+    }
+    .aboutArt::before{
+      content:"SOYMODS / HUB";
+      position:absolute;
+      top:16px;
+      left:16px;
+      z-index:2;
+      padding:7px 10px 6px;
+      background:var(--green);
+      border:3px solid #111;
+      box-shadow:4px 4px 0 #000;
+      color:#071006;
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:12px;
+    }
+    .aboutArt::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:4px;
+      height:180px;
+      background:linear-gradient(180deg, var(--green), var(--blue), var(--red));
+      transform:translate(-50%, -50%);
+      opacity:.55;
+    }
+    .hubLogo{
+      position:absolute;
+      left:50%;
+      top:50%;
+      z-index:3;
+      width:132px;
+      height:132px;
+      display:grid;
+      place-items:center;
+      background:#f8f8f8;
+      border:4px solid #111;
+      box-shadow:9px 9px 0 #000;
+      transform:translate(-50%, -50%);
+      image-rendering:pixelated;
+    }
+    .hubLogo img{
+      width:84px;
+      height:84px;
+      object-fit:contain;
+      image-rendering:pixelated;
+    }
+    .hubOutputs{
+      position:absolute;
+      inset:0;
+      z-index:2;
+    }
+    .hubOutput{
+      position:absolute;
+      width:154px;
+      padding:12px 12px 11px;
+      background:#121619;
+      border:3px solid #111;
+      box-shadow:5px 5px 0 #000;
+      color:#f7f7f0;
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:12px;
+      text-transform:uppercase;
+    }
+    .hubOutput span{
+      display:block;
+      margin-top:5px;
       color:var(--muted2);
+      font-family:"Minecraft",monospace;
+      font-size:12px;
+      text-transform:none;
+    }
+    .hubOutput.mods{left:32px; top:104px; border-left:6px solid var(--green)}
+    .hubOutput.tools{right:32px; top:104px; border-left:6px solid var(--blue)}
+    .hubOutput.releases{left:50%; bottom:28px; transform:translateX(-50%); border-left:6px solid var(--red)}
+    .aboutCopy h2{
+      margin:0;
+      color:#fff;
+      text-transform:uppercase;
+      font-size:clamp(30px, 5vw, 58px);
+      line-height:1.1;
+      letter-spacing:.025em;
+      word-spacing:.04em;
+      text-shadow:4px 4px 0 #000;
+    }
+    .aboutCopy p{
+      margin:18px 0 0;
+      color:var(--muted);
+      font-size:17px;
+      line-height:1.55;
+    }
+    .aboutList{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:10px;
+      margin-top:22px;
+    }
+    .aboutList span{
+      display:block;
+      padding:12px 12px 11px;
+      background:#121619;
+      border:3px solid #111;
+      box-shadow:4px 4px 0 #000;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.25;
+    }
+    .aboutList b{
+      display:block;
+      margin-bottom:6px;
+      color:var(--green2);
+      font-family:"Minecrafter","Minecraft",monospace;
+      text-transform:uppercase;
       font-size:12px;
     }
 
-    footer{
-      margin: 14px auto 0;                 /* smaller gap above */
-      max-width: 980px;                    /* or set this to whatever your main width is */
-      border-top: var(--bw) solid var(--line);
-
-      padding: 10px 18px;                  /* <- this is the main fix */
-      background: transparent;
-
-      color: var(--muted2);
-      font-size: 12px;
-      text-transform: uppercase;
-
+    .contactStrip{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+      padding:44px 0 74px;
+    }
+    .contactCard{
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-
-      line-height: 1.2;                    /* keeps it compact */
+      gap:16px;
+      min-height:82px;
+      padding:18px;
+      background:#15191c;
+      border:3px solid #111;
+      box-shadow:6px 6px 0 #050505;
+      color:#fff;
+      transition:transform .16s var(--ease), border-color .16s var(--ease);
     }
-    footer a{color:var(--muted); border-bottom:var(--bw) solid transparent;}
-    footer a:hover{color:#fff; border-color:rgba(255,255,255,.35)}
+    .contactCard:hover{transform:translateY(-2px); border-color:var(--green2)}
+    .contactCard b{
+      display:block;
+      font-family:"Minecrafter","Minecraft",monospace;
+      text-transform:uppercase;
+      font-size:15px;
+      color:#fff;
+    }
+    .contactCard span{
+      display:block;
+      margin-top:5px;
+      color:var(--muted2);
+      font-size:13px;
+    }
+    .arrow{
+      color:var(--green2);
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:26px;
+    }
 
-    @media (max-width: 860px){
-      .stage{min-height: 560px; padding: 18px;}
-      .label{position:relative; right:auto; top:auto; align-items:flex-start; margin-top:14px}
-      .bottomRow{flex-direction:column; align-items:stretch;}
-      .videoCard{max-width:none; width:100%;}
-      .cta{width:100%; flex: 0 0 auto;}
-      .rail{left: 14px}
-      .item{padding-left: 30px}
-      .item .node{left: 8px}
+    footer{
+      border-top:4px solid #111;
+      background:#0b0d0f;
+      color:var(--muted2);
+      font-size:13px;
+    }
+    .footerInner{
+      min-height:76px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .footerLinks{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+      color:var(--muted);
+    }
+    .footerLinks a:hover{color:#fff}
+
+    @media (max-width: 980px){
+      .nav{min-height:68px}
+      .navLinks{display:none}
+      .heroGrid{
+        grid-template-columns:1fr;
+        gap:34px;
+        padding:44px 0 118px;
+      }
+      .hero{min-height:auto}
+      .heroPanel{max-width:560px; transform:none}
+      .quickStats,.tiles,.contactStrip{grid-template-columns:1fr}
+      .aboutGrid{grid-template-columns:1fr}
+      .aboutList{grid-template-columns:1fr}
+      .sectionHead{display:block}
+      .sectionHead p{margin-top:14px}
+    }
+
+    @media (max-width: 620px){
+      .wrap{width:min(100% - 24px, var(--max))}
+      .brand{font-size:18px}
+      .brandMark{width:38px; height:38px}
+      .headerActions .btn.dark{display:none}
+      .heroGrid{padding-top:34px}
+      .heroCopy{font-size:17px}
+      .heroActions .btn{width:100%}
+      .quickStats{margin-top:-40px}
+      .section{padding-top:56px}
+      .tile{min-height:auto}
+      .aboutArt{min-height:280px}
+      .hubLogo{width:96px; height:96px}
+      .hubLogo img{width:62px; height:62px}
+      .hubOutput{width:112px; padding:9px 10px 8px; font-size:11px}
+      .hubOutput span{font-size:11px}
+      .hubOutput.mods{left:12px; top:82px}
+      .hubOutput.tools{right:12px; top:82px}
+      .hubOutput.releases{bottom:18px}
     }
 
     @media (prefers-reduced-motion: reduce){
-      .stage,.item{transition:none}
-      .btn,.tag{transition:none}
+      html{scroll-behavior:auto}
+      .btn,.tile,.contactCard{transition:none}
     }
-
   </style>
 </head>
 <body>
-  <div class="bg" aria-hidden="true"></div>
-  <div class="dots" aria-hidden="true"></div>
-
-  <header>
+  <header class="siteHeader">
     <div class="wrap nav">
-      <a class="brand" href="/" aria-label="soymods home">soymods</a>
+      <a class="brand" href="/" aria-label="soymods home">
+        <img class="brandMark" src="/icon.png" alt="" />
+        <span>soymods</span>
+      </a>
+
+      <nav class="navLinks" aria-label="Primary navigation">
+        <a class="navLink" href="#mods">Mods</a>
+        <a class="navLink" href="#about">About</a>
+        <a class="navLink" href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="navLink" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord</a>
+      </nav>
+
+      <div class="headerActions">
+        <a class="contactLink" href="mailto:contact@soymods.com">Contact</a>
+      </div>
     </div>
   </header>
 
   <main>
-    <div class="wrap" style="max-width:1100px; margin:0 auto; padding:16px 18px;">
-      <section class="stage" id="stage">
-        <div class="orbits" aria-hidden="true">
-          <div class="orbit"></div>
-          <div class="orbit o2"></div>
-        </div>
-
-        <img src="/title.png" alt="soymods" class="title-img" />
-
-        <p class="subtitle">
-          Made by <strong>ryduzz</strong>.
-        </p>
-
-        <div class="label" aria-label="highlights">
-          <a class="tag" href="mailto:contact@soymods.com">
-            <b>Email</b> contact@soymods.com
-          </a>
-
-          <a class="tag" href="https://github.com/soymods" target="_blank" rel="noreferrer">
-            <b>GitHub</b> soymods
-          </a>
-
-          <a class="tag" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">
-            <b>Discord</b> join server
-          </a>
-        </div>
-
-        <div class="bottomRow">
-          <div class="cta">
-            <a class="btn" href="/pathmind/" aria-label="Open Pathmind">Pathmind →</a>
-            <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Latest release ↗</a>
-          </div>
-
-          <aside class="videoCard" aria-label="soymods video">
-            <div class="videoHead">
-              <b>soymods</b>
-              <span>video</span>
-            </div>
-            <div class="videoWrap">
-              <iframe
-                src="https://www.youtube.com/embed/6hy3GnehBpA"
-                title="soymods video"
-                loading="lazy"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                allowfullscreen>
-              </iframe>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="projects" aria-label="projects">
-        <div class="projectsHeader">
-          <h2>Projects</h2>
-        </div>
-
-        <div class="rail" aria-hidden="true"></div>
-
-        <div class="item" id="i1">
-          <div class="node" aria-hidden="true"></div>
-          <a href="/pathmind/" aria-label="Go to Pathmind">
-            <div class="itemTitle">
-              <h3 class="hoverline">Pathmind</h3>
-              <span class="pill">featured</span>
-            </div>
-            <p class="itemDesc">Visual node-based editor for creating in-game workflows and intelligent behavior sequences.</p>
-            <div class="itemMeta">
-              <span>by ryduzz</span>
-              <span>client-side</span>
-              <span>downloads via GitHub Releases</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="item" id="i2">
-          <div class="node" aria-hidden="true"></div>
-          <a href="/visual-keystrokes/" aria-label="Go to Visual Keystrokes">
-            <div class="itemTitle">
-              <h3 class="hoverline">Visual Keystrokes</h3>
-              <span class="pill">new</span>
-            </div>
-            <p class="itemDesc">Customizable input overlay builder with live key, mouse, and utility visualization.</p>
-            <div class="itemMeta">
-              <span>by ryduzz</span>
-              <span>client-side</span>
-              <span>downloads via GitHub Releases</span>
-            </div>
-          </a>
-        </div>
-
-        <div class="item" id="i3">
-          <div class="node" aria-hidden="true"></div>
-          <a href="https://github.com/soymods" target="_blank" rel="noreferrer" aria-label="More projects coming soon">
-            <div class="itemTitle">
-              <h3 class="hoverline">More soon</h3>
-              <span class="pill">wip</span>
-            </div>
-            <p class="itemDesc">Small experiments and utilities will land here as they ship.</p>
-            <div class="itemMeta">
-              <span>updates</span>
-              <span>releases</span>
-              <span>changelogs</span>
-            </div>
-          </a>
-        </div>
-      </section>
-      <footer>
-        <div>© <span id="year"></span> soymods — Pathmind by ryduzz.</div>
-        <div style="display:flex; gap:14px; flex-wrap:wrap;">
-          <a href="/">soymods</a>
+    <section class="hero" aria-labelledby="home-title">
+      <div class="skyBlocks" aria-hidden="true">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
       </div>
-    </footer>
+
+      <div class="wrap heroGrid">
+        <div>
+          <p class="eyebrow">soymods project hub</p>
+          <h1 class="srOnly" id="home-title">soymods</h1>
+          <img src="/title.png" alt="soymods" class="titleImg" />
+          <p class="heroCopy">
+            A one-stop hub for soymods projects: client-side tools, mod releases,
+            experiments, downloads, and the places to follow what ships next.
+          </p>
+          <div class="heroActions">
+            <a class="btn primary" href="#mods">Browse mods</a>
+            <a class="btn blue" href="https://github.com/soymods" target="_blank" rel="noreferrer">View GitHub</a>
+            <a class="btn dark" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Join Discord</a>
+          </div>
+        </div>
+
+        <aside class="heroPanel" aria-label="Featured soymods video">
+          <div class="videoFrame">
+            <iframe
+              src="https://www.youtube.com/embed/6hy3GnehBpA"
+              title="soymods video"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowfullscreen>
+            </iframe>
+          </div>
+          <div class="panelTitle">
+            <h2>Project showcase</h2>
+            <span class="badge">video</span>
+          </div>
+          <p class="panelText">Watch the latest work, then jump straight into releases and source.</p>
+        </aside>
+      </div>
+    </section>
+
+    <div class="wrap quickStats" aria-label="soymods highlights">
+      <div class="stat">
+        <strong>Client-side</strong>
+        <span>Tools built around practical in-game workflows and customization.</span>
+      </div>
+      <div class="stat">
+        <strong>Open source</strong>
+        <span>Downloads, source, changelogs, and issue tracking live on GitHub.</span>
+      </div>
+      <div class="stat">
+        <strong>Mod hub</strong>
+        <span>One place for active projects, upcoming experiments, and release links.</span>
+      </div>
+    </div>
+
+    <section class="section wrap" id="mods" aria-labelledby="mods-title">
+      <div class="sectionHead">
+        <div>
+          <p class="sectionKicker">Projects</p>
+          <h2 id="mods-title">Mods & tools</h2>
+        </div>
+        <p>Each tile is a direct path to the project page or release source, with colors that separate the tools without losing the soymods look.</p>
+      </div>
+
+      <div class="tiles">
+        <article class="tile pathmind">
+          <div class="tileBand">
+            <img class="tileTitleImg" src="/pathmind/pathmind_title.png" alt="Pathmind" />
+          </div>
+          <div class="tileBody">
+            <span class="tileMeta">Featured client mod</span>
+            <h3>Pathmind</h3>
+            <p>Visual node-based editor for creating in-game workflows and intelligent behavior sequences.</p>
+            <div class="tileActions">
+              <a class="btn primary" href="/pathmind/">Open page</a>
+              <a class="btn dark" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Releases</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="tile keys">
+          <div class="tileBand">
+            <img class="tileIcon" src="/visual-keystrokes/logo.png" alt="" />
+          </div>
+          <div class="tileBody">
+            <span class="tileMeta">Overlay utility</span>
+            <h3>Visual Keystrokes</h3>
+            <p>Customizable input overlay builder with live key, mouse, and utility visualization.</p>
+            <div class="tileActions">
+              <a class="btn primary" href="/visual-keystrokes/">Open page</a>
+              <a class="btn dark" href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="tile more">
+          <div class="tileBand">
+            <div class="comingIcon" aria-hidden="true">?</div>
+          </div>
+          <div class="tileBody">
+            <span class="tileMeta">Work in progress</span>
+            <h3>More soon</h3>
+            <p>Small experiments, utilities, and Minecraft ideas will land here as they become public.</p>
+            <div class="tileActions">
+              <a class="btn dark" href="https://github.com/soymods" target="_blank" rel="noreferrer">Follow updates</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="aboutBand" id="about" aria-labelledby="about-title">
+      <div class="wrap aboutGrid">
+        <div class="aboutArt" aria-hidden="true">
+          <div class="hubLogo">
+            <img src="/icon.png" alt="" />
+          </div>
+          <div class="hubOutputs">
+            <div class="hubOutput mods">Mods <span>Pathmind</span></div>
+            <div class="hubOutput tools">Tools <span>Keystrokes</span></div>
+            <div class="hubOutput releases">Releases <span>GitHub</span></div>
+          </div>
+        </div>
+        <div class="aboutCopy">
+          <p class="sectionKicker">What is soymods?</p>
+          <h2 id="about-title">Minecraft tools,<br>built here</h2>
+          <p>
+            soymods is the home base for ryduzz's Minecraft projects: active mods,
+            useful tools, release links, source code, videos, and community updates.
+          </p>
+          <div class="aboutList" aria-label="soymods focus areas">
+            <span><b>Build</b> client-side tools and workflows</span>
+            <span><b>Ship</b> releases through GitHub</span>
+            <span><b>Collect</b> ideas, videos, and community links</span>
+          </div>
+          <div class="heroActions">
+            <a class="btn primary" href="/pathmind/">Open Pathmind</a>
+            <a class="btn dark" href="https://github.com/soymods" target="_blank" rel="noreferrer">Source code</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap contactStrip" aria-label="Contact links">
+      <a class="contactCard" href="mailto:contact@soymods.com">
+        <span>
+          <b>Email</b>
+          <span>contact@soymods.com</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
+      <a class="contactCard" href="https://github.com/soymods" target="_blank" rel="noreferrer">
+        <span>
+          <b>GitHub</b>
+          <span>soymods organization</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
+      <a class="contactCard" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">
+        <span>
+          <b>Discord</b>
+          <span>join the server</span>
+        </span>
+        <span class="arrow">›</span>
+      </a>
     </div>
   </main>
 
+  <footer>
+    <div class="wrap footerInner">
+      <div>© <span id="year"></span> soymods. Minecraft mods and tools by ryduzz.</div>
+      <div class="footerLinks">
+        <a href="/">Home</a>
+        <a href="/pathmind/">Pathmind</a>
+        <a href="/visual-keystrokes/">Visual Keystrokes</a>
+      </div>
+    </div>
+  </footer>
+
   <script>
-    const reveal = () => {
-      const stage = document.getElementById('stage');
-      const i1 = document.getElementById('i1');
-      const i2 = document.getElementById('i2');
-      const i3 = document.getElementById('i3');
-      requestAnimationFrame(() => {
-        stage.classList.add('reveal');
-        setTimeout(() => i1.classList.add('reveal'), 120);
-        setTimeout(() => i2.classList.add('reveal'), 210);
-        setTimeout(() => i3?.classList.add('reveal'), 300);
-      });
-    };
-
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('year').textContent = new Date().getFullYear();
-      reveal();
-
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!prefersReduced) {
-        const orbits = document.querySelector('.orbits');
-        window.addEventListener('mousemove', (e) => {
-          const x = (e.clientX / window.innerWidth - 0.5) * 8;
-          const y = (e.clientY / window.innerHeight - 0.5) * 8;
-          orbits.style.transform = `translate(${x}px, ${y}px)`;
-        }, { passive: true });
-      }
-    });
+    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
