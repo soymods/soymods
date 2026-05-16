@@ -639,95 +639,13 @@
     .aboutGrid{
       position:relative;
       display:grid;
-      grid-template-columns:.9fr 1.1fr;
-      gap:42px;
+      grid-template-columns:1fr;
+      justify-items:center;
+      text-align:center;
+      gap:28px;
       align-items:center;
-      padding:64px 0;
+      padding:74px 0;
     }
-    .aboutArt{
-      position:relative;
-      min-height:330px;
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.07), transparent 46%),
-        linear-gradient(90deg, rgba(47,140,255,.055) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(78,219,93,.05) 1px, transparent 1px),
-        #090b0d;
-      background-size:auto, 28px 28px, 28px 28px, auto;
-      border:4px solid #111;
-      box-shadow:10px 10px 0 #050505;
-      overflow:hidden;
-    }
-    .aboutArt::before{
-      content:"";
-      position:absolute;
-      top:16px;
-      left:16px;
-      z-index:2;
-      width:72px;
-      height:18px;
-      background:
-        linear-gradient(90deg, var(--green) 0 18px, transparent 18px 27px, var(--blue) 27px 45px, transparent 45px 54px, var(--red) 54px 72px);
-      border:3px solid #111;
-      box-shadow:4px 4px 0 #000;
-    }
-    .aboutArt::after{
-      content:"";
-      position:absolute;
-      left:50%;
-      top:50%;
-      width:230px;
-      height:230px;
-      border:4px solid rgba(255,255,255,.08);
-      border-left-color:rgba(78,219,93,.45);
-      border-right-color:rgba(47,140,255,.45);
-      border-bottom-color:rgba(255,64,64,.38);
-      transform:translate(-50%, -50%);
-      opacity:.8;
-    }
-    .hubLogo{
-      position:absolute;
-      left:50%;
-      top:50%;
-      z-index:3;
-      width:132px;
-      height:132px;
-      display:grid;
-      place-items:center;
-      background:transparent;
-      border:0;
-      box-shadow:none;
-      transform:translate(-50%, -50%);
-      image-rendering:pixelated;
-    }
-    .hubLogo img{
-      width:84px;
-      height:84px;
-      object-fit:contain;
-      image-rendering:pixelated;
-      filter:drop-shadow(7px 7px 0 #000);
-    }
-    .hubShapes{
-      position:absolute;
-      inset:0;
-      z-index:2;
-    }
-    .hubShape{
-      position:absolute;
-      width:86px;
-      height:86px;
-      border:4px solid #111;
-      box-shadow:7px 7px 0 #000;
-      transform:rotate(45deg) skew(-8deg, -8deg);
-    }
-    .hubShape::after{
-      content:"";
-      position:absolute;
-      inset:18px 12px 12px 18px;
-      background:rgba(255,255,255,.18);
-    }
-    .hubShape.green{left:84px; top:72px; background:var(--green)}
-    .hubShape.blue{right:84px; top:92px; background:var(--blue)}
-    .hubShape.red{left:50%; bottom:48px; background:var(--red); transform:translateX(-50%) rotate(45deg) skew(-8deg, -8deg)}
     .aboutCopy h2{
       margin:0;
       color:#fff;
@@ -738,11 +656,18 @@
       word-spacing:.04em;
       text-shadow:4px 4px 0 #000;
     }
+    .aboutCopy{
+      max-width:980px;
+      margin:0 auto;
+    }
     .aboutCopy p{
       margin:18px 0 0;
       color:var(--muted);
       font-size:17px;
       line-height:1.55;
+    }
+    .aboutCopy .heroActions{
+      justify-content:center;
     }
     .aboutList{
       display:grid;
@@ -843,6 +768,7 @@
       .quickStats,.tiles,.contactStrip{grid-template-columns:1fr}
       .aboutGrid{grid-template-columns:1fr}
       .aboutList{grid-template-columns:1fr}
+      .aboutCopy{text-align:left}
       .sectionHead{display:block}
       .sectionHead p{margin-top:14px}
     }
@@ -858,15 +784,6 @@
       .quickStats{margin-top:-40px}
       .section{padding-top:56px}
       .tile{min-height:auto}
-      .aboutArt{min-height:280px}
-      .hubLogo{width:96px; height:96px}
-      .hubLogo img{width:62px; height:62px}
-      .aboutArt::after{width:178px; height:178px}
-      .hubShape{width:58px; height:58px}
-      .hubShape::after{inset:12px 8px 8px 12px}
-      .hubShape.green{left:46px; top:70px}
-      .hubShape.blue{right:46px; top:82px}
-      .hubShape.red{bottom:34px}
     }
 
     @media (prefers-reduced-motion: reduce){
@@ -1013,30 +930,22 @@
 
     <section class="aboutBand" id="about" aria-labelledby="about-title">
       <div class="wrap aboutGrid">
-        <div class="aboutArt" aria-hidden="true">
-          <div class="hubLogo">
-            <img src="/icon.png" alt="" />
-          </div>
-          <div class="hubShapes">
-            <div class="hubShape green"></div>
-            <div class="hubShape blue"></div>
-            <div class="hubShape red"></div>
-          </div>
-        </div>
         <div class="aboutCopy">
           <p class="sectionKicker">What is soymods?</p>
-          <h2 id="about-title">Minecraft tools</h2>
+          <h2 id="about-title">My Minecraft projects</h2>
           <p>
-            soymods is the home base for ryduzz's Minecraft projects: active mods,
-            useful tools, release links, source code, videos, and community updates.
+            I use soymods as one place for the Minecraft mods, tools, experiments,
+            and smaller ideas I want to share. Some projects are polished releases,
+            some are still being worked on, and some are just useful things I made
+            because I wanted them in my own game.
           </p>
           <div class="aboutList" aria-label="soymods focus areas">
-            <span><b>Build</b> client-side tools and workflows</span>
-            <span><b>Ship</b> releases through GitHub</span>
-            <span><b>Collect</b> ideas, videos, and community links</span>
+            <span><b>Projects</b> mods, overlays, tools, and experiments as they become ready</span>
+            <span><b>Downloads</b> release links, source code, and updates without hunting around</span>
+            <span><b>Community</b> videos, Discord, and places to follow what I am building next</span>
           </div>
           <div class="heroActions">
-            <a class="btn primary" href="/pathmind/">Open Pathmind</a>
+            <a class="btn primary" href="#mods">Browse projects</a>
             <a class="btn dark" href="https://github.com/soymods" target="_blank" rel="noreferrer">Source code</a>
           </div>
         </div>
