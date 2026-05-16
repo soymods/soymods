@@ -74,16 +74,12 @@
     */
     @font-face{
       font-family:"Minecraft";
-      src:
-        url("/fonts/Minecraft.woff2") format("woff2"),
-        url("/fonts/Minecraft.ttf") format("truetype");
+      src:url("/fonts/Minecraft.ttf") format("truetype");
       font-display:swap;
     }
     @font-face{
       font-family:"Minecrafter";
-      src:
-        url("/fonts/Minecrafter.woff2") format("woff2"),
-        url("/fonts/Minecrafter.ttf") format("truetype");
+      src:url("/fonts/Minecrafter.Reg.ttf") format("truetype");
       font-display:swap;
     }
 
@@ -512,10 +508,10 @@
     .node .name{font-weight:900}
     .node .hint{color:var(--muted2); font-size:11px; margin-left:6px; text-transform:none; font-family:"Minecraft",monospace;}
 
-    .node[data-id="start"]{ --accent: #7CFFCB; }
-    .node[data-id="mine"] { --accent: #58A6FF; }
-    .node[data-id="craft"]{ --accent: #FFB86B; }
-    .node[data-id="place"]{ --accent: #FF5DA2; }
+    .node[data-id="start"]{ --accent: #7cff87; }
+    .node[data-id="wait"] { --accent: #2f8cff; }
+    .node[data-id="travel"]{ --accent: #4edb5d; }
+    .node[data-id="preset"]{ --accent: #ff4040; }
 
     .info{
       margin: 20px auto 0;
@@ -609,87 +605,718 @@
       .logo-img,.word,.lede,.actions,.downloadNote,.canvas,.compatBtn{transition:none}
       .btn,.node{transition:none}
     }
+
+    body{
+      background:
+        linear-gradient(180deg, rgba(9,11,13,.28), rgba(0,0,0,.72)),
+        #090b0d;
+      letter-spacing:0;
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-3;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg, rgba(47,140,255,.075) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(78,219,93,.055) 1px, transparent 1px);
+      background-size:38px 38px;
+      mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.9) 58%, transparent 100%);
+    }
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg, transparent 0 18%, rgba(47,140,255,.15) 18% calc(18% + 4px), transparent calc(18% + 4px) 62%, rgba(78,219,93,.13) 62% calc(62% + 4px), transparent calc(62% + 4px) 83%, rgba(255,64,64,.12) 83% calc(83% + 4px), transparent calc(83% + 4px)),
+        radial-gradient(circle at 18% 22%, rgba(47,140,255,.18), transparent 24%),
+        radial-gradient(circle at 82% 18%, rgba(78,219,93,.13), transparent 22%),
+        radial-gradient(circle at 78% 78%, rgba(255,64,64,.12), transparent 24%);
+    }
+    .bg{display:none}
+    .wrap{max-width:1320px; width:min(1320px, calc(100% - 28px)); padding:0; margin:0 auto}
+    .siteHeader{
+      position:sticky;
+      top:0;
+      z-index:30;
+      background:rgba(7,9,11,.94);
+      border-bottom:4px solid #050505;
+      box-shadow:0 4px 0 rgba(255,255,255,.08);
+    }
+    .siteHeader .wrap{
+      min-height:66px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:22px;
+    }
+    .siteHeader .brand{
+      position:static;
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:20px;
+      text-transform:uppercase;
+      color:#fff;
+      text-shadow:3px 3px 0 #000;
+    }
+    .brandMark{
+      width:38px;
+      height:38px;
+      image-rendering:pixelated;
+      filter:drop-shadow(3px 3px 0 #000);
+    }
+    .navLinks{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      color:rgba(255,255,255,.72);
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:13px;
+      text-transform:uppercase;
+    }
+    .navLinks a:hover{color:#fff}
+    main{padding:0 0 58px}
+    .hero{
+      min-height:auto;
+      display:block;
+      padding:0;
+      position:relative;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:-160px;
+      height:420px;
+      pointer-events:none;
+      background:
+        linear-gradient(90deg, rgba(47,140,255,.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(78,219,93,.055) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 0 18%, rgba(47,140,255,.11) 18% calc(18% + 4px), transparent calc(18% + 4px) 62%, rgba(78,219,93,.1) 62% calc(62% + 4px), transparent calc(62% + 4px) 83%, rgba(255,64,64,.08) 83% calc(83% + 4px), transparent calc(83% + 4px));
+      background-size:38px 38px, 38px 38px, auto;
+      mask-image:linear-gradient(180deg, transparent 0%, rgba(0,0,0,.2) 22%, #000 58%, transparent 100%);
+      z-index:0;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:-170px;
+      height:430px;
+      pointer-events:none;
+      background:linear-gradient(180deg, rgba(9,11,13,0) 0%, rgba(9,11,13,.92) 34%, rgba(9,11,13,.72) 62%, rgba(9,11,13,0) 100%);
+      transform:none;
+      z-index:0;
+    }
+    .pmHero{
+      min-height:auto;
+      display:grid;
+      grid-template-columns:minmax(0, .9fr) minmax(520px, 1.1fr);
+      gap:44px;
+      align-items:center;
+      padding:62px 0 54px;
+      position:relative;
+      z-index:1;
+    }
+    .heroInner{
+      width:auto;
+      padding:0;
+      text-align:left;
+    }
+    .eyebrow{
+      margin:0 0 14px;
+      color:#7cff87;
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:14px;
+      text-transform:uppercase;
+      text-shadow:2px 2px 0 #000;
+    }
+    .logoRow{
+      display:grid;
+      grid-template-columns:auto minmax(0, 1fr);
+      align-items:center;
+      gap:16px;
+      margin-bottom:14px;
+    }
+    .logo-img{
+      width:clamp(92px, 10vw, 136px);
+      margin:0;
+      filter:drop-shadow(7px 7px 0 #000);
+    }
+    .title-img{
+      width:min(420px, 100%);
+      margin:0;
+      filter:drop-shadow(5px 5px 0 #000);
+    }
+    .lede{
+      margin:22px 0 0;
+      max-width:62ch;
+      color:rgba(255,255,255,.76);
+      font-size:17px;
+      line-height:1.65;
+    }
+    .heroCallouts{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:10px;
+      margin-top:24px;
+    }
+    .miniCard,
+    .featureCard,
+    .panel{
+      background:#191c1f;
+      border:3px solid #050505;
+      box-shadow:6px 6px 0 #000;
+    }
+    .miniCard{
+      padding:13px 12px;
+      color:rgba(255,255,255,.68);
+      font-size:13px;
+      line-height:1.3;
+    }
+    .miniCard b{
+      display:block;
+      margin-bottom:6px;
+      color:#fff;
+      font-size:12px;
+      text-transform:uppercase;
+    }
+    .actions{
+      justify-content:flex-start;
+      margin-top:26px;
+      gap:12px;
+    }
+    .btn{
+      min-height:48px;
+      padding:13px 16px 11px;
+      border:3px solid #101418;
+      background:#4edb5d;
+      color:#071006;
+      box-shadow:5px 5px 0 #000;
+      font-size:13px;
+      text-shadow:none;
+      transition:transform .16s var(--ease), border-color .16s var(--ease), box-shadow .16s var(--ease);
+    }
+    .btn.secondary{
+      background:#15191c;
+      color:#fff;
+      border-color:#59636d;
+    }
+    .btn:hover{
+      transform:translateY(-2px);
+      box-shadow:5px 7px 0 #000;
+    }
+    .compatBtn{
+      margin-top:14px;
+      padding:7px 0;
+      color:rgba(255,255,255,.56);
+      font-size:13px;
+    }
+    .canvas{
+      width:100%;
+      margin:0;
+      padding:0;
+      border:4px solid #050505;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.06), transparent 40%),
+        #0f1215;
+      box-shadow:10px 10px 0 #000;
+    }
+    .canvasTop{
+      padding:16px;
+      margin:0;
+      border-bottom:3px solid #050505;
+      background:#191c1f;
+      display:grid;
+      gap:12px;
+    }
+    .badge{
+      border:2px solid #384047;
+      background:#0f1215;
+      color:rgba(255,255,255,.72);
+      box-shadow:3px 3px 0 #000;
+    }
+    .nodes{
+      height:420px;
+      border:0;
+      background:
+        linear-gradient(90deg, rgba(47,140,255,.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(78,219,93,.055) 1px, transparent 1px),
+        #090b0d;
+      background-size:28px 28px;
+    }
+    .node{
+      border:3px solid var(--accent);
+      background:#191c1f;
+      box-shadow:none;
+      color:#fff;
+      min-width:160px;
+      width:168px;
+      padding:0;
+      display:block;
+      overflow:visible;
+    }
+    .node[data-id="wait"]{width:208px}
+    .node[data-id="travel"]{width:212px}
+    .node[data-id="preset"]{width:210px}
+    .node::before{display:none}
+    .nodeHeader{
+      min-height:28px;
+      display:flex;
+      align-items:center;
+      gap:9px;
+      padding:5px 9px 4px;
+      background:var(--accent);
+      border-bottom:0;
+      color:#fff;
+    }
+    .node .hint{
+      margin-left:auto;
+      font-size:10px;
+      color:rgba(255,255,255,.72);
+      text-transform:uppercase;
+    }
+    .nodeBody{
+      display:grid;
+      gap:6px;
+      padding:8px 8px 9px 12px;
+      color:#aeb6be;
+      font-size:13px;
+      line-height:1.25;
+    }
+    .nodeParam{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      min-height:26px;
+      padding:5px 6px 4px;
+      background:#0f1215;
+      border:2px solid #384047;
+      box-shadow:none;
+    }
+    .nodeParam b{
+      color:#fff;
+      font-size:10px;
+      text-transform:uppercase;
+    }
+    .nodeParam span{
+      color:rgba(255,255,255,.58);
+      text-align:right;
+    }
+    .slotBox{
+      padding:6px;
+      border:2px solid #59636d;
+      background:#25292d;
+    }
+    .slotLabel{
+      display:block;
+      margin-bottom:5px;
+      color:#7cff87;
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:9px;
+      text-transform:uppercase;
+    }
+    .embeddedNode{
+      display:block;
+      min-height:30px;
+      padding:0;
+      background:#191c1f;
+      border:3px solid var(--accent);
+      box-shadow:none;
+      color:#fff;
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:12px;
+      text-transform:uppercase;
+    }
+    .embeddedNode::before{display:none}
+    .embeddedNodeTitle{
+      display:block;
+      padding:6px 8px 4px;
+      background:var(--accent);
+    }
+    .embeddedNodeBody{
+      display:grid;
+      gap:6px;
+      padding:6px;
+      color:#aeb6be;
+      font-family:"Minecraft",monospace;
+      font-size:12px;
+      text-transform:none;
+    }
+    .nodeInput{
+      min-height:26px;
+      padding:5px 7px 4px;
+      background:#090b0d;
+      border:2px solid #384047;
+      color:#fff;
+      outline:none;
+      text-transform:none;
+    }
+    .nodeInput:focus{
+      border-color:#7cff87;
+      box-shadow:0 0 0 2px rgba(78,219,93,.18);
+    }
+    .port{
+      position:absolute;
+      z-index:3;
+      width:10px;
+      height:10px;
+      border:2px solid #050505;
+      box-shadow:none;
+      background:var(--accent);
+    }
+    .port.in{left:-17px; top:50%; transform:translateY(-50%)}
+    .port.out{right:-17px; top:50%; transform:translateY(-50%)}
+    .node.startNode{
+      width:78px;
+      min-width:78px;
+      height:78px;
+      background:#06c751;
+      border-color:#050505;
+      display:grid;
+      place-items:center;
+    }
+    .node.startNode .name{
+      position:absolute;
+      left:8px;
+      top:8px;
+      font-size:18px;
+      line-height:1;
+    }
+    .startIcon{
+      width:0;
+      height:0;
+      border-top:12px solid transparent;
+      border-bottom:12px solid transparent;
+      border-left:21px solid #fff;
+    }
+    .presetShelf{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .presetShelfLabel{
+      color:rgba(255,255,255,.55);
+      font-family:"Minecrafter","Minecraft",monospace;
+      font-size:11px;
+      text-transform:uppercase;
+    }
+    .featureBand{
+      position:relative;
+      padding:132px 0 16px;
+    }
+    .featureBand::before{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:-340px;
+      width:120vw;
+      height:780px;
+      transform:translateX(-50%);
+      pointer-events:none;
+      background:linear-gradient(180deg, rgba(9,11,13,1) 0%, rgba(9,11,13,1) 38%, rgba(9,11,13,.96) 52%, rgba(9,11,13,.78) 68%, rgba(9,11,13,.38) 86%, rgba(9,11,13,0) 100%);
+      z-index:0;
+    }
+    .featureBand > *{
+      position:relative;
+      z-index:1;
+    }
+    .sectionHead{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:24px;
+      margin-bottom:18px;
+    }
+    .sectionHead h2{
+      margin:0;
+      font-size:clamp(28px, 4vw, 48px);
+      text-transform:uppercase;
+      text-shadow:4px 4px 0 #000;
+    }
+    .sectionHead p{
+      max-width:58ch;
+      margin:0;
+      color:rgba(255,255,255,.66);
+      line-height:1.55;
+      font-size:15px;
+    }
+    .features{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:16px;
+    }
+    .featureCard{
+      min-height:176px;
+      padding:18px;
+      position:relative;
+      overflow:hidden;
+    }
+    .featureCard::before{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      top:0;
+      height:5px;
+      background:var(--accent);
+    }
+    .featureCard h3{
+      margin:0;
+      font-size:18px;
+      text-transform:uppercase;
+      color:#fff;
+    }
+    .featureCard p{
+      margin:12px 0 0;
+      color:rgba(255,255,255,.66);
+      line-height:1.55;
+      font-size:14px;
+    }
+    .featureCard:nth-child(1){--accent:#4edb5d}
+    .featureCard:nth-child(2){--accent:#2f8cff}
+    .featureCard:nth-child(3){--accent:#ff4040}
+    .info{
+      width:min(1320px, calc(100% - 28px));
+      max-width:1320px;
+      padding:30px 0 0;
+      grid-template-columns:1.05fr .95fr;
+      gap:18px;
+    }
+    .panel{
+      padding:22px;
+      border-radius:0;
+    }
+    .panel h2{
+      color:#fff;
+      font-size:20px;
+      text-shadow:3px 3px 0 #000;
+    }
+    .panel p,
+    .li{
+      color:rgba(255,255,255,.68);
+    }
+    .li{
+      border-top:3px solid rgba(255,255,255,.09);
+    }
+    .row{
+      border:3px solid #050505;
+      background:#0f1215;
+      box-shadow:4px 4px 0 #000;
+    }
+    .panelVideo{
+      border:3px solid #050505;
+      box-shadow:6px 6px 0 #000;
+    }
+    .panelVideoHead{
+      border-bottom:3px solid #050505;
+      background:#0f1215;
+    }
+    footer{
+      max-width:1320px;
+      width:min(1320px, calc(100% - 28px));
+      margin-top:42px;
+      border-top:4px solid #050505;
+      padding:20px 0 0;
+    }
+    @media (max-width: 980px){
+      .pmHero{grid-template-columns:1fr; padding-top:42px}
+      .canvas{max-width:760px}
+      .features,.heroCallouts{grid-template-columns:1fr}
+      .sectionHead{display:block}
+      .sectionHead p{margin-top:12px}
+      .info{grid-template-columns:1fr}
+    }
+    @media (max-width: 620px){
+      .siteHeader .wrap{min-height:68px}
+      .siteHeader .brand{font-size:18px}
+      .navLinks{display:none}
+      .logoRow{display:block}
+      .logo-img{width:92px; margin-bottom:12px}
+      .title-img{width:100%}
+      .actions .btn{width:100%; justify-content:center}
+      .nodes{height:720px}
+      .node,
+      .node[data-id="wait"],
+      .node[data-id="travel"],
+      .node[data-id="preset"]{width:160px}
+      .node.startNode{width:70px; min-width:70px; height:70px}
+      .nodeBody{font-size:13px}
+      .embeddedNode{font-size:12px}
+      .embeddedNodeBody{font-size:12px}
+      .graphTags{display:none}
+    }
   </style>
 </head>
 <body>
   <div class="bg" aria-hidden="true"></div>
   <div class="dots" aria-hidden="true"></div>
 
-  <header>
-    <div class="wrap nav">
-      <a class="brand" href="/" aria-label="soymods home">soymods</a>
-      <div aria-hidden="true"></div>
+  <header class="siteHeader">
+    <div class="wrap">
+      <a class="brand" href="/" aria-label="soymods home">
+        <img class="brandMark" src="/icon.png" alt="" />
+        <span>soymods</span>
+      </a>
+      <nav class="navLinks" aria-label="Pathmind navigation">
+        <a href="#workflow">Workflow</a>
+        <a href="#details">Details</a>
+        <a href="https://modrinth.com/mod/pathmind" target="_blank" rel="noreferrer">Download</a>
+      </nav>
     </div>
   </header>
 
   <main>
     <section class="hero">
-      <div class="heroInner">
-        <img id="logo" src="logo.png" alt="Pathmind logo" class="logo-img">
-        <img src="pathmind_title.png" alt="Pathmind" class="title-img" id="w">
+      <div class="wrap pmHero">
+        <div class="heroInner">
+          <p class="eyebrow">Visual automation for Minecraft</p>
+          <div class="logoRow">
+            <img id="logo" src="logo.png" alt="Pathmind logo" class="logo-img">
+            <img src="pathmind_title.png" alt="Pathmind" class="title-img" id="w">
+          </div>
 
-        <p class="lede" id="l">
-          A client-side visual node editor for building workflows and automation logic in Minecraft
-        </p>
+          <p class="lede" id="l">
+            Pathmind is a client-side node editor for building Minecraft workflows visually.
+            Connect actions, tune the steps, and turn repeatable in-game tasks into readable graphs.
+          </p>
 
-        <div class="actions" id="a">
-          <a class="btn" href="https://modrinth.com/mod/pathmind" target="_blank" rel="noreferrer">Download</a>
-          <a class="btn secondary" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord ↗</a>
-          <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">All releases ↗</a>
+          <div class="heroCallouts">
+            <div class="miniCard"><b>Node graph</b> build logic without digging through config files</div>
+            <div class="miniCard"><b>In-game flow</b> plan actions around crafting, mining, placing, and inputs</div>
+            <div class="miniCard"><b>Client-side</b> made for practical workflows from the player side</div>
+          </div>
+
+          <div class="actions" id="a">
+            <a class="btn" href="https://modrinth.com/mod/pathmind" target="_blank" rel="noreferrer">Download</a>
+            <a class="btn secondary" href="https://github.com/soymods/pathmind/releases" target="_blank" rel="noreferrer">Releases</a>
+            <a class="btn secondary" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord</a>
+          </div>
+
+          <button id="compatBtn" class="compatBtn">compatibility</button>
         </div>
 
-        <button id="compatBtn" class="compatBtn">compatibility</button>
-
-        <div class="canvas" id="c" aria-label="visual motif">
+        <div class="canvas" id="c" aria-label="Pathmind visual node editor preview">
           <div class="canvasTop">
-            <div class="meta">
-              <span class="badge">Minecraft 1.21.x</span>
-              <span class="badge">Fabric</span>
-              <span class="badge">Client-side</span>
+            <div class="presetShelf">
+              <div class="meta">
+                <span class="badge">Workspace graph</span>
+                <span class="badge">Editable parameters</span>
+                <span class="badge">Compact nodes</span>
+              </div>
+              <span class="badge">validation <span style="color:#7cff87; font-weight:800;">ready</span></span>
             </div>
-            <span class="badge">by <span style="color:#fff; font-weight:800;">ryduzz</span></span>
           </div>
 
           <div class="nodes" id="nodes">
             <svg class="wires" id="wires" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"></svg>
 
-            <div class="node" data-id="start" style="left: 46px; top: 76px;">
-              <span class="port" aria-hidden="true"></span>
-              <span class="name">Start</span>
-              <span class="hint">workflow</span>
+            <div class="node startNode" data-id="start" style="left: 46px; top: 58px;">
+              <span class="name">1</span>
+              <span class="startIcon" aria-hidden="true"></span>
+              <span class="port out" aria-hidden="true"></span>
             </div>
-            <div class="node" data-id="mine" style="left: 330px; top: 44px;">
-              <span class="port" aria-hidden="true"></span>
-              <span class="name">Mine</span>
-              <span class="hint">inputs</span>
+            <div class="node" data-id="wait" style="left: 280px; top: 34px;">
+              <span class="port in" aria-hidden="true"></span>
+              <span class="port out" aria-hidden="true"></span>
+              <div class="nodeHeader">
+                <span class="name">If</span>
+              </div>
+              <div class="nodeBody">
+                <span>Condition</span>
+                <div class="slotBox">
+                  <div class="embeddedNode" style="--accent:#2f8cff">
+                    <span class="embeddedNodeTitle">Has Item</span>
+                    <span class="embeddedNodeBody">
+                      <span class="nodeInput" contenteditable="true" spellcheck="false">Item: oak_log</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="node" data-id="craft" style="left: 600px; top: 112px;">
-              <span class="port" aria-hidden="true"></span>
-              <span class="name">Craft</span>
-              <span class="hint">steps</span>
+            <div class="node" data-id="travel" style="left: 560px; top: 112px;">
+              <span class="port in" aria-hidden="true"></span>
+              <span class="port out" aria-hidden="true"></span>
+              <div class="nodeHeader">
+                <span class="name">Travel</span>
+              </div>
+              <div class="nodeBody">
+                <span>Parameter</span>
+                <div class="slotBox">
+                  <div class="embeddedNode" style="--accent:#4edb5d">
+                    <span class="embeddedNodeTitle">Coordinate</span>
+                    <span class="embeddedNodeBody">
+                      <span class="nodeInput" contenteditable="true" spellcheck="false">x: 120 y: 64 z: -42</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="node" data-id="place" style="left: 812px; top: 64px;">
-              <span class="port" aria-hidden="true"></span>
-              <span class="name">Place</span>
-              <span class="hint">output</span>
+            <div class="node" data-id="preset" style="left: 800px; top: 62px;">
+              <span class="port in" aria-hidden="true"></span>
+              <span class="port out" aria-hidden="true"></span>
+              <div class="nodeHeader">
+                <span class="name">Run Preset</span>
+              </div>
+              <div class="nodeBody">
+                <span>Preset</span>
+                <span class="nodeInput" contenteditable="true" spellcheck="false">tree_farm</span>
+                <span>Runs every Start node in the preset.</span>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <section class="info" aria-label="details">
+    <section class="featureBand wrap" id="workflow" aria-labelledby="workflow-title">
+      <div class="sectionHead">
+        <div>
+          <p class="eyebrow">Workflow-first</p>
+          <h2 id="workflow-title">Built around graphs</h2>
+        </div>
+        <p>
+          Pathmind is built to feel like a small control panel for Minecraft actions:
+          visual enough to scan, strict enough to keep complex workflows understandable.
+        </p>
+      </div>
+      <div class="features">
+        <article class="featureCard">
+          <h3>Connect</h3>
+          <p>Arrange actions as nodes, wire them together, and keep the order of a workflow visible at a glance.</p>
+        </article>
+        <article class="featureCard">
+          <h3>Tune</h3>
+          <p>Adjust parameters inside the graph so the behavior can change without rebuilding the whole setup.</p>
+        </article>
+        <article class="featureCard">
+          <h3>Run</h3>
+          <p>Use the finished graph in-game for repeatable tasks like movement, inputs, crafting, mining, and placing.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="info" id="details" aria-label="details">
       <div class="panel">
         <h2>What it is</h2>
         <p>
-          Pathmind turns automation into a visual language: build workflows by connecting nodes, tune parameters, then execute sequences in-game.
-          It’s designed to stay understandable even as graphs grow.
+          Pathmind turns automation into a visual language. The goal is to make workflow logic
+          readable while you build it, so a graph can grow without turning into a mess of hidden settings.
         </p>
 
         <ul class="list">
           <li class="li"><b>Node workflows</b> — connect actions into readable pipelines.</li>
-          <li class="li"><b>Fast UI</b> — drag, connect, pan/zoom, iterate.</li>
-          <li class="li"><b>Practical automation</b> — craft, place, mine, and more through a unified graph.</li>
+          <li class="li"><b>Fast editing</b> — drag, connect, pan, zoom, and iterate without leaving the flow.</li>
+          <li class="li"><b>Practical automation</b> — craft, place, mine, move, and trigger inputs through one graph.</li>
         </ul>
 
         <div class="panelVideo" aria-label="What it is video">
@@ -787,13 +1414,24 @@
       const svg = document.getElementById('wires');
       if (!container || !svg) return;
 
-      const nodes = Array.from(container.querySelectorAll('.node'));
+      const getNodes = () => Array.from(container.querySelectorAll('.node'));
       const getRect = () => container.getBoundingClientRect();
 
-      const centerOf = (el) => {
+      const socketOf = (el, side) => {
         const r = el.getBoundingClientRect();
         const cr = getRect();
-        return { x: (r.left - cr.left) + r.width / 2, y: (r.top - cr.top) + r.height / 2 };
+        const socket = el.querySelector(side === 'out' ? '.port.out' : '.port.in');
+        if (socket) {
+          const sr = socket.getBoundingClientRect();
+          return {
+            x: (sr.left - cr.left) + sr.width / 2,
+            y: (sr.top - cr.top) + sr.height / 2
+          };
+        }
+        return {
+          x: (r.left - cr.left) + (side === 'out' ? r.width : 0),
+          y: (r.top - cr.top) + r.height / 2
+        };
       };
 
       const setSvgView = () => {
@@ -803,7 +1441,7 @@
 
       const clampInitialPositions = () => {
         const bounds = getRect();
-        nodes.forEach(node => {
+        getNodes().forEach(node => {
           const w = node.offsetWidth;
           const h = node.offsetHeight;
           let left = parseFloat(node.style.left || '0');
@@ -818,35 +1456,47 @@
       const layoutNodes = () => {
         const bounds = getRect();
         if (!bounds.width) return;
-        const ordered = nodes.slice();
-        const widths = ordered.map(n => n.offsetWidth);
-        const totalW = widths.reduce((a,b) => a + b, 0);
-        const padding = 8;
-        const usable = Math.max(0, bounds.width - padding * 2);
-        const gap = (usable > totalW && ordered.length > 1)
-          ? (usable - totalW) / (ordered.length - 1)
-          : 10;
-        let x = padding;
-        ordered.forEach((node, i) => {
-          node.style.left = x + 'px';
-          x += widths[i] + gap;
-        });
+        const nodes = getNodes();
+        const byId = Object.fromEntries(nodes.map(n => [n.dataset.id, n]));
+        const place = (id, x, y) => {
+          const node = byId[id];
+          if (!node) return;
+          node.style.left = Math.round(x) + 'px';
+          node.style.top = Math.round(y) + 'px';
+        };
+        const pad = 12;
+        if (bounds.width < 520) {
+          const rightX = Math.max(pad, bounds.width - (byId.wait?.offsetWidth || 160) - pad);
+          place('start', pad, 34);
+          place('wait', rightX, 82);
+          place('travel', pad, 272);
+          place('preset', Math.max(pad, bounds.width - (byId.preset?.offsetWidth || 170) - pad), 392);
+          return;
+        }
+        const startW = byId.start?.offsetWidth || 180;
+        const waitW = byId.wait?.offsetWidth || 220;
+        const travelW = byId.travel?.offsetWidth || 180;
+        const presetW = byId.preset?.offsetWidth || 180;
+        place('start', pad, 74);
+        place('wait', Math.min(bounds.width - waitW - pad, startW + 48), 42);
+        place('travel', Math.min(bounds.width - travelW - pad, startW + 122), 224);
+        place('preset', bounds.width - presetW - pad, 82);
       };
 
       const draw = () => {
         setSvgView();
-        const pairs = [['start','mine'],['mine','craft'],['craft','place']];
+        const pairs = [['start','wait'],['wait','travel'],['travel','preset']];
+        const nodes = getNodes();
         const byId = Object.fromEntries(nodes.map(n => [n.dataset.id, n]));
         svg.innerHTML = '';
         pairs.forEach(([a,b]) => {
           const na = byId[a], nb = byId[b];
           if (!na || !nb) return;
-          const pa = centerOf(na), pb = centerOf(nb);
-          const dx = Math.max(40, Math.abs(pb.x - pa.x) * 0.45);
-          const c1x = pa.x + dx, c2x = pb.x - dx;
+          const pa = socketOf(na, 'out'), pb = socketOf(nb, 'in');
+          const midX = pa.x + (pb.x - pa.x) / 2;
 
           const glow = document.createElementNS('http://www.w3.org/2000/svg','path');
-          glow.setAttribute('d', `M ${pa.x} ${pa.y} C ${c1x} ${pa.y}, ${c2x} ${pb.y}, ${pb.x} ${pb.y}`);
+          glow.setAttribute('d', `M ${pa.x} ${pa.y} L ${midX} ${pa.y} L ${midX} ${pb.y} L ${pb.x} ${pb.y}`);
           glow.setAttribute('fill','none');
           glow.setAttribute('stroke','rgba(255,255,255,.10)');
           glow.setAttribute('stroke-width','6');
@@ -870,6 +1520,7 @@
       let nodeStartLeft = 0, nodeStartTop = 0;
 
       const onDown = (e, node) => {
+        if (e.target.closest('[contenteditable="true"]')) return;
         userMoved = true;
         active = node;
         const st = window.getComputedStyle(node);
@@ -901,7 +1552,13 @@
 
       const onUp = () => { active = null; };
 
-      nodes.forEach(node => node.addEventListener('pointerdown', (e) => onDown(e, node)));
+      const wireNode = (node) => {
+        if (node.dataset.wired) return;
+        node.dataset.wired = 'true';
+        node.addEventListener('pointerdown', (e) => onDown(e, node));
+      };
+      getNodes().forEach(wireNode);
+
       window.addEventListener('pointermove', onMove, { passive: true });
       window.addEventListener('pointerup', onUp);
 
