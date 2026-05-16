@@ -317,10 +317,31 @@
       font-size:13px;
     }
 
-  .titleImg{
+  .titleMark{
+    position:relative;
+    display:inline-block;
     width:min(700px, 100%);
+  }
+
+  .titleMark::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    z-index:0;
+    background:url("/title.png") center / contain no-repeat;
     image-rendering:pixelated;
-    filter:drop-shadow(0 5px 0 #111) drop-shadow(0 9px 0 rgba(0,0,0,.42));
+    filter:brightness(0);
+    opacity:.45;
+    transform:translateY(15px) scale(.94, .78);
+    transform-origin:50% 100%;
+  }
+
+  .titleImg{
+    position:relative;
+    z-index:1;
+    display:block;
+    width:100%;
+    image-rendering:pixelated;
   }
 
     .heroCopy{
@@ -826,7 +847,9 @@
         <div>
           <p class="eyebrow">soymods project hub</p>
           <h1 class="srOnly" id="home-title">soymods</h1>
-          <img src="/title.png" alt="soymods" class="titleImg" />
+          <span class="titleMark">
+            <img src="/title.png" alt="soymods" class="titleImg" />
+          </span>
           <p class="heroCopy">
             A one-stop hub for soymods projects: client-side tools, mod releases,
             experiments, downloads, and the places to follow what ships next.
