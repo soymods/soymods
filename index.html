@@ -32,23 +32,23 @@
 
   <style>
     :root{
-      --void:#090b0d;
-      --void2:#0f1215;
-      --panel:#191c1f;
-      --panel2:#25292d;
-      --stone:#3a4046;
+      --void:#1f1d1b;
+      --void2:#2a2724;
+      --panel:#3d3935;
+      --panel2:#4a4540;
+      --stone:#5c5650;
       --ink:#050505;
-      --fg:#f7f7f0;
-      --muted:#c7cbd0;
-      --muted2:#858d95;
-      --line:#384047;
-      --line2:#59636d;
-      --green:#4edb5d;
-      --green2:#7cff87;
-      --blue:#2f8cff;
-      --blue2:#73b5ff;
-      --red:#ff4040;
-      --red2:#ff7272;
+      --fg:#fffdf4;
+      --muted:#d8d0c4;
+      --muted2:#9b9388;
+      --line:#5a554f;
+      --line2:#746d65;
+      --green:#67b246;
+      --green2:#8ed35f;
+      --gold:#ffd34d;
+      --gold2:#fff071;
+      --red:#e9423e;
+      --red2:#f36f6f;
       --shadow:#050505;
       --max:1380px;
       --bw:3px;
@@ -73,7 +73,7 @@
       min-height:100%;
       color:var(--fg);
       background:
-        linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.55)),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.44)),
         var(--void);
       font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
       letter-spacing:0;
@@ -88,9 +88,10 @@
       inset:0;
       z-index:-3;
       background:
-        linear-gradient(90deg, rgba(47,140,255,.045) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(78,219,93,.035) 1px, transparent 1px);
-      background-size:36px 36px;
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 0 48px, rgba(0,0,0,.12) 48px 96px);
+      background-size:32px 32px, 32px 32px, 96px 96px;
       mask-image:linear-gradient(180deg, #000 0%, rgba(0,0,0,.92) 45%, transparent 100%);
     }
 
@@ -101,10 +102,10 @@
       z-index:-2;
       pointer-events:none;
       background:
-        radial-gradient(circle at 16% 14%, rgba(78,219,93,.2), transparent 23%),
-        radial-gradient(circle at 86% 8%, rgba(47,140,255,.2), transparent 24%),
-        radial-gradient(circle at 74% 76%, rgba(255,64,64,.14), transparent 22%);
-      opacity:.9;
+        radial-gradient(circle at 18% 12%, rgba(255,211,77,.13), transparent 24%),
+        radial-gradient(circle at 82% 8%, rgba(103,178,70,.14), transparent 25%),
+        radial-gradient(circle at 70% 82%, rgba(233,66,62,.13), transparent 24%);
+      opacity:.85;
     }
 
     a{color:inherit; text-decoration:none}
@@ -140,9 +141,9 @@
       position:sticky;
       top:0;
       z-index:20;
-      background:rgba(11,13,15,.96);
+      background:rgba(31,29,27,.97);
       border-bottom:4px solid #090909;
-      box-shadow:0 4px 0 rgba(255,255,255,.08);
+      box-shadow:0 4px 0 rgba(255,255,255,.07);
     }
 
     .nav{
@@ -230,7 +231,7 @@
       padding:10px 0;
       transition:color .14s var(--ease);
     }
-    .contactLink::after{background:var(--blue)}
+    .contactLink::after{background:var(--gold)}
 
     .hero{
       position:relative;
@@ -239,9 +240,9 @@
       border-bottom:5px solid #111;
       overflow:hidden;
       background:
-        radial-gradient(circle at 18% 18%, rgba(47,140,255,.16), transparent 28%),
-        radial-gradient(circle at 82% 30%, rgba(78,219,93,.12), transparent 26%),
-        linear-gradient(180deg, #11171b 0%, #090b0d 78%, #050607 100%);
+        radial-gradient(circle at 50% 18%, rgba(255,255,255,.18), transparent 28%),
+        linear-gradient(120deg, rgba(255,255,255,.16) 0 2px, transparent 2px 14%, rgba(255,255,255,.12) 14% 16%, transparent 16% 100%),
+        linear-gradient(160deg, #f48692 0%, #ef5753 44%, #ce2824 100%);
     }
 
     .hero::before{
@@ -250,11 +251,11 @@
       inset:0;
       z-index:-2;
       background:
-        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
-        linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, transparent 0 12%, rgba(47,140,255,.09) 12% calc(12% + 4px), transparent calc(12% + 4px) 52%, rgba(78,219,93,.08) 52% calc(52% + 4px), transparent calc(52% + 4px) 86%, rgba(255,64,64,.07) 86% calc(86% + 4px), transparent calc(86% + 4px));
-      background-size:44px 44px, 44px 44px, auto;
-      opacity:.85;
+        linear-gradient(90deg, transparent 0 4%, rgba(121,19,17,.38) 4% 10%, transparent 10% 21%, rgba(121,19,17,.34) 21% 30%, transparent 30% 72%, rgba(121,19,17,.34) 72% 83%, transparent 83%),
+        linear-gradient(0deg, rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+      background-size:auto, 38px 38px, 38px 38px;
+      opacity:.55;
     }
 
     .hero::after{
@@ -263,12 +264,11 @@
       left:0;
       right:0;
       bottom:0;
-      height:132px;
+      height:160px;
       z-index:-1;
       background:
-        linear-gradient(180deg, rgba(17,23,27,0) 0%, rgba(9,11,13,.78) 34%, #050607 100%),
-        linear-gradient(90deg, transparent 0 88px, rgba(47,140,255,.18) 88px 90px, transparent 90px 230px, rgba(78,219,93,.18) 230px 232px, transparent 232px 372px, rgba(255,64,64,.14) 372px 374px, transparent 374px 460px);
-      background-size:auto, 460px 100%;
+        linear-gradient(90deg, transparent 0 6%, #9f1d1b 6% 15%, transparent 15% 26%, #9f1d1b 26% 33%, transparent 33% 66%, #9f1d1b 66% 76%, transparent 76% 90%, #9f1d1b 90%),
+        linear-gradient(180deg, rgba(198,36,32,0) 0%, rgba(198,36,32,.78) 42%, #b51f1d 100%);
       box-shadow:0 -5px 0 rgba(0,0,0,.7) inset;
     }
 
@@ -283,11 +283,11 @@
       position:absolute;
       width:96px;
       height:32px;
-      background:#20313a;
+      background:rgba(160,35,33,.62);
       box-shadow:
-        32px -16px 0 #14242b,
-        64px 0 0 #1a2a31,
-        128px 18px 0 rgba(47,140,255,.2);
+        32px -16px 0 rgba(130,28,27,.55),
+        64px 0 0 rgba(130,28,27,.52),
+        128px 18px 0 rgba(255,255,255,.12);
       image-rendering:pixelated;
     }
     .skyBlocks span:nth-child(1){left:8%; top:18%}
@@ -310,7 +310,7 @@
       margin:0 0 18px;
       padding:8px 12px 7px;
       color:#111;
-      background:var(--green2);
+      background:var(--gold);
       border:3px solid #111;
       box-shadow:5px 5px 0 #000;
       text-transform:uppercase;
@@ -326,7 +326,7 @@
     .heroCopy{
       margin:28px 0 0;
       max-width:740px;
-      color:#e4e8ea;
+      color:#fff4ef;
       font-size:20px;
       line-height:1.45;
       text-shadow:2px 2px 0 rgba(0,0,0,.8);
@@ -356,12 +356,12 @@
     }
     .btn:hover{transform:translateY(-2px); box-shadow:0 7px 0 #000}
     .btn.primary{background:var(--green); color:#071006}
-    .btn.blue{background:var(--blue); color:#fff}
-    .btn.dark{background:#15191c; color:#fff; border-color:#52606a}
+    .btn.blue{background:var(--gold); color:#17120a}
+    .btn.dark{background:#25221f; color:#fff; border-color:#746d65}
 
     .heroPanel{
       position:relative;
-      background:#22272b;
+      background:#3d3935;
       border:4px solid #111;
       box-shadow:12px 12px 0 #050505, 0 0 0 3px rgba(255,255,255,.08) inset;
       padding:18px;
@@ -374,9 +374,9 @@
       left:18px;
       top:-17px;
       padding:6px 10px 5px;
-      background:var(--red);
+      background:var(--green);
       border:3px solid #111;
-      color:#fff;
+      color:#071006;
       font-family:"Minecrafter","Minecraft",monospace;
       font-size:12px;
       text-transform:uppercase;
@@ -408,7 +408,7 @@
     }
     .badge{
       padding:7px 9px 6px;
-      background:#101315;
+      background:#1f1d1b;
       border:2px solid #111;
       color:var(--green2);
       font-size:12px;
@@ -416,7 +416,7 @@
     }
     .panelText{
       margin:9px 0 0;
-      color:#cbd2d8;
+      color:#d8d0c4;
       line-height:1.5;
       font-size:15px;
     }
@@ -432,13 +432,13 @@
     .stat{
       min-height:108px;
       padding:18px;
-      background:#171b1e;
+      background:#2b2926;
       border:3px solid #111;
       box-shadow:6px 6px 0 #050505;
     }
     .stat strong{
       display:block;
-      color:var(--green2);
+      color:var(--gold);
       text-transform:uppercase;
       font-size:18px;
       line-height:1.1;
@@ -466,7 +466,7 @@
     }
     .sectionKicker{
       margin:0 0 8px;
-      color:var(--green2);
+      color:var(--gold);
       text-transform:uppercase;
       font-size:14px;
     }
@@ -477,7 +477,7 @@
       line-height:1.06;
       letter-spacing:.025em;
       word-spacing:.04em;
-      color:var(--green2);
+      color:var(--gold);
       text-shadow:5px 5px 0 #111;
     }
     .sectionHead p{
@@ -502,7 +502,7 @@
       position:relative;
       background:
         linear-gradient(180deg, rgba(255,255,255,.05), transparent 38%),
-        #171b1e;
+        #2b2926;
       border:4px solid #111;
       box-shadow:8px 8px 0 #050505;
       overflow:hidden;
@@ -513,8 +513,8 @@
       box-shadow:8px 12px 0 #050505;
       border-color:var(--accent);
     }
-    .tile.pathmind{--accent:var(--green2)}
-    .tile.keys{--accent:var(--blue)}
+    .tile.pathmind{--accent:var(--green)}
+    .tile.keys{--accent:var(--gold)}
     .tile.more{--accent:var(--red)}
 
     .tileBand{
@@ -523,23 +523,23 @@
       place-items:center;
       background:
         linear-gradient(135deg, rgba(255,255,255,.08), transparent 50%),
-        #243020;
+        #39362f;
       border-bottom:4px solid #111;
     }
     .tile.pathmind .tileBand{
       background:
         linear-gradient(135deg, rgba(255,255,255,.09), transparent 50%),
-        #20351f;
+        #2f3a27;
     }
     .tile.keys .tileBand{
       background:
         linear-gradient(135deg, rgba(255,255,255,.09), transparent 50%),
-        #102642;
+        #3e3728;
     }
     .tile.more .tileBand{
       background:
         linear-gradient(135deg, rgba(255,255,255,.09), transparent 50%),
-        #3a1114;
+        #472625;
     }
     .tileIcon{
       width:84px;
@@ -578,7 +578,7 @@
       width:max-content;
       max-width:100%;
       padding:6px 8px 5px;
-      background:#101315;
+      background:#1f1d1b;
       border-left:5px solid var(--accent);
       color:var(--muted);
       font-size:11px;
@@ -617,9 +617,9 @@
       position:relative;
       overflow:hidden;
       background:
-        linear-gradient(135deg, rgba(47,140,255,.1), transparent 28%),
-        linear-gradient(315deg, rgba(78,219,93,.1), transparent 32%),
-        #0d1012;
+        linear-gradient(135deg, rgba(255,211,77,.12), transparent 28%),
+        linear-gradient(315deg, rgba(103,178,70,.14), transparent 32%),
+        #24211f;
       border-top:5px solid #111;
       border-bottom:5px solid #111;
       box-shadow:0 5px 0 rgba(255,255,255,.06) inset, 0 -5px 0 rgba(0,0,0,.45) inset;
@@ -632,7 +632,7 @@
       background:
         linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
         linear-gradient(0deg, rgba(255,255,255,.03) 1px, transparent 1px),
-        linear-gradient(90deg, transparent 0 18%, rgba(47,140,255,.16) 18% calc(18% + 4px), transparent calc(18% + 4px) 62%, rgba(78,219,93,.14) 62% calc(62% + 4px), transparent calc(62% + 4px) 82%, rgba(255,64,64,.14) 82% calc(82% + 4px), transparent calc(82% + 4px));
+        linear-gradient(90deg, transparent 0 18%, rgba(255,211,77,.14) 18% calc(18% + 4px), transparent calc(18% + 4px) 62%, rgba(103,178,70,.16) 62% calc(62% + 4px), transparent calc(62% + 4px));
       background-size:38px 38px, 38px 38px, auto;
       opacity:.8;
     }
@@ -678,7 +678,7 @@
     .aboutList span{
       display:block;
       padding:12px 12px 11px;
-      background:#121619;
+      background:#312e2a;
       border:3px solid #111;
       box-shadow:4px 4px 0 #000;
       color:var(--muted);
@@ -688,7 +688,7 @@
     .aboutList b{
       display:block;
       margin-bottom:6px;
-      color:var(--green2);
+      color:var(--gold);
       font-family:"Minecrafter","Minecraft",monospace;
       text-transform:uppercase;
       font-size:12px;
@@ -707,13 +707,13 @@
       gap:16px;
       min-height:82px;
       padding:18px;
-      background:#15191c;
+      background:#2b2926;
       border:3px solid #111;
       box-shadow:6px 6px 0 #050505;
       color:#fff;
       transition:transform .16s var(--ease), border-color .16s var(--ease);
     }
-    .contactCard:hover{transform:translateY(-2px); border-color:var(--green2)}
+    .contactCard:hover{transform:translateY(-2px); border-color:var(--green)}
     .contactCard b{
       display:block;
       font-family:"Minecrafter","Minecraft",monospace;
@@ -728,14 +728,14 @@
       font-size:13px;
     }
     .arrow{
-      color:var(--green2);
+      color:var(--green);
       font-family:"Minecrafter","Minecraft",monospace;
       font-size:26px;
     }
 
     footer{
       border-top:4px solid #111;
-      background:#0b0d0f;
+      background:#171514;
       color:var(--muted2);
       font-size:13px;
     }
