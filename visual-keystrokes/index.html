@@ -54,12 +54,12 @@
 
     @font-face{
       font-family:"Minecraft";
-      src:url("/fonts/Minecraft.woff2") format("woff2"), url("/fonts/Minecraft.ttf") format("truetype");
+      src:url("/fonts/Minecraft.ttf") format("truetype");
       font-display:swap;
     }
     @font-face{
       font-family:"Minecrafter";
-      src:url("/fonts/Minecrafter.woff2") format("woff2"), url("/fonts/Minecrafter.Reg.ttf") format("truetype");
+      src:url("/fonts/Minecrafter.Reg.ttf") format("truetype");
       font-display:swap;
     }
 
@@ -78,7 +78,7 @@
     }
     a{color:inherit; text-decoration:none}
     img{max-width:100%}
-    h1,h2,h3,.brandText,.navLinks,.homeLink,.btn,.badge,.key,.feature h2,.label,.miniTitle{
+    h1,h2,h3,.brand,.navLinks,.contactLink,.btn,.badge,.key,.feature h2,.label,.miniTitle{
       font-family:"Minecrafter","Minecraft",monospace;
       letter-spacing:0;
     }
@@ -98,75 +98,88 @@
       margin:0 auto;
     }
 
-    .topbar{
+    .siteHeader{
       position:sticky;
       top:0;
       z-index:20;
       background:#111316;
       border-bottom:4px solid #08090a;
-      box-shadow:0 2px 0 rgba(255,255,255,.08) inset;
+      box-shadow:0 4px 0 rgba(255,255,255,.08);
+    }
+    .siteHeader .wrap,
+    footer .wrap{
+      width:min(var(--max), calc(100% - 28px));
     }
     .nav{
-      min-height:76px;
+      min-height:64px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:24px;
+      gap:22px;
     }
     .brand{
       display:flex;
       align-items:center;
-      gap:14px;
-      min-width:max-content;
-    }
-    .brand img{
-      width:42px;
-      height:42px;
-      image-rendering:pixelated;
-      filter:drop-shadow(3px 3px 0 #000);
-    }
-    .brandText{
+      gap:12px;
       font-size:22px;
       text-transform:uppercase;
+      color:#fff;
       text-shadow:3px 3px 0 #000;
+    }
+    .brandMark{
+      width:38px;
+      height:38px;
+      image-rendering:pixelated;
+      filter:drop-shadow(3px 3px 0 #000);
     }
     .navLinks{
       display:flex;
       align-items:center;
-      gap:28px;
+      gap:18px;
       color:#cdd2d8;
       text-transform:uppercase;
-      font-size:16px;
+      font-size:13px;
     }
-    .navLinks a{
+    .navLink,
+    .contactLink{
       position:relative;
-      padding:9px 0;
-      transition:color .16s ease;
+      color:#d8dde2;
+      padding:10px 0;
+      transition:color .14s var(--ease);
     }
-    .navLinks a::after{
+    .navLink::after,
+    .contactLink::after{
       content:"";
       position:absolute;
       left:50%;
       right:50%;
-      bottom:0;
+      bottom:4px;
       height:3px;
-      background:#fff;
+      background:var(--gold);
       opacity:0;
-      transition:left .18s var(--ease), right .18s var(--ease), opacity .12s ease;
+      transform:translateX(-50%) scaleX(0);
+      transform-origin:center;
+      transition:transform .22s var(--ease), opacity .12s ease, left .22s var(--ease), right .22s var(--ease);
     }
-    .navLinks a:hover{color:#fff}
-    .navLinks a:hover::after{
+    .navLink:hover,
+    .navLink:focus-visible,
+    .contactLink:hover,
+    .contactLink:focus-visible{
+      color:#fff;
+    }
+    .navLink:hover::after,
+    .navLink:focus-visible::after,
+    .contactLink:hover::after,
+    .contactLink:focus-visible::after{
       left:0;
       right:0;
+      transform:translateX(0) scaleX(1);
       opacity:1;
     }
-    .homeLink{
-      padding:11px 14px 10px;
-      color:#fff;
-      background:#181b22;
-      border:3px solid var(--line2);
-      box-shadow:4px 4px 0 #000;
-      text-transform:uppercase;
+    .headerActions{
+      display:flex;
+      align-items:center;
+      gap:10px;
     }
 
     .hero{
@@ -413,6 +426,7 @@
       color:#d8d5cc;
       font-size:21px;
       line-height:1.45;
+      text-align:right;
     }
     .featureGrid{
       display:grid;
@@ -451,17 +465,20 @@
       text-transform:uppercase;
     }
     .footerInner{
-      min-height:70px;
+      min-height:76px;
       display:flex;
       align-items:center;
       justify-content:space-between;
-      gap:18px;
+      gap:16px;
       flex-wrap:wrap;
     }
-    .footerInner a{
-      color:#fff;
-      border-bottom:2px solid rgba(255,255,255,.35);
+    .footerLinks{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+      color:#c6cbc9;
     }
+    .footerLinks a:hover{color:#fff}
 
     @media (max-width:1120px){
       .heroInner{grid-template-columns:1fr}
@@ -471,10 +488,9 @@
     }
     @media (max-width:720px){
       .wrap{width:min(100% - 28px, var(--max))}
-      .nav{min-height:auto; padding:12px 0; align-items:flex-start}
-      .brandText{font-size:18px}
+      .nav{min-height:68px}
+      .brand{font-size:18px}
       .navLinks{display:none}
-      .homeLink{font-size:13px}
       .heroInner{min-height:auto; padding:44px 0 54px}
       .lede{font-size:19px}
       .showcase{padding:14px; min-height:470px}
@@ -491,23 +507,26 @@
     @media (prefers-reduced-motion:reduce){
       html{scroll-behavior:auto}
       .clouds{animation:none}
-      .btn,.key,.navLinks a,.navLinks a::after{transition:none}
+      .btn,.key,.navLink,.navLink::after,.contactLink,.contactLink::after{transition:none}
     }
   </style>
 </head>
 <body>
-  <header class="topbar">
+  <header class="siteHeader">
     <div class="wrap nav">
       <a class="brand" href="/" aria-label="soymods home">
-        <img src="logo.png" alt="">
-        <span class="brandText">Visual Keystrokes</span>
+        <img class="brandMark" src="/icon.png" alt="">
+        <span>soymods</span>
       </a>
-      <nav class="navLinks" aria-label="Visual Keystrokes navigation">
-        <a href="#features">Features</a>
-        <a href="https://modrinth.com/mod/visual-keystrokes" target="_blank" rel="noreferrer">Modrinth</a>
-        <a href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub</a>
+      <nav class="navLinks" aria-label="Primary navigation">
+        <a class="navLink" href="#features">Features</a>
+        <a class="navLink" href="https://modrinth.com/mod/visual-keystrokes" target="_blank" rel="noreferrer">Modrinth</a>
+        <a class="navLink" href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="navLink" href="https://discord.gg/7nGRX2d8a6" target="_blank" rel="noreferrer">Discord</a>
       </nav>
-      <a class="homeLink" href="/">Soymods</a>
+      <div class="headerActions">
+        <a class="contactLink" href="mailto:contact@soymods.com">Contact</a>
+      </div>
     </div>
   </header>
 
@@ -560,9 +579,8 @@
         <div class="featureHead">
           <h2 id="features-title">Made for readable inputs</h2>
           <p>
-            The page now treats Visual Keystrokes as its own tool, while borrowing the
-            in-mod colors: dark panels, blue-gray atmosphere, yellow selection accents,
-            and chunky pixel controls.
+            Set up overlays that make inputs easy to follow without covering the
+            gameplay. Keep layouts simple, readable, and ready for whatever you are recording.
           </p>
         </div>
         <div class="featureGrid">
@@ -590,7 +608,11 @@
   <footer>
     <div class="wrap footerInner">
       <div>© <span id="year"></span> soymods - Visual Keystrokes by ryduzz.</div>
-      <div><a href="/">soymods hub</a></div>
+      <div class="footerLinks">
+        <a href="/">Home</a>
+        <a href="/pathmind/">Pathmind</a>
+        <a href="/visual-keystrokes/">Visual Keystrokes</a>
+      </div>
     </div>
   </footer>
 

@@ -98,7 +98,7 @@
 
     /* Titles + bold */
     h1,h2,h3,.btn,.badge,.panelVideoHead b,.row span:last-child,
-    strong,b,.brand,.node .name{
+    strong,b,.brand,.navLinks,.contactLink,.node .name{
       font-family:"Minecrafter","Minecraft",monospace;
       letter-spacing: 0.06em;
     }
@@ -646,19 +646,19 @@
       border-bottom:4px solid #050505;
       box-shadow:0 4px 0 rgba(255,255,255,.08);
     }
-    .siteHeader .wrap{
-      min-height:66px;
+    .siteHeader .nav{
+      min-height:64px;
       display:flex;
       align-items:center;
       justify-content:space-between;
       gap:22px;
     }
-    .siteHeader .brand{
+    .brand{
       position:static;
       display:flex;
       align-items:center;
       gap:12px;
-      font-size:20px;
+      font-size:22px;
       text-transform:uppercase;
       color:#fff;
       text-shadow:3px 3px 0 #000;
@@ -673,12 +673,51 @@
       display:flex;
       align-items:center;
       gap:18px;
-      color:rgba(255,255,255,.72);
-      font-family:"Minecrafter","Minecraft",monospace;
+      color:#d8dde2;
       font-size:13px;
       text-transform:uppercase;
     }
-    .navLinks a:hover{color:#fff}
+    .navLink,
+    .contactLink{
+      position:relative;
+      color:#d8dde2;
+      padding:10px 0;
+      transition:color .14s var(--ease);
+    }
+    .navLink::after,
+    .contactLink::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      right:50%;
+      bottom:4px;
+      height:3px;
+      background:#77e16b;
+      opacity:0;
+      transform:translateX(-50%) scaleX(0);
+      transform-origin:center;
+      transition:transform .22s var(--ease), opacity .12s ease, left .22s var(--ease), right .22s var(--ease);
+    }
+    .navLink:hover,
+    .navLink:focus-visible,
+    .contactLink:hover,
+    .contactLink:focus-visible{
+      color:#fff;
+    }
+    .navLink:hover::after,
+    .navLink:focus-visible::after,
+    .contactLink:hover::after,
+    .contactLink:focus-visible::after{
+      left:0;
+      right:0;
+      transform:translateX(0) scaleX(1);
+      opacity:1;
+    }
+    .headerActions{
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
     main{padding:0 0 58px}
     .hero{
       min-height:auto;
@@ -1049,6 +1088,7 @@
       color:rgba(255,255,255,.66);
       line-height:1.55;
       font-size:15px;
+      text-align:right;
     }
     .features{
       display:grid;
@@ -1122,11 +1162,29 @@
       background:#0f1215;
     }
     footer{
-      max-width:1320px;
-      width:min(1320px, calc(100% - 28px));
-      margin-top:42px;
+      background:#080a0c;
+      color:var(--muted2);
+      font-size:13px;
       border-top:4px solid #050505;
-      padding:20px 0 0;
+      margin-top:42px;
+      padding:0;
+    }
+    .footerInner{
+      min-height:76px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .footerLinks{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+      color:var(--muted);
+    }
+    .footerLinks a:hover{
+      color:#fff;
     }
     @media (max-width: 980px){
       .pmHero{grid-template-columns:1fr; padding-top:42px}
@@ -1137,8 +1195,8 @@
       .info{grid-template-columns:1fr}
     }
     @media (max-width: 620px){
-      .siteHeader .wrap{min-height:68px}
-      .siteHeader .brand{font-size:18px}
+      .siteHeader .nav{min-height:68px}
+      .brand{font-size:18px}
       .navLinks{display:none}
       .logoRow{display:block}
       .logo-img{width:92px; margin-bottom:12px}
@@ -1162,16 +1220,20 @@
   <div class="dots" aria-hidden="true"></div>
 
   <header class="siteHeader">
-    <div class="wrap">
+    <div class="wrap nav">
       <a class="brand" href="/" aria-label="soymods home">
         <img class="brandMark" src="/icon.png" alt="" />
         <span>soymods</span>
       </a>
-      <nav class="navLinks" aria-label="Pathmind navigation">
-        <a href="#workflow">Workflow</a>
-        <a href="#details">Details</a>
-        <a href="https://modrinth.com/mod/pathmind" target="_blank" rel="noreferrer">Download</a>
+      <nav class="navLinks" aria-label="Primary navigation">
+        <a class="navLink" href="#workflow">Workflow</a>
+        <a class="navLink" href="#details">Details</a>
+        <a class="navLink" href="https://modrinth.com/mod/pathmind" target="_blank" rel="noreferrer">Download</a>
+        <a class="navLink" href="https://github.com/soymods" target="_blank" rel="noreferrer">GitHub</a>
       </nav>
+      <div class="headerActions">
+        <a class="contactLink" href="mailto:contact@soymods.com">Contact</a>
+      </div>
     </div>
   </header>
 
@@ -1352,13 +1414,18 @@
       </div>
     </section>
 
-    <footer>
-      <div>© <span id="year"></span> soymods — Pathmind by ryduzz.</div>
-      <div style="display:flex; gap:14px; flex-wrap:wrap;">
-        <a href="/">soymods</a>
-      </div>
-    </footer>
   </main>
+
+  <footer>
+    <div class="wrap footerInner">
+      <div>© <span id="year"></span> soymods — Pathmind by ryduzz.</div>
+      <div class="footerLinks">
+        <a href="/">Home</a>
+        <a href="/pathmind/">Pathmind</a>
+        <a href="/visual-keystrokes/">Visual Keystrokes</a>
+      </div>
+    </div>
+  </footer>
 
   <!-- Compatibility Modal -->
   <div id="compatModal" class="modal" hidden>
