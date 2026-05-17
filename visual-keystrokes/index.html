@@ -7,16 +7,16 @@
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="soymods">
-  <meta property="og:title" content="Visual Keystrokes - soymods">
-  <meta property="og:description" content="A customizable Minecraft input overlay builder for keystrokes, mouse buttons, and recording layouts.">
+  <meta property="og:title" content="Visual Keystrokes - Minecraft Keystrokes Overlay Mod">
+  <meta property="og:description" content="Visual Keystrokes is a Minecraft input overlay mod for showing WASD, mouse buttons, CPS, utility keys, and custom recording layouts.">
   <meta property="og:url" content="https://soymods.com/visual-keystrokes/">
   <meta property="og:image" content="https://soymods.com/og.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
 
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Visual Keystrokes - soymods">
-  <meta name="twitter:description" content="A customizable Minecraft input overlay builder for keystrokes, mouse buttons, and recording layouts.">
+  <meta name="twitter:title" content="Visual Keystrokes - Minecraft Keystrokes Overlay Mod">
+  <meta name="twitter:description" content="Show WASD, mouse buttons, CPS, utility keys, and custom recording layouts in a Minecraft input overlay.">
   <meta name="twitter:image" content="https://soymods.com/og.png">
 
   <link rel="canonical" href="https://soymods.com/visual-keystrokes/">
@@ -27,8 +27,55 @@
   <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/icon.png">
 
-  <title>Visual Keystrokes - soymods</title>
-  <meta name="description" content="Visual Keystrokes - a customizable Minecraft input overlay builder for real-time key visualization." />
+  <title>Visual Keystrokes - Minecraft Keystrokes Overlay Mod</title>
+  <meta name="description" content="Visual Keystrokes is a Minecraft input overlay mod for showing WASD, mouse buttons, CPS, utility keys, and custom recording layouts." />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://soymods.com/visual-keystrokes/#software",
+          "name": "Visual Keystrokes",
+          "applicationCategory": "GameApplication",
+          "operatingSystem": "Windows, macOS, Linux",
+          "description": "Minecraft input overlay mod for showing WASD, mouse buttons, CPS, utility keys, and custom recording layouts.",
+          "url": "https://soymods.com/visual-keystrokes/",
+          "image": "https://soymods.com/og.png",
+          "downloadUrl": "https://modrinth.com/mod/visual-keystrokes",
+          "softwareRequirements": "Minecraft, Fabric",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "soymods",
+            "url": "https://soymods.com/"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://soymods.com/visual-keystrokes/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "soymods",
+              "item": "https://soymods.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Visual Keystrokes",
+              "item": "https://soymods.com/visual-keystrokes/"
+            }
+          ]
+        }
+      ]
+    }
+  </script>
 
   <style>
     :root{
@@ -102,9 +149,9 @@
       position:sticky;
       top:0;
       z-index:20;
-      background:#111316;
-      border-bottom:4px solid #08090a;
-      box-shadow:0 4px 0 rgba(255,255,255,.08);
+      background:rgba(31,29,27,.97);
+      border-bottom:4px solid #090909;
+      box-shadow:0 4px 0 rgba(255,255,255,.07);
     }
     .siteHeader .wrap,
     footer .wrap{
@@ -137,9 +184,9 @@
       display:flex;
       align-items:center;
       gap:18px;
-      color:#cdd2d8;
-      text-transform:uppercase;
+      color:#d8dde2;
       font-size:13px;
+      text-transform:uppercase;
     }
     .navLink,
     .contactLink{
@@ -161,7 +208,7 @@
       right:50%;
       bottom:4px;
       height:3px;
-      background:var(--gold);
+      background:#8ed35f;
       opacity:0;
       transform:translateX(-50%) scaleX(0);
       transform-origin:center;
@@ -187,6 +234,7 @@
       align-items:center;
       gap:10px;
     }
+    .contactLink::after{background:#ffd34d}
 
     .hero{
       position:relative;
@@ -439,6 +487,11 @@
       grid-template-columns:repeat(4, minmax(0, 1fr));
       gap:18px;
     }
+    .featureHead.secondary{
+      margin-top:46px;
+      padding-top:30px;
+      border-top:4px solid #141312;
+    }
     .feature{
       min-height:220px;
       padding:22px;
@@ -464,11 +517,10 @@
     .feature:nth-child(4){box-shadow:inset 0 7px 0 var(--blue), 7px 7px 0 #000}
 
     footer{
-      background:#111316;
-      border-top:4px solid #070809;
-      color:#aeb5ba;
-      font-size:15px;
-      text-transform:uppercase;
+      border-top:4px solid #111;
+      background:#171514;
+      color:#9b9388;
+      font-size:13px;
     }
     .footerInner{
       min-height:76px;
@@ -482,7 +534,7 @@
       display:flex;
       gap:16px;
       flex-wrap:wrap;
-      color:#c6cbc9;
+      color:#d8d0c4;
     }
     .footerLinks a:hover{color:#fff}
 
@@ -499,6 +551,11 @@
       .navLinks{display:none}
       .heroInner{min-height:auto; padding:44px 0 54px}
       .lede{font-size:19px}
+      .featureHead{
+        grid-template-columns:1fr;
+        align-items:start;
+      }
+      .featureHead p{text-align:left}
       .showcase{padding:14px; min-height:470px}
       .mockWindow{min-height:420px}
       .mockTitle{font-size:17px}
@@ -542,10 +599,10 @@
       <div class="wrap heroInner">
         <div class="copy">
           <span class="badge">Minecraft input overlay</span>
-          <h1 class="srOnly" id="page-title">Visual Keystrokes</h1>
-          <img class="titleLogo" src="visual-keystrokes_title.png" alt="Visual Keystrokes">
+          <h1 class="srOnly" id="page-title">Visual Keystrokes Minecraft keystrokes overlay mod</h1>
+          <img class="titleLogo" src="visual-keystrokes_title.png" alt="Visual Keystrokes Minecraft keystrokes overlay mod">
           <p class="lede">
-            Build clean, readable key and mouse overlays for Minecraft videos, streams,
+            Build clean, readable Minecraft key and mouse overlays for videos, streams,
             tutorials, and screenshots. Move the pieces, style the states, and keep every
             input visible without fighting fixed presets.
           </p>
@@ -605,6 +662,32 @@
           <article class="feature">
             <h3>Reuse</h3>
             <p>Keep overlay presets for PvP, tutorials, cinematic shots, or any other repeated workflow.</p>
+          </article>
+        </div>
+        <div class="featureHead secondary">
+          <h2>Made for Minecraft recording</h2>
+          <p>
+            Visual Keystrokes is built for players who need inputs to stay readable in Minecraft footage.
+            Use it for tutorial clips, PvP reviews, livestream overlays, short-form videos, and screenshots
+            where key presses should be visible without covering the gameplay.
+          </p>
+        </div>
+        <div class="featureGrid">
+          <article class="feature">
+            <h3>WASD</h3>
+            <p>Show movement keys clearly so viewers can follow strafing, positioning, parkour, and building inputs.</p>
+          </article>
+          <article class="feature">
+            <h3>Mouse</h3>
+            <p>Display left click, right click, CPS, and related inputs for combat, block placement, and tool use.</p>
+          </article>
+          <article class="feature">
+            <h3>Layout</h3>
+            <p>Arrange overlay groups around your HUD, hotbar, facecam, captions, or recording crop.</p>
+          </article>
+          <article class="feature">
+            <h3>Clarity</h3>
+            <p>Use high-contrast labels and pressed states that remain legible at stream and mobile video sizes.</p>
           </article>
         </div>
       </div>

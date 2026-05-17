@@ -4,8 +4,8 @@
   <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="soymods">
-  <meta property="og:title" content="Pathmind — soymods">
-  <meta property="og:description" content="Pathmind — a modular, node-driven system for scripting in-game actions and crafting sequences.">
+  <meta property="og:title" content="Pathmind - Minecraft Visual Workflow Automation Mod">
+  <meta property="og:description" content="Pathmind is a client-side Minecraft mod for building visual node graphs that automate workflows like movement, crafting, mining, placing, and inputs.">
   <meta property="og:url" content="https://soymods.com/pathmind/">
   <meta property="og:image" content="https://soymods.com/og.png">
   <meta property="og:image:width" content="1200">
@@ -13,8 +13,8 @@
 
   <!-- Twitter / X -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Pathmind — soymods">
-  <meta name="twitter:description" content="Pathmind — a modular, node-driven system for scripting in-game actions and crafting sequences.">
+  <meta name="twitter:title" content="Pathmind - Minecraft Visual Workflow Automation Mod">
+  <meta name="twitter:description" content="Build visual node graphs for Minecraft workflows like movement, crafting, mining, placing, and inputs.">
   <meta name="twitter:image" content="https://soymods.com/og.png">
 
   <meta charset="utf-8" />
@@ -30,21 +30,53 @@
   <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
   <link rel="apple-touch-icon" href="/icon.png">
 
-  <title>Pathmind — soymods</title>
-  <meta name="description" content="Pathmind — a modular, node-driven system for scripting in-game actions and crafting sequences." />
+  <title>Pathmind - Minecraft Visual Workflow Automation Mod</title>
+  <meta name="description" content="Pathmind is a client-side Minecraft mod for building visual node graphs that automate workflows like movement, crafting, mining, placing, and inputs." />
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "WebPage",
-      "name": "Pathmind — soymods",
-      "description": "Pathmind — a client-side visual node editor for building workflows and automation logic in Minecraft",
-      "url": "https://soymods.com/pathmind/",
-      "image": "https://soymods.com/og.png",
-      "publisher": {
-        "@type": "Organization",
-        "name": "soymods",
-        "url": "https://soymods.com/"
-      }
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://soymods.com/pathmind/#software",
+          "name": "Pathmind",
+          "applicationCategory": "GameApplication",
+          "operatingSystem": "Windows, macOS, Linux",
+          "description": "Client-side Minecraft mod for building visual node graphs that automate workflows like movement, crafting, mining, placing, and inputs.",
+          "url": "https://soymods.com/pathmind/",
+          "image": "https://soymods.com/og.png",
+          "downloadUrl": "https://modrinth.com/mod/pathmind",
+          "softwareRequirements": "Minecraft 1.21.x, Fabric",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "soymods",
+            "url": "https://soymods.com/"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://soymods.com/pathmind/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "soymods",
+              "item": "https://soymods.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Pathmind",
+              "item": "https://soymods.com/pathmind/"
+            }
+          ]
+        }
+      ]
     }
   </script>
 
@@ -109,6 +141,17 @@
       outline:var(--bw) solid #fff;
       outline-offset:3px;
       border-radius:0;
+    }
+    .srOnly{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
     }
 
     /* Background grid (bigger + calmer) */
@@ -641,10 +684,10 @@
     .siteHeader{
       position:sticky;
       top:0;
-      z-index:30;
-      background:rgba(7,9,11,.94);
-      border-bottom:4px solid #050505;
-      box-shadow:0 4px 0 rgba(255,255,255,.08);
+      z-index:20;
+      background:rgba(31,29,27,.97);
+      border-bottom:4px solid #090909;
+      box-shadow:0 4px 0 rgba(255,255,255,.07);
     }
     .siteHeader .nav{
       min-height:64px;
@@ -659,6 +702,8 @@
       align-items:center;
       gap:12px;
       font-size:22px;
+      font-weight:400;
+      letter-spacing:0;
       text-transform:uppercase;
       color:#fff;
       text-shadow:3px 3px 0 #000;
@@ -698,7 +743,7 @@
       right:50%;
       bottom:4px;
       height:3px;
-      background:#77e16b;
+      background:#8ed35f;
       opacity:0;
       transform:translateX(-50%) scaleX(0);
       transform-origin:center;
@@ -724,6 +769,7 @@
       align-items:center;
       gap:10px;
     }
+    .contactLink::after{background:#ffd34d}
     main{padding:0 0 58px}
     .hero{
       min-height:auto;
@@ -775,12 +821,18 @@
       text-align:left;
     }
     .eyebrow{
-      margin:0 0 14px;
-      color:#7cff87;
+      display:inline-block;
+      width:max-content;
+      max-width:100%;
+      margin:0 0 18px;
+      padding:8px 12px 7px;
+      color:#10120f;
+      background:#7cff87;
+      border:3px solid #111;
+      box-shadow:5px 5px 0 #000;
       font-family:"Minecrafter","Minecraft",monospace;
-      font-size:14px;
+      font-size:13px;
       text-transform:uppercase;
-      text-shadow:2px 2px 0 #000;
     }
     .logoRow{
       display:grid;
@@ -790,9 +842,9 @@
       margin-bottom:14px;
     }
     .logo-img{
-      width:clamp(92px, 10vw, 136px);
+      width:clamp(64px, 7vw, 88px);
       margin:0;
-      filter:drop-shadow(7px 7px 0 #000);
+      filter:drop-shadow(5px 5px 0 #000);
     }
     .title-img{
       width:min(420px, 100%);
@@ -801,10 +853,11 @@
     }
     .lede{
       margin:22px 0 0;
-      max-width:62ch;
-      color:rgba(255,255,255,.76);
-      font-size:17px;
-      line-height:1.65;
+      max-width:710px;
+      color:#f3f3ed;
+      font-size:20px;
+      line-height:1.45;
+      text-shadow:2px 2px 0 rgba(0,0,0,.82);
     }
     .heroCallouts{
       display:grid;
@@ -1058,6 +1111,7 @@
     .featureBand{
       position:relative;
       padding:132px 0 16px;
+      overflow:hidden;
     }
     .featureBand::before{
       content:"";
@@ -1102,6 +1156,7 @@
       gap:16px;
     }
     .featureCard{
+      --accent:#4edb5d;
       min-height:176px;
       padding:18px;
       position:relative;
@@ -1131,6 +1186,9 @@
     .featureCard:nth-child(1){--accent:#4edb5d}
     .featureCard:nth-child(2){--accent:#2f8cff}
     .featureCard:nth-child(3){--accent:#ff4040}
+    .featureCard:nth-child(4){--accent:#ffd34d}
+    .featureCard:nth-child(5){--accent:#8ed35f}
+    .featureCard:nth-child(6){--accent:#9a7cff}
     .info{
       width:min(var(--max), calc(100% - 28px));
       max-width:var(--max);
@@ -1168,13 +1226,18 @@
       background:#0f1215;
     }
     footer{
-      background:#080a0c;
-      color:var(--muted2);
+      color:#9b9388;
       font-size:13px;
-      border-top:4px solid #050505;
-      margin-top:42px;
+      background:#171514;
+      border-top:4px solid #111;
+      max-width:none;
+      margin-top:0;
       padding:0;
+      display:block;
+      text-transform:none;
+      line-height:normal;
     }
+    footer a{color:#d8d0c4; border-bottom:0}
     .footerInner{
       min-height:76px;
       display:flex;
@@ -1187,7 +1250,7 @@
       display:flex;
       gap:16px;
       flex-wrap:wrap;
-      color:var(--muted);
+      color:#d8d0c4;
     }
     .footerLinks a:hover{
       color:#fff;
@@ -1205,8 +1268,9 @@
       .brand{font-size:18px}
       .navLinks{display:none}
       .logoRow{display:block}
-      .logo-img{width:92px; margin-bottom:12px}
+      .logo-img{width:72px; margin-bottom:12px}
       .title-img{width:100%}
+      .lede{font-size:19px}
       .actions .btn{width:100%; justify-content:center}
       .nodes{height:720px}
       .node,
@@ -1244,17 +1308,18 @@
   </header>
 
   <main>
-    <section class="hero">
+    <section class="hero" aria-labelledby="page-title">
       <div class="wrap pmHero">
         <div class="heroInner">
           <p class="eyebrow">Visual automation for Minecraft</p>
+          <h1 class="srOnly" id="page-title">Pathmind Minecraft visual workflow automation mod</h1>
           <div class="logoRow">
-            <img id="logo" src="logo.png" alt="Pathmind logo" class="logo-img">
+            <img id="logo" src="logo.png" alt="Pathmind Minecraft automation mod logo" class="logo-img">
             <img src="pathmind_title.png" alt="Pathmind" class="title-img" id="w">
           </div>
 
           <p class="lede" id="l">
-            Pathmind is a client-side node editor for building Minecraft workflows visually.
+            Pathmind is a client-side Minecraft mod and node editor for building workflows visually.
             Connect actions, tune the steps, and turn repeatable in-game tasks into readable graphs.
           </p>
 
@@ -1353,8 +1418,9 @@
           <h2 id="workflow-title">Built around graphs</h2>
         </div>
         <p>
-          Pathmind is built to feel like a small control panel for Minecraft actions:
-          visual enough to scan, strict enough to keep complex workflows understandable.
+          Pathmind is built to feel like a small control panel for Minecraft automation:
+          visual enough to scan, strict enough to keep complex workflows understandable,
+          and practical enough for real in-game routines.
         </p>
       </div>
       <div class="features">
@@ -1370,6 +1436,18 @@
           <h3>Run</h3>
           <p>Use the finished graph in-game for repeatable tasks like movement, inputs, crafting, mining, and placing.</p>
         </article>
+        <article class="featureCard">
+          <h3>Reuse</h3>
+          <p>Turn repeated Minecraft routines into presets that can be refined instead of rebuilt from scratch.</p>
+        </article>
+        <article class="featureCard">
+          <h3>Debug</h3>
+          <p>Keep workflow structure visible so broken conditions, missing steps, and parameter changes are easier to spot.</p>
+        </article>
+        <article class="featureCard">
+          <h3>Adapt</h3>
+          <p>Build player-side automation around your own worlds, controls, items, and Minecraft task flow.</p>
+        </article>
       </div>
     </section>
 
@@ -1377,8 +1455,10 @@
       <div class="panel">
         <h2>What it is</h2>
         <p>
-          Pathmind turns automation into a visual language. The goal is to make workflow logic
+          Pathmind turns Minecraft automation into a visual language. The goal is to make workflow logic
           readable while you build it, so a graph can grow without turning into a mess of hidden settings.
+          It is designed for players who want to experiment with repeatable in-game action sequences
+          while still understanding exactly what each step is doing.
         </p>
 
         <ul class="list">
@@ -1410,7 +1490,7 @@
           <div class="row"><span>Platform</span><span>Fabric</span></div>
           <div class="row"><span>Minecraft</span><span>1.21.x</span></div>
           <div class="row"><span>Environment</span><span>Client-side</span></div>
-          <div class="row"><span>Downloads</span><span>GitHub Releases</span></div>
+          <div class="row"><span>Downloads</span><span>Modrinth and GitHub Releases</span></div>
           <div class="row"><span>Support</span><span>Discord</span></div>
         </div>
         <p style="margin-top:12px; color:var(--muted2);">
