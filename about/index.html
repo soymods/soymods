@@ -252,9 +252,9 @@
       overflow:hidden;
       border-bottom:5px solid #111;
       background:
-        radial-gradient(circle at 50% 18%, rgba(255,255,255,.18), transparent 28%),
-        linear-gradient(120deg, rgba(255,255,255,.16) 0 2px, transparent 2px 14%, rgba(255,255,255,.12) 14% 16%, transparent 16% 100%),
-        linear-gradient(160deg, #f48692 0%, #ef5753 44%, #ce2824 100%);
+        radial-gradient(circle at 18% 16%, rgba(255,211,77,.18), transparent 24%),
+        radial-gradient(circle at 82% 20%, rgba(103,178,70,.18), transparent 24%),
+        linear-gradient(180deg, #2b2926 0%, #1f1d1b 62%, #171514 100%);
     }
     .hero::before{
       content:"";
@@ -262,34 +262,17 @@
       inset:0;
       z-index:-2;
       background:
-        linear-gradient(90deg, transparent 0 4%, rgba(121,19,17,.38) 4% 10%, transparent 10% 21%, rgba(121,19,17,.34) 21% 30%, transparent 30% 72%, rgba(121,19,17,.34) 72% 83%, transparent 83%),
-        linear-gradient(0deg, rgba(255,255,255,.08) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+        linear-gradient(90deg, transparent 0 16%, rgba(255,255,255,.07) 16% calc(16% + 3px), transparent calc(16% + 3px) 55%, rgba(255,255,255,.055) 55% calc(55% + 3px), transparent calc(55% + 3px) 82%, rgba(255,255,255,.045) 82% calc(82% + 3px), transparent calc(82% + 3px)),
+        linear-gradient(0deg, rgba(255,255,255,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px);
       background-size:auto, 38px 38px, 38px 38px;
-      opacity:.55;
+      opacity:.8;
     }
-    .skyBlocks{
-      position:absolute;
-      inset:0;
-      z-index:-1;
-      pointer-events:none;
-      opacity:.75;
-      overflow:hidden;
-    }
-    .skyBlocks span{
-      position:absolute;
-      width:180px;
-      height:46px;
-      background:rgba(255,170,174,.45);
-      filter:drop-shadow(18px 18px 0 rgba(26,31,39,.30));
-    }
-    .skyBlocks span:nth-child(1){left:8%;top:16%;width:178px}
-    .skyBlocks span:nth-child(2){left:58%;top:18%;width:220px}
-    .skyBlocks span:nth-child(3){left:28%;top:35%;width:156px}
-    .skyBlocks span:nth-child(4){left:76%;top:31%;width:190px}
     .heroInner{
       min-height:500px;
       display:grid;
+      grid-template-columns:minmax(0, 1fr) minmax(330px, 430px);
+      gap:42px;
       align-items:center;
       padding:72px 0 80px;
     }
@@ -297,13 +280,17 @@
       width:max-content;
       max-width:100%;
       margin:0 0 18px;
-      padding:8px 12px 7px;
-      color:#111;
-      background:var(--gold);
+      padding:9px 12px 7px;
+      color:#050505 !important;
+      -webkit-text-fill-color:#050505;
+      background:#ffd34d;
       border:3px solid #111;
       box-shadow:5px 5px 0 #000;
       text-transform:uppercase;
-      font-size:13px;
+      font-family:"Minecraft", ui-monospace, monospace;
+      font-size:15px;
+      font-weight:800;
+      text-shadow:none;
     }
     h1{
       max-width:920px;
@@ -316,10 +303,51 @@
     .lede{
       max-width:780px;
       margin:26px 0 0;
-      color:#fff4ef;
+      color:var(--muted);
       font-size:21px;
       line-height:1.5;
-      text-shadow:2px 2px 0 rgba(0,0,0,.8);
+    }
+    .aboutSnapshot{
+      position:relative;
+      padding:22px;
+      background:#2b2926;
+      border:4px solid #111;
+      box-shadow:10px 10px 0 #050505, 0 0 0 4px rgba(255,255,255,.05) inset;
+    }
+    .aboutSnapshot::before{
+      content:"project index";
+      position:absolute;
+      left:18px;
+      top:-18px;
+      padding:7px 10px 5px;
+      background:var(--green);
+      border:3px solid #111;
+      color:#071006;
+      font-family:"Minecraft", ui-monospace, monospace;
+      font-size:13px;
+      font-weight:800;
+      text-transform:uppercase;
+      box-shadow:4px 4px 0 #000;
+    }
+    .snapshotRow{
+      display:grid;
+      grid-template-columns:112px 1fr;
+      gap:12px;
+      align-items:start;
+      padding:14px 0;
+      border-top:3px solid rgba(255,255,255,.08);
+    }
+    .snapshotRow:first-child{border-top:0;margin-top:8px}
+    .snapshotRow b{
+      color:var(--gold);
+      font-family:"Minecrafter","Minecraft",monospace;
+      text-transform:uppercase;
+      font-size:14px;
+    }
+    .snapshotRow span{
+      color:var(--muted);
+      font-size:15px;
+      line-height:1.35;
     }
     .actions{
       display:flex;
@@ -347,14 +375,15 @@
     .btn.gold{background:var(--gold);color:#17120a}
     .btn.dark{background:#25221f;color:#fff;border-color:#746d65}
     main section.content{padding:72px 0 0}
+    main section.story{padding-top:64px}
     .sectionHead{
       display:flex;
       align-items:end;
       justify-content:space-between;
       gap:24px;
       margin-bottom:24px;
-      border-bottom:4px solid var(--line);
-      padding-bottom:12px;
+      padding:0 0 0 18px;
+      border-left:6px solid var(--gold);
     }
     .sectionHead h2{
       margin:0;
@@ -370,18 +399,39 @@
       color:var(--muted);
       font-size:16px;
       line-height:1.5;
+      text-align:right;
     }
     .grid{
       display:grid;
       grid-template-columns:repeat(3, 1fr);
       gap:18px;
     }
+    .focusGrid{
+      display:block;
+    }
     .card{
+      display:block;
       padding:22px;
       background:#2b2926;
       border:4px solid #111;
       box-shadow:8px 8px 0 #050505;
     }
+    .focusGrid .card{
+      display:grid;
+      grid-template-columns:180px minmax(0, 1fr);
+      gap:18px;
+      align-items:center;
+      min-height:118px;
+      margin-top:14px;
+      box-shadow:6px 6px 0 #050505;
+    }
+    .focusGrid .card:first-child{margin-top:0}
+    .focusGrid .card:nth-child(2){
+      background:#332f28;
+      border-color:#1a1714;
+      margin-left:54px;
+    }
+    .focusGrid .card:nth-child(3){margin-left:108px}
     .cardTitle{
       display:block;
       color:#fff;
@@ -396,9 +446,37 @@
     }
     .copy{
       padding:30px;
-      background:#24211f;
+      background:
+        linear-gradient(90deg, rgba(255,211,77,.10), transparent 38%),
+        #24211f;
       border:4px solid #111;
       box-shadow:8px 8px 0 #050505;
+    }
+    .storyLayout{
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) 310px;
+      gap:18px;
+      align-items:stretch;
+    }
+    .storyAside{
+      padding:24px;
+      background:#312e2a;
+      border:4px solid #111;
+      box-shadow:8px 8px 0 #050505;
+    }
+    .storyAside b{
+      display:block;
+      color:var(--gold);
+      font-family:"Minecrafter","Minecraft",monospace;
+      text-transform:uppercase;
+      font-size:18px;
+    }
+    .storyAside span{
+      display:block;
+      margin-top:12px;
+      color:var(--muted);
+      line-height:1.45;
+      font-size:15px;
     }
     .copy h2,.faq h2{
       margin:0;
@@ -408,33 +486,51 @@
       text-shadow:4px 4px 0 #000;
     }
     .copy p{max-width:980px}
-    .projectLinks{
-      display:grid;
-      grid-template-columns:repeat(2, 1fr);
-      gap:18px;
-      margin-top:22px;
-    }
-    .projectCard{
-      display:block;
-      min-height:180px;
-      padding:22px;
-      border:4px solid #111;
-      background:#312e2a;
-      box-shadow:7px 7px 0 #000;
-      transition:transform .16s var(--ease), border-color .16s var(--ease);
-    }
-    .projectCard:hover{transform:translateY(-3px);border-color:var(--green)}
-    .projectCard:nth-child(2):hover{border-color:var(--gold)}
-    .projectCard b{
-      display:block;
-      color:#fff;
-      font-family:"Minecrafter","Minecraft",monospace;
-      text-transform:uppercase;
-      font-size:24px;
-      text-shadow:3px 3px 0 #000;
-    }
     .faq{
       padding:72px 0;
+    }
+    .followGrid{
+      display:flex;
+      align-items:stretch;
+      gap:12px;
+    }
+    .followGrid .card{
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-start;
+      flex:1;
+      min-height:150px;
+      box-shadow:5px 5px 0 #050505;
+      cursor:pointer;
+      transition:transform .16s var(--ease), box-shadow .16s var(--ease), border-color .16s var(--ease), background .16s var(--ease);
+    }
+    .followGrid .card:nth-child(1){border-top-color:var(--green)}
+    .followGrid .card:nth-child(2){border-top-color:var(--gold)}
+    .followGrid .card:nth-child(3){border-top-color:var(--red)}
+    .followGrid .card:hover,
+    .followGrid .card:focus-visible{
+      transform:translateY(-4px);
+      box-shadow:5px 10px 0 #050505;
+      background:#332f2b;
+    }
+    .faqInner{
+      display:grid;
+      grid-template-columns:300px minmax(0, 1fr);
+      gap:22px;
+      align-items:start;
+    }
+    .faqIntro{
+      position:sticky;
+      top:92px;
+      padding:22px;
+      background:#24211f;
+      border:4px solid #111;
+      box-shadow:7px 7px 0 #050505;
+    }
+    .faqIntro p{
+      margin:14px 0 0;
+      color:var(--muted);
+      line-height:1.45;
     }
     details{
       margin-top:12px;
@@ -442,14 +538,36 @@
       background:#2b2926;
       border:3px solid #111;
       box-shadow:5px 5px 0 #050505;
+      transition:background .16s var(--ease), border-color .16s var(--ease), transform .16s var(--ease);
     }
+    details:hover{background:#302d29}
+    details[open]{border-color:var(--line);transform:translateY(-1px)}
+    details::details-content{
+      block-size:0;
+      overflow:hidden;
+      transition:block-size .24s var(--ease), content-visibility .24s allow-discrete;
+    }
+    details[open]::details-content{block-size:auto}
     summary{
       cursor:pointer;
       color:#fff;
       font-family:"Minecrafter","Minecraft",monospace;
       text-transform:uppercase;
       font-size:16px;
+      list-style:none;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-height:50px;
     }
+    summary::-webkit-details-marker{display:none}
+    summary::before{
+      content:"▶";
+      display:inline-block;
+      color:var(--gold);
+      transition:transform .18s var(--ease);
+    }
+    details[open] summary::before{transform:rotate(90deg)}
     footer{
       border-top:4px solid #111;
       background:#171514;
@@ -473,9 +591,15 @@
     .footerLinks a:hover{color:#fff}
     @media (max-width: 980px){
       .navLinks{display:none}
-      .grid,.projectLinks{grid-template-columns:1fr}
+      .heroInner{grid-template-columns:1fr}
+      .aboutSnapshot{max-width:560px}
+      .grid,.storyLayout,.faqInner{grid-template-columns:1fr}
+      .focusGrid .card{grid-template-columns:1fr}
+      .focusGrid .card:nth-child(2),.focusGrid .card:nth-child(3){margin-left:0}
+      .followGrid{display:grid;grid-template-columns:1fr}
+      .faqIntro{position:static}
       .sectionHead{display:block}
-      .sectionHead p{margin-top:14px}
+      .sectionHead p{margin-top:14px;text-align:left}
     }
     @media (max-width: 620px){
       .wrap{width:min(100% - 24px, var(--max))}
@@ -484,6 +608,7 @@
       .lede{font-size:18px}
       .actions .btn{width:100%}
       .copy{padding:22px}
+      .snapshotRow{grid-template-columns:1fr;gap:6px}
     }
   </style>
 </head>
@@ -509,9 +634,6 @@
 
   <main>
     <section class="hero" aria-labelledby="about-title">
-      <div class="skyBlocks" aria-hidden="true">
-        <span></span><span></span><span></span><span></span>
-      </div>
       <div class="wrap heroInner">
         <div>
           <p class="eyebrow">Minecraft project hub</p>
@@ -526,10 +648,24 @@
             <a class="btn dark" href="https://github.com/soymods" target="_blank" rel="noreferrer">View GitHub</a>
           </div>
         </div>
+        <aside class="aboutSnapshot" aria-label="soymods project index">
+          <div class="snapshotRow">
+            <b>Projects</b>
+            <span>Mods, plugins, overlays, workflow tools, and experiments.</span>
+          </div>
+          <div class="snapshotRow">
+            <b>Updates</b>
+            <span>Release pages, source links, changelogs, and public notes.</span>
+          </div>
+          <div class="snapshotRow">
+            <b>Places</b>
+            <span>soymods.com, Modrinth, GitHub, Discord, and project videos.</span>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <section class="content wrap" aria-labelledby="what-title">
+    <section class="content story wrap" aria-labelledby="what-title">
       <div class="sectionHead">
         <div>
           <p class="sectionKicker">What is soymods?</p>
@@ -540,20 +676,26 @@
           downloads, source repositories, videos, and release pages.
         </p>
       </div>
-      <div class="copy">
-        <h2>Built by ryduzz</h2>
-        <p>
-          I use soymods as the home base for Minecraft work I want to share publicly.
-          Some projects are polished mods, some are utilities for recording or playing,
-          some are plugins or experiments, and some are smaller ideas that become useful
-          enough to release.
-        </p>
-        <p>
-          The goal is to keep everything easy to find: what the project does, where to
-          download it, where the source code lives, what versions it targets, and where
-          to follow updates. As the project list grows, this page and the project pages
-          act as the index for the broader soymods ecosystem.
-        </p>
+      <div class="storyLayout">
+        <div class="copy">
+          <h2>Built by ryduzz</h2>
+          <p>
+            I use soymods as the home base for Minecraft work I want to share publicly.
+            Some projects are polished mods, some are utilities for recording or playing,
+            some are plugins or experiments, and some are smaller ideas that become useful
+            enough to release.
+          </p>
+          <p>
+            The goal is to keep everything easy to find: what the project does, where to
+            download it, where the source code lives, what versions it targets, and where
+            to follow updates. As the project list grows, this page and the project pages
+            act as the index for the broader soymods ecosystem.
+          </p>
+        </div>
+        <aside class="storyAside" aria-label="soymods project notes">
+          <b>Project notes</b>
+          <span>soymods projects usually start as things I want in my own Minecraft setup, then become public when they are useful enough for other players or server owners.</span>
+        </aside>
       </div>
     </section>
 
@@ -564,7 +706,7 @@
           <h2 id="focus-title">What shows up here</h2>
         </div>
       </div>
-      <div class="grid">
+      <div class="grid focusGrid">
         <article class="card">
           <span class="cardTitle">Mods</span>
           <p>Minecraft mods for gameplay workflows, client utilities, overlays, automation experiments, and quality-of-life ideas.</p>
@@ -580,25 +722,6 @@
       </div>
     </section>
 
-    <section class="content wrap" aria-labelledby="projects-title">
-      <div class="sectionHead">
-        <div>
-          <p class="sectionKicker">Current projects</p>
-          <h2 id="projects-title">Start here</h2>
-        </div>
-      </div>
-      <div class="projectLinks">
-        <a class="projectCard" href="/pathmind/">
-          <b>Pathmind Minecraft automation mod</b>
-          <p>Visual node graphs for building Minecraft workflows around movement, inputs, crafting, mining, placing, and presets.</p>
-        </a>
-        <a class="projectCard" href="/visual-keystrokes/">
-          <b>Visual Keystrokes Minecraft overlay</b>
-          <p>A customizable input overlay for showing WASD, mouse buttons, CPS, utility keys, and recording layouts.</p>
-        </a>
-      </div>
-    </section>
-
     <section class="content wrap" aria-labelledby="links-title">
       <div class="sectionHead">
         <div>
@@ -607,7 +730,7 @@
         </div>
         <p>Project pages link to the best download source for each release.</p>
       </div>
-      <div class="grid">
+      <div class="grid followGrid">
         <a class="card" href="https://modrinth.com/organization/soymods" target="_blank" rel="noreferrer">
           <span class="cardTitle">Modrinth</span>
           <p>Find published soymods Minecraft projects and download pages on Modrinth.</p>
@@ -624,27 +747,34 @@
     </section>
 
     <section class="faq wrap" aria-labelledby="faq-title">
-      <h2 id="faq-title">FAQ</h2>
-      <details>
-        <summary>What is soymods?</summary>
-        <p>soymods is a hub for Minecraft projects by ryduzz, including mods, plugins, tools, overlays, experiments, downloads, source code, and release updates.</p>
-      </details>
-      <details>
-        <summary>Who makes soymods?</summary>
-        <p>soymods projects are made by ryduzz.</p>
-      </details>
-      <details>
-        <summary>Where can I download soymods projects?</summary>
-        <p>Downloads are linked from each project page. Published releases may be available on Modrinth, GitHub, or both depending on the project.</p>
-      </details>
-      <details>
-        <summary>Are soymods projects open source?</summary>
-        <p>Many soymods projects include source code, releases, and issue tracking on GitHub.</p>
-      </details>
-      <details>
-        <summary>Are all soymods projects client-side mods?</summary>
-        <p>No. soymods is broader than client-side mods. It can include Minecraft mods, plugins, tools, overlays, and experiments.</p>
-      </details>
+      <div class="faqInner">
+        <div class="faqIntro">
+          <h2 id="faq-title">FAQ</h2>
+          <p>Quick answers for players, server owners, and anyone finding soymods from search, Modrinth, GitHub, or videos.</p>
+        </div>
+        <div>
+          <details>
+            <summary>What is soymods?</summary>
+            <p>soymods is a hub for Minecraft projects by ryduzz, including mods, plugins, tools, overlays, experiments, downloads, source code, and release updates.</p>
+          </details>
+          <details>
+            <summary>Who makes soymods?</summary>
+            <p>soymods projects are made by ryduzz.</p>
+          </details>
+          <details>
+            <summary>Where can I download soymods projects?</summary>
+            <p>Downloads are linked from each project page. Published releases may be available on Modrinth, GitHub, or both depending on the project.</p>
+          </details>
+          <details>
+            <summary>Are soymods projects open source?</summary>
+            <p>Many soymods projects include source code, releases, and issue tracking on GitHub.</p>
+          </details>
+          <details>
+            <summary>Are all soymods projects client-side mods?</summary>
+            <p>No. soymods is broader than client-side mods. It can include Minecraft mods, plugins, tools, overlays, and experiments.</p>
+          </details>
+        </div>
+      </div>
     </section>
   </main>
 
