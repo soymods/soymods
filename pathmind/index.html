@@ -685,9 +685,9 @@
       position:sticky;
       top:0;
       z-index:20;
-      background:rgba(31,29,27,.97);
-      border-bottom:4px solid #090909;
-      box-shadow:0 4px 0 rgba(255,255,255,.07);
+      background:rgba(8,10,12,.97);
+      border-bottom:4px solid #050505;
+      box-shadow:0 4px 0 rgba(124,255,135,.12);
     }
     .siteHeader .nav{
       min-height:64px;
@@ -719,7 +719,7 @@
       display:flex;
       align-items:center;
       gap:18px;
-      color:#d8dde2;
+      color:var(--muted);
       font-size:13px;
       letter-spacing:0;
       text-transform:uppercase;
@@ -727,7 +727,7 @@
     .navLink,
     .contactLink{
       position:relative;
-      color:#d8dde2;
+      color:var(--muted);
       font-family:"Minecrafter","Minecraft",monospace;
       font-size:13px;
       letter-spacing:0;
@@ -743,7 +743,7 @@
       right:50%;
       bottom:4px;
       height:3px;
-      background:#8ed35f;
+      background:#7cff87;
       opacity:0;
       transform:translateX(-50%) scaleX(0);
       transform-origin:center;
@@ -769,7 +769,7 @@
       align-items:center;
       gap:10px;
     }
-    .contactLink::after{background:#ffd34d}
+    .contactLink::after{background:#2f8cff}
     main{padding:0 0 58px}
     .hero{
       min-height:auto;
@@ -1142,6 +1142,21 @@
       text-transform:uppercase;
       text-shadow:4px 4px 0 #000;
     }
+    .sectionHead .eyebrow{
+      display:block;
+      width:auto;
+      max-width:none;
+      margin:0 0 12px;
+      padding:0;
+      color:#7cff87;
+      background:transparent;
+      border:0;
+      box-shadow:none;
+      font-size:14px;
+      line-height:1;
+      text-align:left;
+      text-shadow:2px 2px 0 #000;
+    }
     .sectionHead p{
       max-width:58ch;
       margin:0;
@@ -1226,10 +1241,10 @@
       background:#0f1215;
     }
     footer{
-      color:#9b9388;
+      color:var(--muted2);
       font-size:13px;
-      background:#171514;
-      border-top:4px solid #111;
+      background:#080a0c;
+      border-top:4px solid #050505;
       max-width:none;
       margin-top:0;
       padding:0;
@@ -1237,7 +1252,7 @@
       text-transform:none;
       line-height:normal;
     }
-    footer a{color:#d8d0c4; border-bottom:0}
+    footer a{color:var(--muted); border-bottom:0}
     .footerInner{
       min-height:76px;
       display:flex;
@@ -1250,7 +1265,7 @@
       display:flex;
       gap:16px;
       flex-wrap:wrap;
-      color:#d8d0c4;
+      color:var(--muted);
     }
     .footerLinks a:hover{
       color:#fff;
