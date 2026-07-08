@@ -6,4 +6,5 @@ http://www.soymods.com/* https://soymods.com/:splat 301!
 # Normalize section URLs so bots always end up on the canonical trailing-slash pages.
 /pathmind /pathmind/ 301
 /visual-keystrokes /visual-keystrokes/ 301
+/oreveil /oreveil/ 301
 /about /about/ 301

@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#111615" />
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="soymods">
+  <meta property="og:title" content="Oreveil - Server-Side Minecraft Ore Obfuscation Plugin">
+  <meta property="og:description" content="Oreveil is a Paper plugin for deterministic server-side ore obfuscation, exposure-gated reveals, and seed-resilient anti-xray protection.">
+  <meta property="og:url" content="https://soymods.com/oreveil/">
+  <meta property="og:image" content="https://soymods.com/oreveil/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Oreveil - Server-Side Minecraft Ore Obfuscation Plugin">
+  <meta name="twitter:description" content="Hide unrevealed ore data before it reaches clients with Paper server-side packet-aware obfuscation.">
+  <meta name="twitter:image" content="https://soymods.com/oreveil/og.png">
+
+  <link rel="canonical" href="https://soymods.com/oreveil/">
+  <meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">
+
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" href="/icon.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/icon.png">
+
+  <title>Oreveil - Server-Side Minecraft Ore Obfuscation Plugin</title>
+  <meta name="description" content="Oreveil is a Paper plugin for deterministic server-side ore obfuscation, exposure-gated reveals, and seed-resilient anti-xray protection." />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "SoftwareApplication",
+          "@id": "https://soymods.com/oreveil/#software",
+          "name": "Oreveil",
+          "applicationCategory": "GameApplication",
+          "operatingSystem": "Windows, macOS, Linux",
+          "description": "Paper plugin for deterministic server-side ore obfuscation, exposure-gated reveals, and seed-resilient anti-xray protection.",
+          "url": "https://soymods.com/oreveil/",
+          "image": "https://soymods.com/oreveil/og.png",
+          "downloadUrl": "https://modrinth.com/plugin/oreveil",
+          "softwareRequirements": "Paper 1.16.x-1.21.x and 26.x, ProtocolLib recommended",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "publisher": {
+            "@type": "Organization",
+            "name": "soymods",
+            "url": "https://soymods.com/"
+          }
+        },
+        {
+          "@type": "BreadcrumbList",
+          "@id": "https://soymods.com/oreveil/#breadcrumb",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "soymods",
+              "item": "https://soymods.com/"
+            },
+            {
+              "@type": "ListItem",
+              "position": 2,
+              "name": "Oreveil",
+              "item": "https://soymods.com/oreveil/"
+            }
+          ]
+        }
+      ]
+    }
+  </script>
+
+  <style>
+    :root{
+      --bedrock:#070808;
+      --cave:#111615;
+      --cave2:#1b2220;
+      --stone:#4a5150;
+      --stone2:#606969;
+      --stone3:#343b3b;
+      --ore:#5ff1ea;
+      --ore2:#c8fffc;
+      --moss:#72c363;
+      --gold:#f2ce61;
+      --red:#e3645d;
+      --paper:#f6fff9;
+      --muted:#c8d6d2;
+      --soft:#8fa09d;
+      --line:#111;
+      --max:1380px;
+      --ease:cubic-bezier(.2,.8,.2,1);
+    }
+
+    @font-face{
+      font-family:"Minecraft";
+      src:url("/fonts/Minecraft.ttf") format("truetype");
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Minecrafter";
+      src:url("/fonts/Minecrafter.Reg.ttf") format("truetype");
+      font-display:swap;
+    }
+
+    *{box-sizing:border-box}
+    html{background:var(--bedrock); scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--paper);
+      font-family:"Minecraft", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      letter-spacing:0;
+      overflow-x:hidden;
+      background:
+        radial-gradient(circle at 16% 22%, rgba(95,241,234,.18), transparent 16%),
+        radial-gradient(circle at 80% 14%, rgba(95,241,234,.11), transparent 18%),
+        linear-gradient(180deg, rgba(0,0,0,.05), rgba(0,0,0,.58)),
+        var(--cave);
+    }
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-3;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(90deg, transparent 0 63px, rgba(0,0,0,.18) 63px 64px),
+        linear-gradient(0deg, transparent 0 63px, rgba(0,0,0,.2) 63px 64px),
+        repeating-linear-gradient(90deg, #3f4645 0 64px, #545d5c 64px 128px, #303635 128px 192px, #4c5554 192px 256px);
+      background-size:32px 32px, 32px 32px, 64px 64px, 64px 64px, 256px 256px;
+      image-rendering:pixelated;
+    }
+    body::after{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-2;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 14% 36%, rgba(200,255,252,.2) 0 7px, rgba(95,241,234,.35) 8px 18px, transparent 19px),
+        radial-gradient(circle at 19% 42%, rgba(95,241,234,.34) 0 14px, transparent 15px),
+        radial-gradient(circle at 83% 24%, rgba(200,255,252,.16) 0 9px, rgba(95,241,234,.24) 10px 20px, transparent 21px),
+        radial-gradient(circle at 73% 68%, rgba(95,241,234,.24) 0 15px, transparent 16px),
+        linear-gradient(180deg, rgba(0,0,0,.08), rgba(0,0,0,.68));
+      opacity:.78;
+    }
+
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    h1,h2,h3,.brand,.navLink,.contactLink,.btn,.chip,.kicker,.metric strong,.cellLabel,.compare th{
+      font-family:"Minecrafter","Minecraft",monospace;
+      letter-spacing:0;
+    }
+    a:focus-visible,button:focus-visible{
+      outline:3px solid #fff;
+      outline-offset:4px;
+    }
+    .srOnly{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+    .wrap{
+      width:min(var(--max), calc(100% - 28px));
+      margin:0 auto;
+    }
+
+    .siteHeader{
+      position:sticky;
+      top:0;
+      z-index:30;
+      background:rgba(10,12,12,.96);
+      border-bottom:4px solid #000;
+      box-shadow:0 4px 0 rgba(95,241,234,.18);
+    }
+    .nav{
+      min-height:64px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:22px;
+      color:#fff;
+      text-transform:uppercase;
+      text-shadow:3px 3px 0 #000;
+    }
+    .brandMark{
+      width:38px;
+      height:38px;
+      image-rendering:pixelated;
+      filter:drop-shadow(3px 3px 0 #000);
+    }
+    .navLinks,.headerActions{
+      display:flex;
+      align-items:center;
+      gap:18px;
+    }
+    .navLink,.contactLink{
+      position:relative;
+      padding:10px 0;
+      color:#d7e5e2;
+      font-size:13px;
+      text-transform:uppercase;
+      transition:color .14s var(--ease);
+    }
+    .navLink::after,.contactLink::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      right:50%;
+      bottom:4px;
+      height:3px;
+      background:var(--ore);
+      opacity:0;
+      transform:translateX(-50%) scaleX(0);
+      transform-origin:center;
+      transition:transform .22s var(--ease), opacity .12s ease, left .22s var(--ease), right .22s var(--ease);
+    }
+    .navLink:hover,.navLink:focus-visible,.contactLink:hover,.contactLink:focus-visible{color:#fff}
+    .navLink:hover::after,.navLink:focus-visible::after,.contactLink:hover::after,.contactLink:focus-visible::after{
+      left:0;
+      right:0;
+      transform:translateX(0) scaleX(1);
+      opacity:1;
+    }
+
+    .hero{
+      position:relative;
+      min-height:calc(100vh - 64px);
+      overflow:hidden;
+      border-bottom:5px solid #000;
+    }
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.04), rgba(0,0,0,.2) 55%, rgba(0,0,0,.7)),
+        linear-gradient(90deg, transparent 0 18%, rgba(95,241,234,.16) 18% calc(18% + 4px), transparent calc(18% + 4px) 65%, rgba(95,241,234,.1) 65% calc(65% + 4px), transparent calc(65% + 4px));
+      pointer-events:none;
+    }
+    .hero::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:172px;
+      background:
+        linear-gradient(180deg, transparent, rgba(0,0,0,.72)),
+        repeating-linear-gradient(90deg, #111615 0 64px, #202928 64px 128px, #0b0d0d 128px 160px);
+      pointer-events:none;
+    }
+    .heroGrid{
+      position:relative;
+      z-index:2;
+      min-height:calc(100vh - 64px);
+      display:grid;
+      grid-template-columns:minmax(0, .92fr) minmax(430px, .86fr);
+      align-items:center;
+      gap:56px;
+      padding:62px 0 118px;
+    }
+    .heroCopy{
+      max-width:760px;
+      text-shadow:2px 2px 0 rgba(0,0,0,.78);
+    }
+    .productLockup{
+      display:flex;
+      align-items:center;
+      gap:18px;
+      margin-bottom:22px;
+    }
+    .productMark{
+      width:82px;
+      height:82px;
+      image-rendering:pixelated;
+      filter:drop-shadow(5px 5px 0 #000);
+      flex:0 0 auto;
+    }
+    .chip{
+      width:max-content;
+      max-width:100%;
+      padding:8px 12px 7px;
+      background:var(--ore);
+      color:#061110;
+      border:3px solid #000;
+      box-shadow:5px 5px 0 #000;
+      text-transform:uppercase;
+      font-size:13px;
+    }
+    .titleImg{
+      width:min(690px, 100%);
+      image-rendering:pixelated;
+      filter:drop-shadow(0 10px 0 rgba(0,0,0,.72));
+    }
+    .lede{
+      margin:24px 0 0;
+      max-width:720px;
+      color:#e4f2ee;
+      font-size:21px;
+      line-height:1.45;
+    }
+    .heroActions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:14px;
+      margin-top:30px;
+    }
+    .btn{
+      min-height:52px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 20px 12px;
+      border:4px solid #000;
+      background:#f7fff9;
+      color:#081110;
+      box-shadow:6px 6px 0 #000;
+      text-transform:uppercase;
+      font-size:14px;
+      transition:transform .14s var(--ease), box-shadow .14s var(--ease), filter .14s ease;
+    }
+    .btn:hover{
+      transform:translateY(-3px);
+      box-shadow:6px 9px 0 #000;
+      filter:brightness(1.06);
+    }
+    .btn:active{
+      transform:translate(3px,3px);
+      box-shadow:3px 3px 0 #000;
+    }
+    .btn.primary{background:var(--ore)}
+    .btn.gold{background:var(--gold)}
+    .btn.dark{background:#161d1c; color:#fff; border-color:#4d5a57}
+
+    .revealRig{
+      position:relative;
+      padding:18px;
+      background:#161d1c;
+      border:5px solid #000;
+      box-shadow:14px 14px 0 #000, 0 0 0 4px rgba(255,255,255,.06) inset;
+      transform:rotate(1deg);
+    }
+    .revealRig::before{
+      content:"hover the wall";
+      position:absolute;
+      top:-20px;
+      left:18px;
+      padding:7px 10px 6px;
+      background:var(--gold);
+      color:#171006;
+      border:3px solid #000;
+      box-shadow:4px 4px 0 #000;
+      font-family:"Minecrafter","Minecraft",monospace;
+      text-transform:uppercase;
+      font-size:12px;
+    }
+    .wall{
+      display:grid;
+      grid-template-columns:repeat(8, minmax(0, 1fr));
+      background:#080a0a;
+      border:4px solid #000;
+    }
+    .block{
+      position:relative;
+      aspect-ratio:1;
+      min-height:52px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.13), transparent 44%),
+        var(--stone);
+      border:2px solid #202827;
+      box-shadow:inset -7px -7px 0 rgba(0,0,0,.22);
+      transition:filter .14s ease, transform .14s ease;
+    }
+    .block:nth-child(3n){background-color:var(--stone2)}
+    .block:nth-child(4n){background-color:var(--stone3)}
+    .block:nth-child(7n){background-color:#535d5b}
+    .block::after{
+      content:"";
+      position:absolute;
+      inset:12%;
+      opacity:0;
+      background:
+        radial-gradient(circle at 24% 24%, var(--ore2) 0 11%, transparent 12%),
+        radial-gradient(circle at 66% 38%, var(--ore) 0 15%, transparent 16%),
+        radial-gradient(circle at 42% 72%, rgba(95,241,234,.85) 0 12%, transparent 13%);
+      filter:drop-shadow(0 0 12px rgba(95,241,234,.58));
+      transition:opacity .12s steps(2,end);
+    }
+    .block.ore:hover,
+    .block.ore:focus-visible{
+      z-index:2;
+      transform:translateY(-2px);
+      filter:brightness(1.15);
+      outline:3px solid var(--ore);
+      outline-offset:-3px;
+    }
+    .block.ore:hover::after,
+    .block.ore:focus-visible::after,
+    .revealRig:hover .block.ore.hot::after{
+      opacity:1;
+    }
+    .viewSplit{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      border:4px solid #000;
+      border-top:0;
+      background:#0b1010;
+    }
+    .viewPane{
+      min-height:118px;
+      padding:16px;
+      border-right:3px solid #000;
+      color:var(--muted);
+      line-height:1.35;
+    }
+    .viewPane:last-child{border-right:0}
+    .viewPane b{
+      display:block;
+      margin-bottom:8px;
+      color:#fff;
+      font-family:"Minecrafter","Minecraft",monospace;
+      text-transform:uppercase;
+      font-size:15px;
+    }
+    .viewPane.client b{color:var(--gold)}
+    .viewPane.server b{color:var(--ore2)}
+
+    .metrics{
+      position:relative;
+      z-index:3;
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:12px;
+      margin-top:-62px;
+    }
+    .metric{
+      min-height:112px;
+      padding:18px;
+      background:#242b29;
+      border:4px solid #000;
+      box-shadow:6px 6px 0 #000;
+    }
+    .metric strong{
+      display:block;
+      color:var(--ore);
+      text-transform:uppercase;
+      font-size:18px;
+      line-height:1.08;
+    }
+    .metric span{
+      display:block;
+      margin-top:9px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+    }
+
+    .section{
+      padding:76px 0 0;
+    }
+    .sectionHead{
+      display:grid;
+      grid-template-columns:minmax(0, .9fr) minmax(0, 1.1fr);
+      gap:34px;
+      align-items:end;
+      margin-bottom:26px;
+      padding-bottom:14px;
+      border-bottom:4px solid #000;
+    }
+    .kicker{
+      margin:0 0 8px;
+      color:var(--ore);
+      text-transform:uppercase;
+      font-size:13px;
+    }
+    h2{
+      margin:0;
+      color:#fff;
+      text-transform:uppercase;
+      font-size:clamp(40px, 6vw, 76px);
+      line-height:.95;
+      text-shadow:5px 5px 0 #000;
+    }
+    .sectionHead p{
+      margin:0;
+      color:#d6e3df;
+      font-size:18px;
+      line-height:1.45;
+      text-align:right;
+    }
+
+    .modelGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:22px;
+    }
+    .modelCard{
+      min-height:310px;
+      padding:24px;
+      background:#28302e;
+      border:4px solid #000;
+      box-shadow:8px 8px 0 #000;
+      overflow:hidden;
+      position:relative;
+    }
+    .modelCard::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size:32px 32px;
+      opacity:.4;
+      pointer-events:none;
+    }
+    .modelCard h3{
+      position:relative;
+      margin:0;
+      color:#fff;
+      font-size:34px;
+      text-transform:uppercase;
+      text-shadow:3px 3px 0 #000;
+    }
+    .modelCard p{
+      position:relative;
+      margin:14px 0 0;
+      color:var(--muted);
+      font-size:17px;
+      line-height:1.5;
+    }
+    .maskStrip{
+      position:relative;
+      display:grid;
+      grid-template-columns:repeat(6, 1fr);
+      margin-top:24px;
+      border:3px solid #000;
+    }
+    .maskStrip span{
+      aspect-ratio:1;
+      background:var(--stone);
+      border:2px solid #202827;
+      box-shadow:inset -5px -5px 0 rgba(0,0,0,.25);
+    }
+    .modelCard.reveal .maskStrip span:nth-child(2)::after,
+    .modelCard.reveal .maskStrip span:nth-child(4)::after,
+    .modelCard.reveal .maskStrip span:nth-child(5)::after{
+      content:"";
+      display:block;
+      width:72%;
+      height:72%;
+      margin:14%;
+      background:
+        radial-gradient(circle at 32% 32%, var(--ore2) 0 14%, transparent 15%),
+        radial-gradient(circle at 68% 48%, var(--ore) 0 18%, transparent 19%);
+    }
+    .modelCard.masked{box-shadow:inset 0 8px 0 var(--gold), 8px 8px 0 #000}
+    .modelCard.reveal{box-shadow:inset 0 8px 0 var(--ore), 8px 8px 0 #000}
+
+    .featureGrid{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0, 1fr));
+      gap:18px;
+    }
+    .feature{
+      min-height:226px;
+      padding:22px;
+      background:#252c2a;
+      border:4px solid #000;
+      box-shadow:7px 7px 0 #000;
+    }
+    .feature:nth-child(2){box-shadow:inset 0 7px 0 var(--ore), 7px 7px 0 #000}
+    .feature:nth-child(3){box-shadow:inset 0 7px 0 var(--moss), 7px 7px 0 #000}
+    .feature:nth-child(4){box-shadow:inset 0 7px 0 var(--gold), 7px 7px 0 #000}
+    .feature h3{
+      margin:0;
+      color:#fff;
+      font-size:28px;
+      line-height:1;
+      text-transform:uppercase;
+      text-shadow:3px 3px 0 #000;
+    }
+    .feature p{
+      margin:14px 0 0;
+      color:var(--muted);
+      font-size:16px;
+      line-height:1.45;
+    }
+
+    .versionGrid{
+      display:grid;
+      grid-template-columns:minmax(330px, .8fr) minmax(0, 1.2fr);
+      gap:22px;
+      align-items:start;
+    }
+    .versionGrid > *{
+      min-width:0;
+    }
+    .versionPanel,.compareWrap{
+      background:#202725;
+      border:4px solid #000;
+      box-shadow:8px 8px 0 #000;
+    }
+    .versionPanel{padding:24px}
+    .versionPanel h3{
+      margin:0 0 16px;
+      color:#fff;
+      font-size:30px;
+      text-transform:uppercase;
+      text-shadow:3px 3px 0 #000;
+    }
+    .versionRow{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:18px;
+      padding:13px 0;
+      border-bottom:2px solid rgba(255,255,255,.14);
+      color:var(--muted);
+    }
+    .versionRow strong{color:#fff}
+    .note{
+      margin:18px 0 0;
+      color:var(--soft);
+      font-size:14px;
+      line-height:1.45;
+    }
+    .compareWrap{
+      overflow-x:auto;
+      max-width:100%;
+    }
+    .compare{
+      width:100%;
+      min-width:680px;
+      border-collapse:collapse;
+      color:var(--muted);
+      font-size:15px;
+    }
+    .compare th,.compare td{
+      padding:14px 16px;
+      border-bottom:2px solid rgba(255,255,255,.13);
+      text-align:left;
+    }
+    .compare th{
+      color:#fff;
+      background:#111716;
+      text-transform:uppercase;
+    }
+    .compare td:nth-child(2),
+    .compare td:nth-child(3){
+      text-align:center;
+      font-family:"Minecrafter","Minecraft",monospace;
+      color:#fff;
+    }
+    .yes{color:var(--ore2)}
+    .no{color:var(--red)}
+    .partial{color:var(--gold)}
+
+    .cta{
+      padding:76px 0 90px;
+    }
+    .ctaBox{
+      position:relative;
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:24px;
+      align-items:center;
+      padding:30px;
+      background:
+        radial-gradient(circle at 15% 50%, rgba(95,241,234,.18), transparent 28%),
+        #1d2422;
+      border:5px solid #000;
+      box-shadow:10px 10px 0 #000;
+      overflow:hidden;
+    }
+    .ctaBox::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.06) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(255,255,255,.05) 1px, transparent 1px);
+      background-size:32px 32px;
+      opacity:.36;
+      pointer-events:none;
+    }
+    .ctaBox > *{position:relative}
+    .ctaBox h2{font-size:clamp(32px, 5vw, 60px)}
+    .ctaBox p{
+      margin:14px 0 0;
+      max-width:76ch;
+      color:var(--muted);
+      font-size:17px;
+      line-height:1.45;
+    }
+
+    footer{
+      border-top:4px solid #000;
+      background:#080a0a;
+      color:var(--soft);
+      font-size:13px;
+    }
+    .footerInner{
+      min-height:76px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+    }
+    .footerLinks{
+      display:flex;
+      gap:16px;
+      flex-wrap:wrap;
+      color:var(--muted);
+    }
+    .footerLinks a:hover{color:#fff}
+
+    @media (max-width:1120px){
+      .heroGrid,.versionGrid,.ctaBox{grid-template-columns:1fr}
+      .heroGrid{gap:34px}
+      .metrics{grid-template-columns:repeat(2, minmax(0, 1fr))}
+      .featureGrid{grid-template-columns:repeat(2, minmax(0, 1fr))}
+      .sectionHead{grid-template-columns:1fr}
+      .sectionHead p{text-align:left}
+    }
+    @media (max-width:760px){
+      .navLinks{display:none}
+      .heroGrid{padding:46px 0 98px}
+      .productLockup{align-items:flex-start; flex-direction:column}
+      .productMark{width:70px; height:70px}
+      .lede{font-size:18px}
+      .heroActions{display:grid}
+      .btn{width:100%}
+      .revealRig{padding:12px; transform:none}
+      .wall{grid-template-columns:repeat(6, minmax(0, 1fr))}
+      .block{min-height:44px}
+      .viewSplit{grid-template-columns:1fr}
+      .viewPane{border-right:0; border-bottom:3px solid #000}
+      .viewPane:last-child{border-bottom:0}
+      .metrics,.modelGrid,.featureGrid{grid-template-columns:1fr}
+      .versionRow{grid-template-columns:1fr; gap:4px}
+      .versionRow strong{overflow-wrap:anywhere}
+      h2{font-size:clamp(34px, 12vw, 52px)}
+      .section{padding-top:58px}
+    }
+    @media (prefers-reduced-motion:reduce){
+      html{scroll-behavior:auto}
+      .btn,.navLink,.navLink::after,.contactLink,.contactLink::after,.block{transition:none}
+    }
+  </style>
+</head>
+<body>
+  <header class="siteHeader">
+    <div class="wrap nav">
+      <a class="brand" href="/" aria-label="soymods home">
+        <img class="brandMark" src="/icon.png" alt="" />
+        <span>soymods</span>
+      </a>
+      <nav class="navLinks" aria-label="Primary navigation">
+        <a class="navLink" href="/">Home</a>
+        <a class="navLink" href="#model">Model</a>
+        <a class="navLink" href="#features">Features</a>
+        <a class="navLink" href="#versions">Versions</a>
+      </nav>
+      <div class="headerActions">
+        <a class="contactLink" href="https://modrinth.com/plugin/oreveil" target="_blank" rel="noreferrer">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="oreveil-title">
+      <div class="wrap heroGrid">
+        <div class="heroCopy">
+          <div class="productLockup">
+            <img class="productMark" src="/oreveil/logo.png" alt="" />
+            <span class="chip">Paper anti-xray plugin</span>
+          </div>
+          <h1 id="oreveil-title" class="srOnly">Oreveil</h1>
+          <img class="titleImg" src="/oreveil/oreveil_title.png" alt="Oreveil" />
+          <p class="lede">
+            Deterministic server-side ore obfuscation. Oreveil keeps buried ores authoritative on the server,
+            masks what clients receive, and only reveals protected blocks when gameplay actually exposes them.
+          </p>
+          <div class="heroActions">
+            <a class="btn primary" href="https://modrinth.com/plugin/oreveil" target="_blank" rel="noreferrer">Download</a>
+            <a class="btn gold" href="#model">How it works</a>
+            <a class="btn dark" href="https://github.com/soymods/oreveil" target="_blank" rel="noreferrer">Source</a>
+          </div>
+        </div>
+
+        <div class="revealRig" aria-label="Oreveil stone wall reveal preview">
+          <div class="wall" aria-hidden="true">
+            <span class="block"></span><span class="block"></span><span class="block ore hot" tabindex="0"></span><span class="block"></span><span class="block"></span><span class="block ore" tabindex="0"></span><span class="block"></span><span class="block"></span>
+            <span class="block"></span><span class="block ore" tabindex="0"></span><span class="block"></span><span class="block"></span><span class="block"></span><span class="block"></span><span class="block ore hot" tabindex="0"></span><span class="block"></span>
+            <span class="block ore" tabindex="0"></span><span class="block"></span><span class="block"></span><span class="block ore hot" tabindex="0"></span><span class="block"></span><span class="block"></span><span class="block"></span><span class="block"></span>
+            <span class="block"></span><span class="block"></span><span class="block"></span><span class="block"></span><span class="block ore" tabindex="0"></span><span class="block"></span><span class="block ore" tabindex="0"></span><span class="block"></span>
+            <span class="block"></span><span class="block ore hot" tabindex="0"></span><span class="block"></span><span class="block"></span><span class="block"></span><span class="block ore" tabindex="0"></span><span class="block"></span><span class="block"></span>
+          </div>
+          <div class="viewSplit">
+            <div class="viewPane client">
+              <b>Client sees</b>
+              stone, deepslate, netherrack, or end stone until exposure is legitimate.
+            </div>
+            <div class="viewPane server">
+              <b>Server knows</b>
+              the real protected block, reveal state, and per-player visibility.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap metrics" aria-label="Oreveil highlights">
+      <div class="metric"><strong>Per-player</strong><span>Visibility can differ by player instead of leaking one shared ore view.</span></div>
+      <div class="metric"><strong>Exposure gated</strong><span>Mining, fluids, explosions, pistons, placement, movement, and chunk loading resync views.</span></div>
+      <div class="metric"><strong>Seed resilient</strong><span>Optional private salt reduces value from public seed-based prediction.</span></div>
+      <div class="metric"><strong>Versioned jars</strong><span>Paper targets are split by Minecraft version band and Java runtime.</span></div>
+    </div>
+
+    <section class="section" id="model">
+      <div class="wrap">
+        <div class="sectionHead">
+          <div>
+            <p class="kicker">The ore model</p>
+            <h2>Hidden until earned</h2>
+          </div>
+          <p>
+            Oreveil is not just a decorative disguise. It tracks which protected blocks should be visible,
+            rewrites what the player receives, and keeps hidden ore data out of normal client view.
+          </p>
+        </div>
+        <div class="modelGrid">
+          <article class="modelCard masked">
+            <h3>Buried blocks are masked</h3>
+            <p>Unrevealed protected ores are sent as believable host blocks. The client gets a normal cave wall, not a map of nearby ore veins.</p>
+            <div class="maskStrip" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </article>
+          <article class="modelCard reveal">
+            <h3>Exposed blocks come back</h3>
+            <p>When gameplay exposes a protected block, Oreveil sends the real material back to players who should see it.</p>
+            <div class="maskStrip" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="features">
+      <div class="wrap">
+        <div class="sectionHead">
+          <div>
+            <p class="kicker">Admin control</p>
+            <h2>Built for live servers</h2>
+          </div>
+          <p>
+            Configure protected ores, tune exposure rules, inspect block state, watch diagnostics,
+            and let ProtocolLib handle the packet-aware path when the runtime supports it.
+          </p>
+        </div>
+        <div class="featureGrid">
+          <article class="feature">
+            <h3>Chunk data</h3>
+            <p>Compatible runtimes can rewrite chunk packet data before hidden ore reaches the player.</p>
+          </article>
+          <article class="feature">
+            <h3>Updates</h3>
+            <p>Block changes and reveal events are synchronized so exposed ores stay playable.</p>
+          </article>
+          <article class="feature">
+            <h3>Fallback</h3>
+            <p>If full chunk rewriting is unavailable, Oreveil keeps chunk priming and update sync active.</p>
+          </article>
+          <article class="feature">
+            <h3>GUI</h3>
+            <p>The `/oreveil` interface handles profiles, protected ore toggles, diagnostics, and world tools.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="versions">
+      <div class="wrap">
+        <div class="sectionHead">
+          <div>
+            <p class="kicker">Release shape</p>
+            <h2>Versioned Paper jars</h2>
+          </div>
+          <p>
+            Oreveil ships targeted builds by Minecraft version band, so legacy servers and modern servers
+            each get the right API surface and bytecode level.
+          </p>
+        </div>
+        <div class="versionGrid">
+          <div class="versionPanel">
+            <h3>Supported targets</h3>
+            <div class="versionRow"><strong>1.16.x / 1.17.x</strong><span>Java 16</span></div>
+            <div class="versionRow"><strong>1.18.x / 1.19.x</strong><span>Java 17+</span></div>
+            <div class="versionRow"><strong>1.20.0-1.20.4</strong><span>Java 17+</span></div>
+            <div class="versionRow"><strong>1.20.5-1.20.6 / 1.21.x</strong><span>Java 21+</span></div>
+            <div class="versionRow"><strong>26.x</strong><span>Java 25+</span></div>
+            <p class="note">ProtocolLib is optional but recommended for packet-level transport.</p>
+          </div>
+          <div>
+            <div class="compareWrap" aria-label="Oreveil comparison table">
+              <table class="compare">
+                <thead>
+                  <tr>
+                    <th>Feature</th>
+                    <th>Paper Anti-Xray</th>
+                    <th>Oreveil</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Per-player obfuscation</td><td class="partial">Limited</td><td class="yes">Yes</td></tr>
+                  <tr><td>Packet-level rewriting</td><td class="partial">Partial</td><td class="yes">Yes</td></tr>
+                  <tr><td>Chunk packet rewriting</td><td class="no">No</td><td class="yes">Yes*</td></tr>
+                  <tr><td>Exposure-gated reveals</td><td class="partial">Limited</td><td class="yes">Yes</td></tr>
+                  <tr><td>Server-authoritative ore model</td><td class="no">No</td><td class="yes">Yes</td></tr>
+                  <tr><td>Seed-resilient design</td><td class="no">No</td><td class="yes">Yes</td></tr>
+                  <tr><td>In-game admin GUI</td><td class="no">No</td><td class="yes">Yes</td></tr>
+                  <tr><td>Live diagnostics</td><td class="no">No</td><td class="yes">Yes</td></tr>
+                  <tr><td>Block inspection tool</td><td class="no">No</td><td class="yes">Yes</td></tr>
+                  <tr><td>World management</td><td class="no">No</td><td class="yes">Yes</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="note">*Oreveil uses automatic fallback when runtime chunk rewriting is unavailable.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cta">
+      <div class="wrap ctaBox">
+        <div>
+          <h2>Keep buried ore buried.</h2>
+          <p>Install the jar for your Paper version, add ProtocolLib for the strongest packet path, and manage the server from the in-game Oreveil GUI.</p>
+        </div>
+        <div class="heroActions">
+          <a class="btn primary" href="https://modrinth.com/plugin/oreveil" target="_blank" rel="noreferrer">Modrinth</a>
+          <a class="btn dark" href="https://github.com/soymods/oreveil" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footerInner">
+      <div>&copy; <span id="year"></span> soymods - Oreveil by ryduzz.</div>
+      <div class="footerLinks">
+        <a href="/">Home</a>
+        <a href="/about/">About</a>
+        <a href="/pathmind/">Pathmind</a>
+        <a href="/visual-keystrokes/">Visual Keystrokes</a>
+        <a href="/oreveil/">Oreveil</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

@@ -22,6 +22,11 @@
       "permanent": true
     },
     {
+      "source": "/oreveil",
+      "destination": "/oreveil/",
+      "permanent": true
+    },
+    {
       "source": "/about",
       "destination": "/about/",
       "permanent": true

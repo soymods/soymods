@@ -478,7 +478,7 @@
 
     .quickStats{
       display:grid;
-      grid-template-columns:repeat(3, 1fr);
+      grid-template-columns:repeat(4, 1fr);
       gap:12px;
       margin-top:-54px;
       position:relative;
@@ -545,7 +545,7 @@
 
     .tiles{
       display:grid;
-      grid-template-columns:repeat(3, 1fr);
+      grid-template-columns:repeat(4, 1fr);
       gap:22px;
     }
 
@@ -570,6 +570,7 @@
     }
     .tile.pathmind{--accent:var(--green)}
     .tile.keys{--accent:var(--gold)}
+    .tile.oreveil{--accent:#64eee7}
     .tile.more{--accent:var(--red)}
 
     .tileBand{
@@ -590,6 +591,12 @@
       background:
         linear-gradient(135deg, rgba(255,255,255,.09), transparent 50%),
         #3e3728;
+    }
+    .tile.oreveil .tileBand{
+      background:
+        radial-gradient(circle at 34% 42%, rgba(100,238,231,.42), transparent 18%),
+        linear-gradient(135deg, rgba(255,255,255,.09), transparent 50%),
+        #1a2a2c;
     }
     .tile.more .tileBand{
       background:
@@ -810,6 +817,10 @@
     }
     .footerLinks a:hover{color:#fff}
 
+    @media (max-width: 1180px){
+      .tiles{grid-template-columns:repeat(2, 1fr)}
+    }
+
     @media (max-width: 980px){
       .nav{min-height:68px}
       .navLinks{display:none}
@@ -970,6 +981,21 @@
           </div>
         </article>
 
+        <article class="tile oreveil">
+          <div class="tileBand">
+            <img class="tileIcon" src="/oreveil/logo.png" alt="Oreveil Minecraft ore obfuscation plugin logo" />
+          </div>
+          <div class="tileBody">
+            <span class="tileMeta">Paper plugin</span>
+            <h3>Oreveil</h3>
+            <p>Server-side ore obfuscation for Paper servers with exposure-gated reveals and seed-resilient anti-xray behavior.</p>
+            <div class="tileActions">
+              <a class="btn primary" href="/oreveil/">Open page</a>
+              <a class="btn dark" href="https://github.com/soymods/oreveil" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
+          </div>
+        </article>
+
         <article class="tile more">
           <div class="tileBand">
             <div class="comingIcon" aria-hidden="true">?</div>
@@ -1044,6 +1070,7 @@
         <a href="/about/">About</a>
         <a href="/pathmind/">Pathmind</a>
         <a href="/visual-keystrokes/">Visual Keystrokes</a>
+        <a href="/oreveil/">Oreveil</a>
       </div>
     </div>
   </footer>
